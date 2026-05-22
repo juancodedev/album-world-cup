@@ -81,7 +81,17 @@ export function StickerCard({
         </div>
 
         <div className="flex flex-col items-center gap-1">
-          <span className="text-lg">{stateIcons[state]}</span>
+          {state === 'missing' && onAddClick ? (
+            <button
+              onClick={(e) => { e.stopPropagation(); onAddClick(); }}
+              className="w-8 h-8 rounded-full bg-green-100 hover:bg-green-200 text-green-700 flex items-center justify-center text-lg font-bold transition-colors"
+              title="Marcar como obtenida"
+            >
+              +
+            </button>
+          ) : (
+            <span className="text-lg">{stateIcons[state]}</span>
+          )}
           {duplicateCount > 0 && (
             <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">
               +{duplicateCount}
@@ -140,15 +150,34 @@ export function StickerCard({
             #{number}
           </div>
 
+          {/* Add button for missing stickers */}
+          {state === 'missing' && onAddClick && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onAddClick(); }}
+              className="absolute inset-0 z-10 cursor-pointer flex items-center justify-center bg-black/0 hover:bg-black/10 active:bg-black/20 transition-colors"
+              title="Marcar como obtenida"
+            />
+          )}
+
           {/* State overlay */}
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1">
                 {teamFlag && <span className="text-sm">{teamFlag}</span>}
               </div>
-              <div className="bg-white/90 rounded-full w-6 h-6 flex items-center justify-center text-xs">
-                {stateIcons[state]}
-              </div>
+              {state === 'missing' && onAddClick ? (
+                <button
+                  onClick={(e) => { e.stopPropagation(); onAddClick(); }}
+                  className="bg-green-500 hover:bg-green-600 active:bg-green-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold shadow-lg transition-colors"
+                  title="Marcar como obtenida"
+                >
+                  +
+                </button>
+              ) : (
+                <div className="bg-white/90 rounded-full w-6 h-6 flex items-center justify-center text-xs">
+                  {stateIcons[state]}
+                </div>
+              )}
             </div>
           </div>
         </div>
