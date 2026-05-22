@@ -30,10 +30,8 @@ export function ShareModal({ shareCode, onGenerate, isGenerating }: ShareModalPr
 
   return (
     <Dialog>
-      <DialogTrigger>
-        <Button className="w-full" variant="outline">
-          {shareCode ? 'Ver enlace de compartir' : 'Generar enlace'}
-        </Button>
+      <DialogTrigger render={<Button className="w-full" variant="outline" />}>
+        {shareCode ? 'Ver enlace de compartir' : 'Generar enlace'}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
