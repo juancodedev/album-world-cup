@@ -10,8 +10,9 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  INSERT INTO public.users (email, full_name, avatar_url, auth_provider, auth_uid)
+  INSERT INTO public.users (id, email, full_name, avatar_url, auth_provider, auth_uid)
   VALUES (
+    NEW.id,
     NEW.email,
     COALESCE(
       NEW.raw_user_meta_data->>'full_name',
