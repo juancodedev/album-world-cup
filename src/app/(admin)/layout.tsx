@@ -17,10 +17,10 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white border-b sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center gap-6">
-          <Link href="/admin/seed" className="font-bold text-indigo-600">
+          <Link href="/seed" className="font-bold text-indigo-600">
             Admin Panel
           </Link>
-          <Link href="/admin/seed" className="text-sm text-gray-600 hover:text-gray-900">
+          <Link href="/seed" className="text-sm text-gray-600 hover:text-gray-900">
             Seed Data
           </Link>
           <Link href="/dashboard" className="text-sm text-gray-400 hover:text-gray-600 ml-auto">
