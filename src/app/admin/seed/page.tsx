@@ -63,8 +63,8 @@ export default function SeedPage() {
 
   const fetchData = useCallback(async () => {
     const [teamsRes, stickersRes] = await Promise.all([
-      fetch('/seed/api/teams').then(r => r.json()),
-      fetch('/seed/api/stickers').then(r => r.json()),
+      fetch('/admin/seed/api/teams').then(r => r.json()),
+      fetch('/admin/seed/api/stickers').then(r => r.json()),
     ]);
     setConfederations(teamsRes.confederations || []);
     setTeams(teamsRes.teams || []);
@@ -134,7 +134,7 @@ function TeamForm({ confederations, teams, onSuccess }: {
     if (!name || !code || !confedId) return;
     setLoading(true);
     try {
-      const res = await fetch('/seed/api/teams', {
+      const res = await fetch('/admin/seed/api/teams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, code, confederation_id: confedId, group_stage: group || null }),
@@ -258,7 +258,7 @@ function PlayerForm({ teams, onSuccess }: { teams: Team[]; onSuccess: () => void
 
   const loadPlayers = async (tid: string) => {
     if (!tid) { setPlayersList([]); return; }
-    const res = await fetch(`/seed/api/teams`).then(r => r.json());
+    const res = await fetch('/admin/seed/api/teams').then(r => r.json());
     const team = (res.teams || []).find((t: Team) => t.id === tid);
     if (team) setPlayersList(team.players || []);
     else setPlayersList([]);
@@ -274,7 +274,7 @@ function PlayerForm({ teams, onSuccess }: { teams: Team[]; onSuccess: () => void
     if (!teamId || !name || !position) return;
     setLoading(true);
     try {
-      const res = await fetch('/seed/api/players', {
+      const res = await fetch('/admin/seed/api/players', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ team_id: teamId, name, position, jersey_number: jersey ? parseInt(jersey) : null }),
@@ -386,7 +386,7 @@ function StickerPanel({ teams, stickers, stickerTypes, onSuccess }: {
     if (!selectedTeam) return;
     setLoading(true);
     try {
-      const res = await fetch('/seed/api/stickers/generate', {
+      const res = await fetch('/admin/seed/api/stickers/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ team_id: selectedTeam }),
@@ -399,7 +399,7 @@ function StickerPanel({ teams, stickers, stickerTypes, onSuccess }: {
   };
 
   const deleteSticker = async (id: string) => {
-    await fetch(`/seed/api/stickers?id=${id}`, { method: 'DELETE' });
+    await fetch(`/admin/seed/api/stickers?id=${id}`, { method: 'DELETE' });
     onSuccess();
   };
 
