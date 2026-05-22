@@ -4,7 +4,7 @@
 -- Solution: use a SECURITY DEFINER function that bypasses RLS to get user's account IDs
 
 -- Create function to get user account IDs without triggering RLS recursion
-CREATE OR REPLACE FUNCTION auth.get_account_ids_for_user()
+CREATE OR REPLACE FUNCTION public.get_account_ids_for_user()
 RETURNS SETOF UUID
 LANGUAGE sql
 STABLE
@@ -18,7 +18,7 @@ $$;
 DROP POLICY IF EXISTS "Members can view account" ON accounts;
 CREATE POLICY "Members can view account"
   ON accounts FOR SELECT
-  USING (id IN (SELECT auth.get_account_ids_for_user()));
+  USING (id IN (SELECT public.get_account_ids_for_user()));
 
 DROP POLICY IF EXISTS "Owner can update account" ON accounts;
 CREATE POLICY "Owner can update account"
@@ -34,7 +34,7 @@ CREATE POLICY "Owner can update account"
 DROP POLICY IF EXISTS "Members can view account members" ON account_members;
 CREATE POLICY "Members can view account members"
   ON account_members FOR SELECT
-  USING (account_id IN (SELECT auth.get_account_ids_for_user()));
+  USING (account_id IN (SELECT public.get_account_ids_for_user()));
 
 DROP POLICY IF EXISTS "Admins can manage members" ON account_members;
 CREATE POLICY "Admins can manage members"
@@ -74,26 +74,26 @@ DROP POLICY IF EXISTS "Account members can delete own stickers" ON user_stickers
 
 CREATE POLICY "Account members can view stickers"
   ON user_stickers FOR SELECT
-  USING (account_id IN (SELECT auth.get_account_ids_for_user()));
+  USING (account_id IN (SELECT public.get_account_ids_for_user()));
 
 CREATE POLICY "Account members can insert stickers"
   ON user_stickers FOR INSERT
   WITH CHECK (
-    account_id IN (SELECT auth.get_account_ids_for_user())
+    account_id IN (SELECT public.get_account_ids_for_user())
     AND user_id = auth.uid()
   );
 
 CREATE POLICY "Account members can update own stickers"
   ON user_stickers FOR UPDATE
   USING (
-    account_id IN (SELECT auth.get_account_ids_for_user())
+    account_id IN (SELECT public.get_account_ids_for_user())
     AND user_id = auth.uid()
   );
 
 CREATE POLICY "Account members can delete own stickers"
   ON user_stickers FOR DELETE
   USING (
-    account_id IN (SELECT auth.get_account_ids_for_user())
+    account_id IN (SELECT public.get_account_ids_for_user())
     AND user_id = auth.uid()
   );
 
@@ -105,26 +105,26 @@ DROP POLICY IF EXISTS "Account members can delete own duplicates" ON sticker_dup
 
 CREATE POLICY "Account members can view duplicates"
   ON sticker_duplicates FOR SELECT
-  USING (account_id IN (SELECT auth.get_account_ids_for_user()));
+  USING (account_id IN (SELECT public.get_account_ids_for_user()));
 
 CREATE POLICY "Account members can insert duplicates"
   ON sticker_duplicates FOR INSERT
   WITH CHECK (
-    account_id IN (SELECT auth.get_account_ids_for_user())
+    account_id IN (SELECT public.get_account_ids_for_user())
     AND user_id = auth.uid()
   );
 
 CREATE POLICY "Account members can update own duplicates"
   ON sticker_duplicates FOR UPDATE
   USING (
-    account_id IN (SELECT auth.get_account_ids_for_user())
+    account_id IN (SELECT public.get_account_ids_for_user())
     AND user_id = auth.uid()
   );
 
 CREATE POLICY "Account members can delete own duplicates"
   ON sticker_duplicates FOR DELETE
   USING (
-    account_id IN (SELECT auth.get_account_ids_for_user())
+    account_id IN (SELECT public.get_account_ids_for_user())
     AND user_id = auth.uid()
   );
 
@@ -142,26 +142,26 @@ CREATE POLICY "Anyone can view public shared collections"
 CREATE POLICY "Account members can view own shared collections"
   ON shared_collections FOR SELECT
   USING (
-    account_id IN (SELECT auth.get_account_ids_for_user())
+    account_id IN (SELECT public.get_account_ids_for_user())
   );
 
 CREATE POLICY "Account members can create shared collection"
   ON shared_collections FOR INSERT
   WITH CHECK (
-    account_id IN (SELECT auth.get_account_ids_for_user())
+    account_id IN (SELECT public.get_account_ids_for_user())
     AND user_id = auth.uid()
   );
 
 CREATE POLICY "Account members can update shared collection"
   ON shared_collections FOR UPDATE
   USING (
-    account_id IN (SELECT auth.get_account_ids_for_user())
+    account_id IN (SELECT public.get_account_ids_for_user())
     AND user_id = auth.uid()
   );
 
 CREATE POLICY "Account members can delete shared collection"
   ON shared_collections FOR DELETE
   USING (
-    account_id IN (SELECT auth.get_account_ids_for_user())
+    account_id IN (SELECT public.get_account_ids_for_user())
     AND user_id = auth.uid()
   );
