@@ -5,15 +5,18 @@ import { useAuth } from '../../../presentation/providers/AuthProvider';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
-  const { signInWithGoogle, signInWithMagicLink, user } = useAuth();
+  const { signInWithGoogle, signInWithMagicLink, signInWithEmail, signUp, user } = useAuth();
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [magicSent, setMagicSent] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   if (user) {
-    return null; // Will redirect in useEffect
+    return null;
   }
 
   const handleMagicLink = async () => {
@@ -23,7 +26,28 @@ export default function LoginPage() {
       await signInWithMagicLink(email);
       setMagicSent(true);
     } catch (error) {
-      console.error(error);
+      toast.error('Error al enviar el enlace mágico');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEmailPassword = async () => {
+    if (!email || !password) return;
+    setIsLoading(true);
+    try {
+      if (isRegistering) {
+        const { error } = await signUp(email, password);
+        if (error) {
+          toast.error(error);
+        } else {
+          toast.success('Cuenta creada. Revisa tu correo para confirmar.');
+        }
+      } else {
+        await signInWithEmail(email, password);
+      }
+    } catch (error: any) {
+      toast.error(error?.message || 'Error al iniciar sesión');
     } finally {
       setIsLoading(false);
     }
@@ -45,6 +69,7 @@ export default function LoginPage() {
             <TabsList className="w-full mb-4">
               <TabsTrigger value="google" className="flex-1">Google</TabsTrigger>
               <TabsTrigger value="email" className="flex-1">Email</TabsTrigger>
+              <TabsTrigger value="magic" className="flex-1">Magic Link</TabsTrigger>
             </TabsList>
 
             <TabsContent value="google">
@@ -64,6 +89,41 @@ export default function LoginPage() {
             </TabsContent>
 
             <TabsContent value="email">
+              <div className="space-y-3">
+                <Input
+                  type="email"
+                  placeholder="tu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-12"
+                />
+                <Input
+                  type="password"
+                  placeholder="Contraseña"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="h-12"
+                />
+                <Button
+                  onClick={handleEmailPassword}
+                  disabled={!email || !password || isLoading}
+                  className="w-full h-12"
+                >
+                  {isLoading ? 'Cargando...' : isRegistering ? 'Crear cuenta' : 'Iniciar sesión'}
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => setIsRegistering(!isRegistering)}
+                  className="w-full text-sm text-gray-500 hover:text-gray-700 mt-2"
+                >
+                  {isRegistering
+                    ? '¿Ya tienes cuenta? Inicia sesión'
+                    : '¿No tienes cuenta? Regístrate'}
+                </button>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="magic">
               {magicSent ? (
                 <div className="text-center py-4">
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">

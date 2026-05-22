@@ -42,6 +42,27 @@ export class SupabaseAuthAdapter {
     if (error) throw error;
   }
 
+  async signInWithEmail(email: string, password: string): Promise<void> {
+    const { error } = await this.getClient().auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) throw error;
+  }
+
+  async signUp(email: string, password: string): Promise<{ error: string | null }> {
+    const { error } = await this.getClient().auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback`,
+      },
+    });
+
+    return { error: error?.message || null };
+  }
+
   async signOut(): Promise<void> {
     const { error } = await this.getClient().auth.signOut();
     if (error) throw error;

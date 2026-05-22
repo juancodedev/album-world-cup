@@ -6,6 +6,8 @@ import { getAuthAdapter, AuthSession } from '../../infrastructure/auth/supabase-
 interface AuthContextType extends AuthSession {
   signInWithGoogle: () => Promise<void>;
   signInWithMagicLink: (email: string) => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   refetch: () => Promise<void>;
 }
@@ -41,6 +43,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ...session,
     signInWithGoogle: () => getAdapter().signInWithGoogle(),
     signInWithMagicLink: (email: string) => getAdapter().signInWithMagicLink(email),
+    signInWithEmail: (email: string, password: string) => getAdapter().signInWithEmail(email, password),
+    signUp: (email: string, password: string) => getAdapter().signUp(email, password),
     signOut: () => getAdapter().signOut(),
     refetch: async () => {
       const s = await getAdapter().getSession();
