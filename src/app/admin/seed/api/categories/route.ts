@@ -4,44 +4,48 @@ import { createServerSideClient } from '@/infrastructure/database/supabase.serve
 export async function GET() {
   const supabase = await createServerSideClient();
 
-  const { data: teams, error } = await supabase
-    .from('teams')
+  const { data, error } = await supabase
+    .from('categories')
     .select('*')
     .order('name');
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-
-  return NextResponse.json({ teams: teams || [] });
+  return NextResponse.json({ categories: data || [] });
 }
 
 export async function POST(request: Request) {
   const supabase = await createServerSideClient();
   const body = await request.json();
 
-  const { name, code } = body;
+  const { name, code, description } = body;
 
   if (!name || !code) {
     return NextResponse.json({ error: 'name and code are required' }, { status: 400 });
   }
 
-  const albumId = '00000000-0000-0000-0000-000000000001';
-
   const { data, error } = await supabase
-    .from('teams')
-    .insert({
-      album_id: albumId,
-      name,
-      code: code.toUpperCase(),
-    })
+    .from('categories')
+    .insert({ name, code: code.toUpperCase(), description: description || null })
     .select()
     .single();
 
   if (error) {
     if (error.code === '23505') {
-      return NextResponse.json({ error: 'Ya existe un equipo con ese código en este álbum' }, { status: 409 });
+      return NextResponse.json({ error: 'Ya existe una categoría con ese código' }, { status: 409 });
     }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
   return NextResponse.json(data);
+}
+
+export async function DELETE(request: Request) {
+  const supabase = await createServerSideClient();
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+
+  if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
+
+  await supabase.from('categories').delete().eq('id', id);
+  return NextResponse.json({ success: true });
 }

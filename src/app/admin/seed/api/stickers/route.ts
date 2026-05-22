@@ -4,66 +4,56 @@ import { createServerSideClient } from '@/infrastructure/database/supabase.serve
 export async function GET() {
   const supabase = await createServerSideClient();
 
-  const [stickers, types] = await Promise.all([
-    supabase.from('stickers').select('*, team:teams(name, code), player:players(name, position)').order('number'),
-    supabase.from('sticker_types').select('*'),
-  ]);
+  const { data: stickers, error } = await supabase
+    .from('stickers')
+    .select('*, team:teams(name, code), category:categories(name, code)')
+    .order('code');
 
-  return NextResponse.json({
-    stickers: stickers.data || [],
-    types: types.data || [],
-  });
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  return NextResponse.json({ stickers: stickers || [] });
 }
 
 export async function POST(request: Request) {
   const supabase = await createServerSideClient();
   const body = await request.json();
 
-  const { team_id, player_id, type_code, rarity, is_special, special_attribute } = body;
+  const { code, team_id, category_id, player_nombre, player_apellido, player_fecha_nacimiento, player_estatura, player_peso, player_club_actual, player_pais_club } = body;
 
-  if (!team_id || !type_code) {
-    return NextResponse.json({ error: 'team_id and type_code are required' }, { status: 400 });
+  if (!code || !team_id || !category_id) {
+    return NextResponse.json({ error: 'code, team_id, and category_id are required' }, { status: 400 });
   }
 
   const albumId = '00000000-0000-0000-0000-000000000001';
-
-  const { data: typeData } = await supabase
-    .from('sticker_types')
-    .select('id')
-    .eq('code', type_code)
-    .single();
-
-  if (!typeData) {
-    return NextResponse.json({ error: `Sticker type '${type_code}' not found` }, { status: 400 });
-  }
-
-  const { data: maxSticker } = await supabase
-    .from('stickers')
-    .select('number')
-    .eq('album_id', albumId)
-    .order('number', { ascending: false })
-    .limit(1)
-    .single();
-
-  const nextNumber = (maxSticker?.number || 0) + 1;
 
   const { data, error } = await supabase
     .from('stickers')
     .insert({
       album_id: albumId,
-      number: nextNumber,
-      player_id: player_id || null,
+      code: code.toUpperCase(),
       team_id,
-      sticker_type_id: typeData.id,
-      rarity: rarity || 'common',
-      image_url: `/api/placeholder/sticker/${nextNumber}`,
-      is_special: is_special || false,
-      special_attribute: special_attribute || null,
+      category_id,
+      player_nombre: player_nombre || null,
+      player_apellido: player_apellido || null,
+      player_fecha_nacimiento: player_fecha_nacimiento || null,
+      player_estatura: player_estatura ? parseFloat(player_estatura) : null,
+      player_peso: player_peso ? parseFloat(player_peso) : null,
+      player_club_actual: player_club_actual || null,
+      player_pais_club: player_pais_club || null,
+      number: 0,
+      sticker_type_id: '00000000-0000-0000-0000-000000000001',
+      rarity: 'common',
+      image_url: `/api/placeholder/sticker/${code}`,
     })
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    if (error.code === '23505') {
+      return NextResponse.json({ error: 'Ya existe una lámina con ese código' }, { status: 409 });
+    }
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 
   return NextResponse.json(data);
 }

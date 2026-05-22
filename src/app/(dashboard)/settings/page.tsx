@@ -46,6 +46,16 @@ export default function SettingsPage() {
         </div>
 
         <div className="bg-white rounded-xl border p-6 space-y-4">
+          <h3 className="font-semibold text-gray-900">Administración</h3>
+          <a
+            href="/admin/seed"
+            className="flex items-center gap-2 w-full h-10 px-4 bg-indigo-50 text-indigo-700 rounded-lg text-sm font-medium hover:bg-indigo-100 transition-colors"
+          >
+            Panel de Administración
+          </a>
+        </div>
+
+        <div className="bg-white rounded-xl border p-6 space-y-4">
           <h3 className="font-semibold text-gray-900">Cuenta</h3>
           <Button variant="destructive" onClick={signOut} className="w-full">
             Cerrar sesión

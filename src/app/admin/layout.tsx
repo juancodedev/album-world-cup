@@ -21,7 +21,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             Admin Panel
           </Link>
           <Link href="/admin/seed" className="text-sm text-gray-600 hover:text-gray-900">
-            Seed Data
+            Gestión de Láminas
           </Link>
           <Link href="/dashboard" className="text-sm text-gray-400 hover:text-gray-600 ml-auto">
             ← Volver al dashboard
