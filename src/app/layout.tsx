@@ -31,7 +31,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <head>
+      <head suppressHydrationWarning>
         <link rel="apple-touch-icon" href="/icons/icon.svg" />
       </head>
       <body className={inter.className}>
