@@ -8,9 +8,31 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     const supabase = await createServerSideClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
-    if (!error) {
+    if (!error && data.session?.user) {
+      const user = data.session.user;
+      const email = user.email || '';
+      const fullName = user.user_metadata?.full_name || user.user_metadata?.name || email.split('@')[0];
+      const avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture;
+      const authProvider = user.app_metadata?.provider === 'google' ? 'google' : 'email';
+
+      const { data: existing } = await supabase
+        .from('users')
+        .select('id')
+        .eq('auth_uid', user.id)
+        .maybeSingle();
+
+      if (!existing) {
+        await supabase.from('users').insert({
+          email,
+          full_name: fullName,
+          avatar_url: avatarUrl || null,
+          auth_provider: authProvider,
+          auth_uid: user.id,
+        });
+      }
+
       return NextResponse.redirect(`${origin}${next}`);
     }
   }
