@@ -29,7 +29,7 @@ export class GetSharedCollectionUseCase {
 
     // Get stats
     const allStickers = await this.stickerRepository.getByAlbum(''); // TODO: Pass album ID
-    const userStickers = await this.userCollectionRepository.findByUser(share.userId);
+    const userStickers = await this.userCollectionRepository.findByAccount(share.accountId);
 
     return shareCollectionMapper.toDTO(share, {
       userName: user.fullName || user.email,

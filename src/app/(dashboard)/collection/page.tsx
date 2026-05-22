@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../presentation/providers/AuthProvider';
 import { useCollection } from '../../../presentation/hooks/useCollection';
+import { useCurrentAccount } from '../../../presentation/hooks/useCurrentAccount';
 import { StickerCard } from '../../../presentation/components/stickers/StickerCard';
 import { SearchBar } from '../../../presentation/components/search/SearchBar';
 import { FilterDrawer } from '../../../presentation/components/search/FilterDrawer';
@@ -29,8 +30,9 @@ export default function CollectionPage() {
     }
   }, [user, authLoading, router]);
 
-  const userId = user?.id || '';
-  const { collection, isLoading, addSticker } = useCollection(userId, DEFAULT_ALBUM_ID);
+  const { data: defaultAccount } = useCurrentAccount(user?.id);
+  const accountId = defaultAccount?.id || '';
+  const { collection, isLoading, addSticker } = useCollection(accountId, DEFAULT_ALBUM_ID);
 
   if (authLoading || !user) {
     return (
@@ -54,7 +56,7 @@ export default function CollectionPage() {
   });
 
   const handleAddSticker = (stickerId: string) => {
-    addSticker(stickerId);
+    addSticker({ stickerId, userId: user!.id });
   };
 
   return (

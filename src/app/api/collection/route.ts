@@ -16,11 +16,11 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { stickerId, albumId } = body;
+    const { stickerId, albumId, accountId } = body;
 
-    if (!stickerId || !albumId) {
+    if (!stickerId || !albumId || !accountId) {
       return NextResponse.json(
-        { error: 'stickerId and albumId are required' },
+        { error: 'stickerId, albumId, and accountId are required' },
         { status: 400 },
       );
     }
@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
 
     const useCase = new AddStickerUseCase(userCollectionRepo, stickerRepo, mapper);
     const result = await useCase.execute({
+      accountId,
       userId: session.user.id,
       stickerId,
       albumId,
@@ -55,14 +56,15 @@ export async function GET(request: NextRequest) {
 
   const searchParams = request.nextUrl.searchParams;
   const albumId = searchParams.get('albumId');
+  const accountId = searchParams.get('accountId');
 
-  if (!albumId) {
-    return NextResponse.json({ error: 'albumId is required' }, { status: 400 });
+  if (!albumId || !accountId) {
+    return NextResponse.json({ error: 'albumId and accountId are required' }, { status: 400 });
   }
 
   try {
     const repo = new SupabaseUserCollectionRepository(supabase);
-    const stickers = await repo.findByUserAndAlbum(session.user.id, albumId);
+    const stickers = await repo.findByAccountAndAlbum(accountId, albumId);
 
     return NextResponse.json({ data: stickers });
   } catch (error) {

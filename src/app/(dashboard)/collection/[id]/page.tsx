@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useAuth } from '../../../../presentation/providers/AuthProvider';
 import { useStickerDetail } from '../../../../presentation/hooks/useStickers';
 import { useCollection } from '../../../../presentation/hooks/useCollection';
+import { useCurrentAccount } from '../../../../presentation/hooks/useCurrentAccount';
 import { RareStickerBadge } from '../../../../presentation/components/stickers/RareStickerBadge';
 import { DuplicateCounter } from '../../../../presentation/components/collection/DuplicateCounter';
 import { Skeleton } from '../../../../components/ui/skeleton';
@@ -19,6 +20,8 @@ export default function StickerDetailPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
   const stickerId = params.id as string;
+  const { data: defaultAccount } = useCurrentAccount(user?.id);
+  const accountId = defaultAccount?.id || '';
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -26,9 +29,9 @@ export default function StickerDetailPage() {
     }
   }, [user, authLoading, router]);
 
-  const { data: sticker, isLoading } = useStickerDetail(stickerId, user?.id);
+  const { data: sticker, isLoading } = useStickerDetail(stickerId, user?.id, accountId);
   const { addSticker, incrementDuplicate, removeDuplicate } = useCollection(
-    user?.id || '',
+    accountId,
     DEFAULT_ALBUM_ID,
   );
 
@@ -103,14 +106,14 @@ export default function StickerDetailPage() {
             <div className="flex items-center justify-center py-3">
               <DuplicateCounter
                 count={sticker.duplicateCount}
-                onIncrement={() => incrementDuplicate({ stickerId, quantity: 1 })}
-                onDecrement={() => removeDuplicate({ stickerId, quantity: 1 })}
+                onIncrement={() => incrementDuplicate({ stickerId, userId: user.id, quantity: 1 })}
+                onDecrement={() => removeDuplicate({ stickerId, userId: user.id, quantity: 1 })}
               />
             </div>
 
             <div className="flex gap-2">
               {sticker.state === 'missing' && (
-                <Button className="flex-1" onClick={() => addSticker(stickerId)}>
+                <Button className="flex-1" onClick={() => addSticker({ stickerId, userId: user.id })}>
                   ✓ Marcar como obtenida
                 </Button>
               )}

@@ -26,6 +26,7 @@ export class ShareCollectionMapper {
   fromPersistence(raw: Record<string, unknown>): ShareCollection {
     return new ShareCollection({
       id: raw.id as string,
+      accountId: raw.account_id as string,
       userId: raw.user_id as string,
       shareCode: raw.share_code as string,
       isPublic: raw.is_public as boolean,

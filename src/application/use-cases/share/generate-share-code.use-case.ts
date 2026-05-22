@@ -9,14 +9,14 @@ export class GenerateShareCodeUseCase {
     private readonly shareRepository: IShareCollectionRepository,
   ) {}
 
-  async execute(userId: string): Promise<ShareCollectionDTO> {
-    const existing = await this.shareRepository.getByUser(userId);
+  async execute(accountId: string, userId: string): Promise<ShareCollectionDTO> {
+    const existing = await this.shareRepository.getByAccount(accountId);
     if (existing) {
       return shareCollectionMapper.toDTO(existing);
     }
 
     const code = ShareCode.generate();
-    const shareCollection = ShareCollection.create(userId, code.value);
+    const shareCollection = ShareCollection.create(accountId, userId, code.value);
     await this.shareRepository.save(shareCollection);
 
     return shareCollectionMapper.toDTO(shareCollection);

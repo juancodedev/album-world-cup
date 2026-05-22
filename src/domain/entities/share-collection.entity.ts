@@ -1,5 +1,6 @@
 export interface ShareCollectionProps {
   id?: string;
+  accountId: string;
   userId: string;
   shareCode: string;
   isPublic: boolean;
@@ -13,6 +14,7 @@ export interface ShareCollectionProps {
 
 export class ShareCollection {
   public readonly id: string;
+  public readonly accountId: string;
   public readonly userId: string;
   public readonly shareCode: string;
   public isPublic: boolean;
@@ -25,6 +27,7 @@ export class ShareCollection {
 
   constructor(props: ShareCollectionProps) {
     this.id = props.id || crypto.randomUUID();
+    this.accountId = props.accountId;
     this.userId = props.userId;
     this.shareCode = props.shareCode;
     this.isPublic = props.isPublic;
@@ -46,8 +49,9 @@ export class ShareCollection {
     return new Date() > this.expiresAt;
   }
 
-  static create(userId: string, code: string): ShareCollection {
+  static create(accountId: string, userId: string, code: string): ShareCollection {
     return new ShareCollection({
+      accountId,
       userId,
       shareCode: code,
       isPublic: true,

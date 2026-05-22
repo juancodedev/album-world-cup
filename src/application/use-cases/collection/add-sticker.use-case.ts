@@ -6,6 +6,7 @@ import { CollectionMapper } from '../../mappers/collection.mapper';
 import { UserCollectionDTO } from '../../dtos/user-collection.dto';
 
 export interface AddStickerInput {
+  accountId: string;
   userId: string;
   stickerId: string;
   albumId: string;
@@ -29,6 +30,7 @@ export class AddStickerUseCase {
     }
 
     let userCollection = await this.userCollectionRepository.getByUserAndSticker(
+      input.accountId,
       input.userId,
       input.stickerId,
     );
@@ -36,7 +38,7 @@ export class AddStickerUseCase {
     if (userCollection) {
       userCollection.incrementQuantity();
     } else {
-      userCollection = UserCollection.create(input.userId, input.stickerId);
+      userCollection = UserCollection.create(input.accountId, input.userId, input.stickerId);
     }
 
     await this.userCollectionRepository.save(userCollection);

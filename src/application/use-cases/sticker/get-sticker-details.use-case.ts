@@ -18,7 +18,7 @@ export class GetStickerDetailsUseCase {
     private readonly duplicateRepository: IStickerDuplicateRepository,
   ) {}
 
-  async execute(stickerId: string, userId?: string): Promise<StickerDetailDTO> {
+  async execute(stickerId: string, userId?: string, accountId?: string): Promise<StickerDetailDTO> {
     const sticker = await this.stickerRepository.getById(stickerId);
     if (!sticker) throw new NotFoundError(`Sticker ${stickerId} not found`);
 
@@ -31,10 +31,10 @@ export class GetStickerDetailsUseCase {
     let state: 'missing' | 'obtained' | 'duplicate' = 'missing';
     let duplicateCount = 0;
 
-    if (userId) {
+    if (userId && accountId) {
       const [userSticker, duplicate] = await Promise.all([
-        this.userCollectionRepository.getByUserAndSticker(userId, stickerId),
-        this.duplicateRepository.getByUserAndSticker(userId, stickerId),
+        this.userCollectionRepository.getByUserAndSticker(accountId, userId, stickerId),
+        this.duplicateRepository.getByUserAndSticker(accountId, userId, stickerId),
       ]);
 
       if (duplicate) {

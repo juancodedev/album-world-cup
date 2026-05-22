@@ -5,6 +5,7 @@ import { NotFoundError } from '../../../domain/errors/domain.error';
 import { StickerDuplicateDTO } from '../../dtos/sticker-duplicate.dto';
 
 export interface IncrementDuplicateInput {
+  accountId: string;
   userId: string;
   stickerId: string;
   quantity?: number;
@@ -23,6 +24,7 @@ export class IncrementDuplicateUseCase {
     }
 
     let duplicate = await this.duplicateRepository.getByUserAndSticker(
+      input.accountId,
       input.userId,
       input.stickerId,
     );
@@ -30,7 +32,7 @@ export class IncrementDuplicateUseCase {
     if (duplicate) {
       duplicate.increment(input.quantity || 1);
     } else {
-      duplicate = StickerDuplicate.create(input.userId, input.stickerId, input.quantity || 1);
+      duplicate = StickerDuplicate.create(input.accountId, input.userId, input.stickerId, input.quantity || 1);
     }
 
     await this.duplicateRepository.save(duplicate);

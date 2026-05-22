@@ -29,10 +29,8 @@ export function FilterDrawer({
 
   return (
     <Sheet>
-      <SheetTrigger>
-        <Button variant="outline" size="sm">
-          Filtros
-        </Button>
+      <SheetTrigger render={<Button variant="outline" size="sm" />}>
+        Filtros
       </SheetTrigger>
       <SheetContent side="bottom" className="rounded-t-2xl">
         <SheetHeader>

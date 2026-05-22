@@ -1,9 +1,10 @@
 import { StickerDuplicate } from '../entities/sticker-duplicate.entity';
 
 export interface IStickerDuplicateRepository {
-  getByUserAndSticker(userId: string, stickerId: string): Promise<StickerDuplicate | null>;
+  getByUserAndSticker(accountId: string, userId: string, stickerId: string): Promise<StickerDuplicate | null>;
   save(duplicate: StickerDuplicate): Promise<void>;
-  findByUser(userId: string): Promise<StickerDuplicate[]>;
+  findByAccount(accountId: string): Promise<StickerDuplicate[]>;
+  findByUser(accountId: string, userId: string): Promise<StickerDuplicate[]>;
   delete(id: string): Promise<void>;
-  getTotalByUser(userId: string): Promise<number>;
+  getTotalByAccount(accountId: string): Promise<number>;
 }

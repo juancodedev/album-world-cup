@@ -12,12 +12,12 @@ export class StatisticsService {
     private readonly albumRepository: IAlbumRepository,
   ) {}
 
-  async getUserProgress(userId: string, albumId: string): Promise<Progress> {
+  async getUserProgress(accountId: string, albumId: string): Promise<Progress> {
     const album = await this.albumRepository.getById(albumId);
     if (!album) throw new Error('Album not found');
 
-    const userStickers = await this.userCollectionRepository.findByUserAndAlbum(userId, albumId);
-    const duplicates = await this.stickerDuplicateRepository.findByUser(userId);
+    const userStickers = await this.userCollectionRepository.findByAccountAndAlbum(accountId, albumId);
+    const duplicates = await this.stickerDuplicateRepository.findByAccount(accountId);
     const totalDuplicates = duplicates.reduce((sum, d) => sum + d.quantity, 0);
 
     return new Progress(
@@ -27,9 +27,9 @@ export class StatisticsService {
     );
   }
 
-  async getTeamProgress(userId: string, albumId: string): Promise<Record<string, Progress>> {
+  async getTeamProgress(accountId: string, albumId: string): Promise<Record<string, Progress>> {
     const stickers = await this.stickerRepository.getByAlbum(albumId);
-    const userStickers = await this.userCollectionRepository.findByUserAndAlbum(userId, albumId);
+    const userStickers = await this.userCollectionRepository.findByAccountAndAlbum(accountId, albumId);
     const ownedSet = new Set(userStickers.map(us => us.stickerId));
 
     const teamMap = new Map<string, { total: number; owned: number }>();

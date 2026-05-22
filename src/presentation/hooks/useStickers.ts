@@ -14,12 +14,12 @@ export function useStickers(albumId: string) {
   });
 }
 
-export function useStickerDetail(stickerId: string, userId?: string) {
+export function useStickerDetail(stickerId: string, userId?: string, accountId?: string) {
   const stickerDetailService = container.getGetStickerDetailsUseCase();
 
   return useQuery({
-    queryKey: ['sticker-detail', stickerId, userId],
-    queryFn: () => stickerDetailService.execute(stickerId, userId),
+    queryKey: ['sticker-detail', stickerId, userId, accountId],
+    queryFn: () => stickerDetailService.execute(stickerId, userId, accountId),
     enabled: !!stickerId,
   });
 }

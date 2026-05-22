@@ -1,5 +1,6 @@
 export interface UserCollectionProps {
   id?: string;
+  accountId: string;
   userId: string;
   stickerId: string;
   quantityOwned: number;
@@ -10,6 +11,7 @@ export interface UserCollectionProps {
 
 export class UserCollection {
   public readonly id: string;
+  public readonly accountId: string;
   public readonly userId: string;
   public readonly stickerId: string;
   public quantityOwned: number;
@@ -19,6 +21,7 @@ export class UserCollection {
 
   constructor(props: UserCollectionProps) {
     this.id = props.id || crypto.randomUUID();
+    this.accountId = props.accountId;
     this.userId = props.userId;
     this.stickerId = props.stickerId;
     this.quantityOwned = props.quantityOwned;
@@ -27,8 +30,9 @@ export class UserCollection {
     this.updatedAt = props.updatedAt || new Date();
   }
 
-  static create(userId: string, stickerId: string): UserCollection {
+  static create(accountId: string, userId: string, stickerId: string): UserCollection {
     return new UserCollection({
+      accountId,
       userId,
       stickerId,
       quantityOwned: 1,

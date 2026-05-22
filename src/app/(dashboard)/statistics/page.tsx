@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../presentation/providers/AuthProvider';
 import { useStatistics } from '../../../presentation/hooks/useStatistics';
 import { useCollection } from '../../../presentation/hooks/useCollection';
+import { useCurrentAccount } from '../../../presentation/hooks/useCurrentAccount';
 import { DashboardLayout } from '../../../presentation/layouts/DashboardLayout';
 import { CollectionStats } from '../../../presentation/components/collection/CollectionStats';
 import { ProgressCard } from '../../../presentation/components/dashboard/ProgressCard';
@@ -23,9 +24,10 @@ export default function StatisticsPage() {
     }
   }, [user, authLoading, router]);
 
-  const userId = user?.id || '';
-  const { progress, teamProgress } = useStatistics(userId, DEFAULT_ALBUM_ID);
-  const { stats, isLoading } = useCollection(userId, DEFAULT_ALBUM_ID);
+  const { data: defaultAccount } = useCurrentAccount(user?.id);
+  const accountId = defaultAccount?.id || '';
+  const { progress, teamProgress } = useStatistics(accountId, DEFAULT_ALBUM_ID);
+  const { stats, isLoading } = useCollection(accountId, DEFAULT_ALBUM_ID);
 
   if (authLoading || !user) {
     return (

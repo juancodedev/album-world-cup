@@ -1,11 +1,12 @@
 import { UserCollection } from '../entities/user-collection.entity';
 
 export interface IUserCollectionRepository {
-  getByUserAndSticker(userId: string, stickerId: string): Promise<UserCollection | null>;
+  getByUserAndSticker(accountId: string, userId: string, stickerId: string): Promise<UserCollection | null>;
   save(userCollection: UserCollection): Promise<void>;
-  findByUser(userId: string): Promise<UserCollection[]>;
-  findByUserAndAlbum(userId: string, albumId: string): Promise<UserCollection[]>;
+  findByAccount(accountId: string): Promise<UserCollection[]>;
+  findByAccountAndAlbum(accountId: string, albumId: string): Promise<UserCollection[]>;
+  findByUser(accountId: string, userId: string): Promise<UserCollection[]>;
   delete(id: string): Promise<void>;
-  getCountByUser(userId: string): Promise<number>;
-  getRecentByUser(userId: string, limit?: number): Promise<UserCollection[]>;
+  getCountByAccount(accountId: string): Promise<number>;
+  getRecentByAccount(accountId: string, limit?: number): Promise<UserCollection[]>;
 }

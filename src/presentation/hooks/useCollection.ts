@@ -5,46 +5,46 @@ import { container } from '../../di/container';
 import { StickerDTO } from '../../application/dtos/sticker.dto';
 import { CollectionStatsDTO } from '../../application/dtos/collection-stats.dto';
 
-export function useCollection(userId: string, albumId: string) {
+export function useCollection(accountId: string, albumId: string) {
   const queryClient = useQueryClient();
   const collectionService = container.getCollectionService();
 
   const collectionQuery = useQuery<StickerDTO[]>({
-    queryKey: ['collection', userId, albumId],
-    queryFn: () => collectionService.getUserCollection(userId, albumId),
-    enabled: !!userId && !!albumId,
+    queryKey: ['collection', accountId, albumId],
+    queryFn: () => collectionService.getUserCollection(accountId, albumId),
+    enabled: !!accountId && !!albumId,
   });
 
   const statsQuery = useQuery<CollectionStatsDTO>({
-    queryKey: ['collection-stats', userId, albumId],
-    queryFn: () => collectionService.getStats(userId, albumId),
-    enabled: !!userId && !!albumId,
+    queryKey: ['collection-stats', accountId, albumId],
+    queryFn: () => collectionService.getStats(accountId, albumId),
+    enabled: !!accountId && !!albumId,
   });
 
   const addStickerMutation = useMutation({
-    mutationFn: (stickerId: string) =>
-      collectionService.addStickerToCollection({ userId, stickerId, albumId }),
+    mutationFn: ({ stickerId, userId }: { stickerId: string; userId: string }) =>
+      collectionService.addStickerToCollection({ accountId, userId, stickerId, albumId }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['collection', userId, albumId] });
-      queryClient.invalidateQueries({ queryKey: ['collection-stats', userId, albumId] });
+      queryClient.invalidateQueries({ queryKey: ['collection', accountId, albumId] });
+      queryClient.invalidateQueries({ queryKey: ['collection-stats', accountId, albumId] });
     },
   });
 
   const incrementDuplicateMutation = useMutation({
-    mutationFn: ({ stickerId, quantity }: { stickerId: string; quantity?: number }) =>
-      collectionService.incrementDuplicateCount({ userId, stickerId, quantity }),
+    mutationFn: ({ stickerId, userId, quantity }: { stickerId: string; userId: string; quantity?: number }) =>
+      collectionService.incrementDuplicateCount({ accountId, userId, stickerId, quantity }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['collection', userId, albumId] });
-      queryClient.invalidateQueries({ queryKey: ['collection-stats', userId, albumId] });
+      queryClient.invalidateQueries({ queryKey: ['collection', accountId, albumId] });
+      queryClient.invalidateQueries({ queryKey: ['collection-stats', accountId, albumId] });
     },
   });
 
   const removeDuplicateMutation = useMutation({
-    mutationFn: ({ stickerId, quantity }: { stickerId: string; quantity?: number }) =>
-      collectionService.removeDuplicateCount({ userId, stickerId, quantity }),
+    mutationFn: ({ stickerId, userId, quantity }: { stickerId: string; userId: string; quantity?: number }) =>
+      collectionService.removeDuplicateCount({ accountId, userId, stickerId, quantity }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['collection', userId, albumId] });
-      queryClient.invalidateQueries({ queryKey: ['collection-stats', userId, albumId] });
+      queryClient.invalidateQueries({ queryKey: ['collection', accountId, albumId] });
+      queryClient.invalidateQueries({ queryKey: ['collection-stats', accountId, albumId] });
     },
   });
 
