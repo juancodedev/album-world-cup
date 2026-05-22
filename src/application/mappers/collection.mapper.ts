@@ -16,6 +16,7 @@ export class CollectionMapper {
   fromPersistence(raw: Record<string, unknown>): UserCollection {
     return new UserCollection({
       id: raw.id as string,
+      accountId: raw.account_id as string,
       userId: raw.user_id as string,
       stickerId: raw.sticker_id as string,
       quantityOwned: raw.quantity_owned as number,
@@ -27,6 +28,7 @@ export class CollectionMapper {
   toPersistence(entity: UserCollection): Record<string, unknown> {
     return {
       id: entity.id,
+      account_id: entity.accountId,
       user_id: entity.userId,
       sticker_id: entity.stickerId,
       quantity_owned: entity.quantityOwned,

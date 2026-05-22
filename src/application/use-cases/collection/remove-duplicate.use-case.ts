@@ -2,6 +2,7 @@ import { IStickerDuplicateRepository } from '../../../domain/repositories/sticke
 import { NotFoundError } from '../../../domain/errors/domain.error';
 
 export interface RemoveDuplicateInput {
+  accountId: string;
   userId: string;
   stickerId: string;
   quantity?: number;
@@ -14,6 +15,7 @@ export class RemoveDuplicateUseCase {
 
   async execute(input: RemoveDuplicateInput): Promise<void> {
     const duplicate = await this.duplicateRepository.getByUserAndSticker(
+      input.accountId,
       input.userId,
       input.stickerId,
     );

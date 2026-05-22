@@ -6,10 +6,11 @@ import { SUPABASE_TABLES } from '../database/supabase.config';
 export class SupabaseStickerDuplicateRepository implements IStickerDuplicateRepository {
   constructor(private readonly supabase: SupabaseClient) {}
 
-  async getByUserAndSticker(userId: string, stickerId: string): Promise<StickerDuplicate | null> {
+  async getByUserAndSticker(accountId: string, userId: string, stickerId: string): Promise<StickerDuplicate | null> {
     const { data, error } = await this.supabase
       .from(SUPABASE_TABLES.stickerDuplicates)
       .select('*')
+      .eq('account_id', accountId)
       .eq('user_id', userId)
       .eq('sticker_id', stickerId)
       .maybeSingle();
@@ -27,10 +28,21 @@ export class SupabaseStickerDuplicateRepository implements IStickerDuplicateRepo
     if (error) throw error;
   }
 
-  async findByUser(userId: string): Promise<StickerDuplicate[]> {
+  async findByAccount(accountId: string): Promise<StickerDuplicate[]> {
     const { data, error } = await this.supabase
       .from(SUPABASE_TABLES.stickerDuplicates)
       .select('*')
+      .eq('account_id', accountId);
+
+    if (error) throw error;
+    return (data || []).map((raw: Record<string, unknown>) => this.toDomain(raw));
+  }
+
+  async findByUser(accountId: string, userId: string): Promise<StickerDuplicate[]> {
+    const { data, error } = await this.supabase
+      .from(SUPABASE_TABLES.stickerDuplicates)
+      .select('*')
+      .eq('account_id', accountId)
       .eq('user_id', userId);
 
     if (error) throw error;
@@ -46,11 +58,11 @@ export class SupabaseStickerDuplicateRepository implements IStickerDuplicateRepo
     if (error) throw error;
   }
 
-  async getTotalByUser(userId: string): Promise<number> {
+  async getTotalByAccount(accountId: string): Promise<number> {
     const { data, error } = await this.supabase
       .from(SUPABASE_TABLES.stickerDuplicates)
       .select('quantity')
-      .eq('user_id', userId);
+      .eq('account_id', accountId);
 
     if (error) throw error;
     return (data || []).reduce((sum: number, item: { quantity: number }) => sum + item.quantity, 0);
@@ -59,6 +71,7 @@ export class SupabaseStickerDuplicateRepository implements IStickerDuplicateRepo
   private toDomain(raw: Record<string, unknown>): StickerDuplicate {
     return new StickerDuplicate({
       id: raw.id as string,
+      accountId: raw.account_id as string,
       userId: raw.user_id as string,
       stickerId: raw.sticker_id as string,
       quantity: raw.quantity as number,
@@ -70,6 +83,7 @@ export class SupabaseStickerDuplicateRepository implements IStickerDuplicateRepo
   private toPersistence(entity: StickerDuplicate): Record<string, unknown> {
     return {
       id: entity.id,
+      account_id: entity.accountId,
       user_id: entity.userId,
       sticker_id: entity.stickerId,
       quantity: entity.quantity,

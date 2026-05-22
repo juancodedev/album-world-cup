@@ -12,13 +12,13 @@ export class GetCollectionStatsUseCase {
     private readonly albumRepository: IAlbumRepository,
   ) {}
 
-  async execute(userId: string, albumId: string): Promise<CollectionStatsDTO> {
+  async execute(accountId: string, albumId: string): Promise<CollectionStatsDTO> {
     const album = await this.albumRepository.getById(albumId);
     if (!album) throw new Error('Album not found');
 
     const allStickers = await this.stickerRepository.getByAlbum(albumId);
-    const userStickers = await this.userCollectionRepository.findByUserAndAlbum(userId, albumId);
-    const duplicates = await this.stickerDuplicateRepository.findByUser(userId);
+    const userStickers = await this.userCollectionRepository.findByAccountAndAlbum(accountId, albumId);
+    const duplicates = await this.stickerDuplicateRepository.findByAccount(accountId);
 
     const ownedStickers = userStickers.length;
     const missingStickers = album.totalStickers - ownedStickers;

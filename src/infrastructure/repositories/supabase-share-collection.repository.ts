@@ -18,11 +18,11 @@ export class SupabaseShareCollectionRepository implements IShareCollectionReposi
     return this.toDomain(data);
   }
 
-  async getByUser(userId: string): Promise<ShareCollection | null> {
+  async getByAccount(accountId: string): Promise<ShareCollection | null> {
     const { data, error } = await this.supabase
       .from(SUPABASE_TABLES.sharedCollections)
       .select('*')
-      .eq('user_id', userId)
+      .eq('account_id', accountId)
       .maybeSingle();
 
     if (error) throw error;
@@ -59,6 +59,7 @@ export class SupabaseShareCollectionRepository implements IShareCollectionReposi
   private toDomain(raw: Record<string, unknown>): ShareCollection {
     return new ShareCollection({
       id: raw.id as string,
+      accountId: raw.account_id as string,
       userId: raw.user_id as string,
       shareCode: raw.share_code as string,
       isPublic: raw.is_public as boolean,
@@ -74,6 +75,7 @@ export class SupabaseShareCollectionRepository implements IShareCollectionReposi
   private toPersistence(entity: ShareCollection): Record<string, unknown> {
     return {
       id: entity.id,
+      account_id: entity.accountId,
       user_id: entity.userId,
       share_code: entity.shareCode,
       is_public: entity.isPublic,

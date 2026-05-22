@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../presentation/providers/AuthProvider';
 import { useShare } from '../../../presentation/hooks/useShare';
+import { useCurrentAccount } from '../../../presentation/hooks/useCurrentAccount';
 import { ShareModal } from '../../../presentation/components/share/ShareModal';
 import { DashboardLayout } from '../../../presentation/layouts/DashboardLayout';
 
@@ -17,7 +18,8 @@ export default function SharePage() {
     }
   }, [user, authLoading, router]);
 
-  const { shareCode, generateCode, isGenerating } = useShare(user?.id);
+  const { data: defaultAccount } = useCurrentAccount(user?.id);
+  const { shareCode, generateCode, isGenerating } = useShare(defaultAccount?.id, user?.id);
 
   if (authLoading || !user) {
     return (

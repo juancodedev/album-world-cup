@@ -1,6 +1,3 @@
-// Integration test example for AddStickerUseCase
-// In production, use a test database or mock Supabase
-
 import { IUserCollectionRepository } from '../../../src/domain/repositories/user-collection.repository';
 import { IStickerRepository } from '../../../src/domain/repositories/sticker.repository';
 import { AddStickerUseCase } from '../../../src/application/use-cases/collection/add-sticker.use-case';
@@ -9,6 +6,8 @@ import { NotFoundError } from '../../../src/domain/errors/domain.error';
 import { UserCollection } from '../../../src/domain/entities/user-collection.entity';
 import { Sticker } from '../../../src/domain/entities/sticker.entity';
 import { Rarity } from '../../../src/domain/value-objects/rarity.vo';
+
+const TEST_ACCOUNT_ID = 'account-1';
 
 describe('AddStickerUseCase Integration', () => {
   let useCase: AddStickerUseCase;
@@ -20,11 +19,12 @@ describe('AddStickerUseCase Integration', () => {
     mockUserCollectionRepo = {
       getByUserAndSticker: jest.fn(),
       save: jest.fn(),
+      findByAccount: jest.fn(),
+      findByAccountAndAlbum: jest.fn(),
       findByUser: jest.fn(),
-      findByUserAndAlbum: jest.fn(),
       delete: jest.fn(),
-      getCountByUser: jest.fn(),
-      getRecentByUser: jest.fn(),
+      getCountByAccount: jest.fn(),
+      getRecentByAccount: jest.fn(),
     };
 
     mockStickerRepo = {
@@ -56,6 +56,7 @@ describe('AddStickerUseCase Integration', () => {
     mockUserCollectionRepo.getByUserAndSticker.mockResolvedValue(null);
 
     const result = await useCase.execute({
+      accountId: TEST_ACCOUNT_ID,
       userId: 'user-1',
       stickerId: sticker.id,
       albumId: 'album-1',
@@ -77,12 +78,13 @@ describe('AddStickerUseCase Integration', () => {
       isSpecial: false,
     });
 
-    const existingCollection = UserCollection.create('user-1', sticker.id);
+    const existingCollection = UserCollection.create(TEST_ACCOUNT_ID, 'user-1', sticker.id);
 
     mockStickerRepo.getById.mockResolvedValue(sticker);
     mockUserCollectionRepo.getByUserAndSticker.mockResolvedValue(existingCollection);
 
     const result = await useCase.execute({
+      accountId: TEST_ACCOUNT_ID,
       userId: 'user-1',
       stickerId: sticker.id,
       albumId: 'album-1',
@@ -96,6 +98,7 @@ describe('AddStickerUseCase Integration', () => {
 
     await expect(
       useCase.execute({
+        accountId: TEST_ACCOUNT_ID,
         userId: 'user-1',
         stickerId: 'non-existent',
         albumId: 'album-1',
@@ -117,6 +120,7 @@ describe('AddStickerUseCase Integration', () => {
 
     await expect(
       useCase.execute({
+        accountId: TEST_ACCOUNT_ID,
         userId: 'user-1',
         stickerId: sticker.id,
         albumId: 'album-1',

@@ -4,17 +4,17 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { container } from '../../di/container';
 import { ShareCollectionDTO } from '../../application/dtos/share-collection.dto';
 
-export function useShare(userId?: string) {
+export function useShare(accountId?: string, userId?: string) {
   const queryClient = useQueryClient();
   const shareService = container.getShareService();
 
   const generateCodeMutation = useMutation({
     mutationFn: () => {
-      if (!userId) throw new Error('User not authenticated');
-      return shareService.generateCode(userId);
+      if (!accountId || !userId) throw new Error('Not authenticated');
+      return shareService.generateCode(accountId, userId);
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(['share-code', userId], data);
+      queryClient.setQueryData(['share-code', accountId], data);
     },
   });
 

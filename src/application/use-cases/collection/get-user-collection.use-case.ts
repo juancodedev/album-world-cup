@@ -11,10 +11,10 @@ export class GetUserCollectionUseCase {
     private readonly duplicateRepository: IStickerDuplicateRepository,
   ) {}
 
-  async execute(userId: string, albumId: string): Promise<StickerDTO[]> {
+  async execute(accountId: string, albumId: string): Promise<StickerDTO[]> {
     const allStickers = await this.stickerRepository.getByAlbum(albumId);
-    const userStickers = await this.userCollectionRepository.findByUserAndAlbum(userId, albumId);
-    const duplicates = await this.duplicateRepository.findByUser(userId);
+    const userStickers = await this.userCollectionRepository.findByAccountAndAlbum(accountId, albumId);
+    const duplicates = await this.duplicateRepository.findByAccount(accountId);
 
     const ownedMap = new Map(userStickers.map(us => [us.stickerId, us]));
     const duplicateMap = new Map(duplicates.map(d => [d.stickerId, d]));

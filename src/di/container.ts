@@ -7,6 +7,8 @@ import { SupabaseAlbumRepository } from '../infrastructure/repositories/supabase
 import { SupabaseUserRepository } from '../infrastructure/repositories/supabase-user.repository';
 import { SupabaseStickerDuplicateRepository } from '../infrastructure/repositories/supabase-sticker-duplicate.repository';
 import { SupabaseShareCollectionRepository } from '../infrastructure/repositories/supabase-share-collection.repository';
+import { SupabaseAccountRepository } from '../infrastructure/repositories/supabase-account.repository';
+import { SupabaseAccountMemberRepository } from '../infrastructure/repositories/supabase-account-member.repository';
 
 import { AddStickerUseCase } from '../application/use-cases/collection/add-sticker.use-case';
 import { IncrementDuplicateUseCase } from '../application/use-cases/collection/increment-duplicate.use-case';
@@ -25,6 +27,9 @@ import { GetAllAlbumsUseCase } from '../application/use-cases/album/get-all-albu
 import { GetAlbumByIdUseCase } from '../application/use-cases/album/get-album-by-id.use-case';
 import { LoginWithGoogleUseCase } from '../application/use-cases/auth/login-with-google.use-case';
 import { LogoutUseCase } from '../application/use-cases/auth/logout.use-case';
+import { CreateAccountUseCase } from '../application/use-cases/account/create-account.use-case';
+import { GetUserAccountsUseCase } from '../application/use-cases/account/get-user-accounts.use-case';
+import { InviteMemberUseCase } from '../application/use-cases/account/invite-member.use-case';
 
 import { CollectionService } from '../application/services/collection.service';
 import { SearchService } from '../application/services/search.service';
@@ -88,6 +93,16 @@ class DIContainer {
   getShareCollectionRepository() {
     return this.getInstance('shareRepo', () =>
       new SupabaseShareCollectionRepository(this.getSupabaseClient()));
+  }
+
+  getAccountRepository() {
+    return this.getInstance('accountRepo', () =>
+      new SupabaseAccountRepository(this.getSupabaseClient()));
+  }
+
+  getAccountMemberRepository() {
+    return this.getInstance('accountMemberRepo', () =>
+      new SupabaseAccountMemberRepository(this.getSupabaseClient()));
   }
 
   // Use Cases
@@ -201,6 +216,30 @@ class DIContainer {
 
   getLogoutUseCase() {
     return this.getInstance('logout', () => new LogoutUseCase());
+  }
+
+  getCreateAccountUseCase() {
+    return this.getInstance('createAccount', () =>
+      new CreateAccountUseCase(
+        this.getAccountRepository(),
+        this.getAccountMemberRepository(),
+      ));
+  }
+
+  getGetUserAccountsUseCase() {
+    return this.getInstance('getUserAccounts', () =>
+      new GetUserAccountsUseCase(
+        this.getAccountRepository(),
+        this.getAccountMemberRepository(),
+      ));
+  }
+
+  getInviteMemberUseCase() {
+    return this.getInstance('inviteMember', () =>
+      new InviteMemberUseCase(
+        this.getAccountMemberRepository(),
+        this.getUserRepository(),
+      ));
   }
 
   // Services

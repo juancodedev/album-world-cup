@@ -10,8 +10,8 @@ export class ShareService {
     private readonly updateShareSettingsUseCase: UpdateShareSettingsUseCase,
   ) {}
 
-  async generateCode(userId: string): Promise<ShareCollectionDTO> {
-    return this.generateShareCodeUseCase.execute(userId);
+  async generateCode(accountId: string, userId: string): Promise<ShareCollectionDTO> {
+    return this.generateShareCodeUseCase.execute(accountId, userId);
   }
 
   async getSharedCollection(code: string): Promise<ShareCollectionDTO> {
@@ -19,6 +19,7 @@ export class ShareService {
   }
 
   async updateSettings(input: {
+    accountId: string;
     userId: string;
     isPublic?: boolean;
     showDuplicates?: boolean;

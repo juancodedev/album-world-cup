@@ -6,10 +6,11 @@ import { SUPABASE_TABLES } from '../database/supabase.config';
 export class SupabaseUserCollectionRepository implements IUserCollectionRepository {
   constructor(private readonly supabase: SupabaseClient) {}
 
-  async getByUserAndSticker(userId: string, stickerId: string): Promise<UserCollection | null> {
+  async getByUserAndSticker(accountId: string, userId: string, stickerId: string): Promise<UserCollection | null> {
     const { data, error } = await this.supabase
       .from(SUPABASE_TABLES.userStickers)
       .select('*')
+      .eq('account_id', accountId)
       .eq('user_id', userId)
       .eq('sticker_id', stickerId)
       .maybeSingle();
@@ -28,28 +29,39 @@ export class SupabaseUserCollectionRepository implements IUserCollectionReposito
     if (error) throw error;
   }
 
-  async findByUser(userId: string): Promise<UserCollection[]> {
+  async findByAccount(accountId: string): Promise<UserCollection[]> {
     const { data, error } = await this.supabase
       .from(SUPABASE_TABLES.userStickers)
       .select('*')
-      .eq('user_id', userId);
+      .eq('account_id', accountId);
 
     if (error) throw error;
-    return (data || []).map(this.toDomain);
+    return (data || []).map((raw) => this.toDomain(raw));
   }
 
-  async findByUserAndAlbum(userId: string, albumId: string): Promise<UserCollection[]> {
+  async findByAccountAndAlbum(accountId: string, albumId: string): Promise<UserCollection[]> {
     const { data, error } = await this.supabase
       .from(SUPABASE_TABLES.userStickers)
       .select(`
         *,
         stickers!inner(album_id)
       `)
-      .eq('user_id', userId)
+      .eq('account_id', accountId)
       .eq('stickers.album_id', albumId);
 
     if (error) throw error;
-    return (data || []).map(this.toDomain);
+    return (data || []).map((raw) => this.toDomain(raw));
+  }
+
+  async findByUser(accountId: string, userId: string): Promise<UserCollection[]> {
+    const { data, error } = await this.supabase
+      .from(SUPABASE_TABLES.userStickers)
+      .select('*')
+      .eq('account_id', accountId)
+      .eq('user_id', userId);
+
+    if (error) throw error;
+    return (data || []).map((raw) => this.toDomain(raw));
   }
 
   async delete(id: string): Promise<void> {
@@ -61,31 +73,32 @@ export class SupabaseUserCollectionRepository implements IUserCollectionReposito
     if (error) throw error;
   }
 
-  async getCountByUser(userId: string): Promise<number> {
+  async getCountByAccount(accountId: string): Promise<number> {
     const { count, error } = await this.supabase
       .from(SUPABASE_TABLES.userStickers)
       .select('*', { count: 'exact', head: true })
-      .eq('user_id', userId);
+      .eq('account_id', accountId);
 
     if (error) throw error;
     return count || 0;
   }
 
-  async getRecentByUser(userId: string, limit = 10): Promise<UserCollection[]> {
+  async getRecentByAccount(accountId: string, limit = 10): Promise<UserCollection[]> {
     const { data, error } = await this.supabase
       .from(SUPABASE_TABLES.userStickers)
       .select('*')
-      .eq('user_id', userId)
+      .eq('account_id', accountId)
       .order('obtained_at', { ascending: false })
       .limit(limit);
 
     if (error) throw error;
-    return (data || []).map(this.toDomain);
+    return (data || []).map((raw) => this.toDomain(raw));
   }
 
   private toDomain(raw: Record<string, unknown>): UserCollection {
     return new UserCollection({
       id: raw.id as string,
+      accountId: raw.account_id as string,
       userId: raw.user_id as string,
       stickerId: raw.sticker_id as string,
       quantityOwned: raw.quantity_owned as number,
@@ -98,6 +111,7 @@ export class SupabaseUserCollectionRepository implements IUserCollectionReposito
   private toPersistence(entity: UserCollection): Record<string, unknown> {
     return {
       id: entity.id,
+      account_id: entity.accountId,
       user_id: entity.userId,
       sticker_id: entity.stickerId,
       quantity_owned: entity.quantityOwned,

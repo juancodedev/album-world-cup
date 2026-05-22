@@ -1,5 +1,6 @@
 export interface StickerDuplicateProps {
   id?: string;
+  accountId: string;
   userId: string;
   stickerId: string;
   quantity: number;
@@ -9,6 +10,7 @@ export interface StickerDuplicateProps {
 
 export class StickerDuplicate {
   public readonly id: string;
+  public readonly accountId: string;
   public readonly userId: string;
   public readonly stickerId: string;
   public quantity: number;
@@ -17,6 +19,7 @@ export class StickerDuplicate {
 
   constructor(props: StickerDuplicateProps) {
     this.id = props.id || crypto.randomUUID();
+    this.accountId = props.accountId;
     this.userId = props.userId;
     this.stickerId = props.stickerId;
     this.quantity = props.quantity;
@@ -24,8 +27,8 @@ export class StickerDuplicate {
     this.updatedAt = props.updatedAt || new Date();
   }
 
-  static create(userId: string, stickerId: string, quantity = 1): StickerDuplicate {
-    return new StickerDuplicate({ userId, stickerId, quantity });
+  static create(accountId: string, userId: string, stickerId: string, quantity = 1): StickerDuplicate {
+    return new StickerDuplicate({ accountId, userId, stickerId, quantity });
   }
 
   increment(amount = 1): void {

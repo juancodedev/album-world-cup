@@ -18,28 +18,28 @@ export class CollectionService {
   ) {}
 
   async addStickerToCollection(input: {
-    userId: string; stickerId: string; albumId: string;
+    accountId: string; userId: string; stickerId: string; albumId: string;
   }): Promise<UserCollectionDTO> {
     return this.addStickerUseCase.execute(input);
   }
 
   async incrementDuplicateCount(input: {
-    userId: string; stickerId: string; quantity?: number;
+    accountId: string; userId: string; stickerId: string; quantity?: number;
   }): Promise<StickerDuplicateDTO> {
     return this.incrementDuplicateUseCase.execute(input);
   }
 
   async removeDuplicateCount(input: {
-    userId: string; stickerId: string; quantity?: number;
+    accountId: string; userId: string; stickerId: string; quantity?: number;
   }): Promise<void> {
     return this.removeDuplicateUseCase.execute(input);
   }
 
-  async getUserCollection(userId: string, albumId: string): Promise<StickerDTO[]> {
-    return this.getUserCollectionUseCase.execute(userId, albumId);
+  async getUserCollection(accountId: string, albumId: string): Promise<StickerDTO[]> {
+    return this.getUserCollectionUseCase.execute(accountId, albumId);
   }
 
-  async getStats(userId: string, albumId: string): Promise<CollectionStatsDTO> {
-    return this.getCollectionStatsUseCase.execute(userId, albumId);
+  async getStats(accountId: string, albumId: string): Promise<CollectionStatsDTO> {
+    return this.getCollectionStatsUseCase.execute(accountId, albumId);
   }
 }
