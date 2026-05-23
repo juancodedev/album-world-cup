@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Album World Cup 2026 — Panini Sticker Tracker
+
+Aplicación web para coleccionar y dar seguimiento a las láminas del Álbum Panini FIFA World Cup 2026.
+
+## Stack
+
+- **Framework:** Next.js 15 (App Router)
+- **UI:** Tailwind CSS v4 + shadcn/ui
+- **Estado:** TanStack React Query v5
+- **Backend:** Supabase (Auth, Database, Storage)
+- **Auth:** Supabase Auth (Google, Email, Magic Link)
+- **Despliegue:** Cloudflare Workers (via OpenNext)
+
+## Fases del proyecto
+
+### ✅ Fase 1 — Datos del Mundial 2026 (Completada)
+- 48 selecciones en 12 grupos (A–L), 6 confederaciones
+- 1005 stickers: 960 de selecciones (20 por equipo) + 45 especiales (Introducción, FIFA Museum, Coca-Cola)
+- Códigos: `MEX1`–`MEX20`, `ARG1`–`ARG20`, especiales `FWC1`–`FWC20`, `MUS1`–`MUS11`, `COC1`–`COC14`
+- Migración SQL + seed script en `scripts/seed-worldcup.mjs`
+
+### 🟡 Fase 2 — Parrilla de stickers (En progreso)
+- Tracker visual con grupo → equipo → sticker
+- `StickerGrid`: grid compacto de stickers por equipo
+- `TeamRow`: fila expandible con barra de progreso, marcar todo/limpiar
+- `GroupCard`: tarjeta de grupo con 4 equipos y color distintivo
+- `SpecialCard`: secciones especiales expandibles
+- Tabs: grupos vs especiales
+- Búsqueda por equipo/código + filtro por grupo
+- Ruta: `/tracker`
+
+### ⬜ Fase 3 — Vista de faltantes
+### ⬜ Fase 4 — Ranking coleccionistas
+### ⬜ Fase 5 — Búsqueda y operaciones bulk
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
-npm run dev
-# or
-yarn dev
-# or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Comando | Descripción |
+|---------|-------------|
+| `pnpm dev` | Dev server |
+| `pnpm build` | Build Next.js |
+| `pnpm lint` | ESLint |
+| `pnpm seed:worldcup` | Seed stickers via Supabase REST API |
 
-## Learn More
+## Plan detallado
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Ver `.agents/plan-sticker-tracker.md` para el plan completo con referencias al tracker original.
