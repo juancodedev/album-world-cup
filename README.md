@@ -64,7 +64,23 @@ Open [http://localhost:3000](http://localhost:3000).
 | `pnpm dev` | Dev server |
 | `pnpm build` | Build Next.js |
 | `pnpm lint` | ESLint |
+| `pnpm test` | Jest (121 tests) |
 | `pnpm seed:worldcup` | Seed stickers via Supabase REST API |
+
+## Tests
+
+121 tests en 19 suites, todas con datos mock:
+
+| Categoría | Archivos | Tests |
+|-----------|----------|-------|
+| Value Objects | `rarity.vo`, `progress.vo`, `sticker-state.vo`, `sticker-type.vo` | 4 suites |
+| Domain Entities | `user-collection.entity`, `team.entity`, `sticker.entity`, `user.entity`, `album.entity`, `account.entity`, `account-member.entity` | 7 suites |
+| Use Cases | `add-sticker.use-case` | 2 suites (unit + integration) |
+| Services | `statistics.service` | 1 suite |
+
+```
+pnpm test        # 19 suites, 121 tests
+```
 
 ## Plan detallado
 

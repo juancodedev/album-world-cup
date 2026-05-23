@@ -5,7 +5,7 @@ import { CollectionMapper } from '../../../src/application/mappers/collection.ma
 import { NotFoundError } from '../../../src/domain/errors/domain.error';
 import { UserCollection } from '../../../src/domain/entities/user-collection.entity';
 import { Sticker } from '../../../src/domain/entities/sticker.entity';
-import { Rarity } from '../../../src/domain/value-objects/rarity.vo';
+
 
 const TEST_ACCOUNT_ID = 'account-1';
 
