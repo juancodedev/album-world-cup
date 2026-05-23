@@ -11,6 +11,7 @@
     "start": "next start",
     "lint": "eslint",
     "seed:worldcup": "node scripts/seed-worldcup.mjs"
+    "test": "jest"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
@@ -36,10 +37,10 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
     "@opennextjs/cloudflare": "^1.19.11",
-    "wrangler": "^4.86.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.19.41",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -49,6 +50,7 @@
     "jest": "^30.4.2",
     "prettier": "^3.8.3",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.86.0"
   }
 }

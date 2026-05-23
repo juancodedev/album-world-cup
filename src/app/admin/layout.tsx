@@ -20,8 +20,11 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           <Link href="/admin/seed" className="font-bold text-indigo-600">
             Admin Panel
           </Link>
+          <Link href="/admin/albums" className="text-sm text-gray-600 hover:text-gray-900">
+            Álbumes
+          </Link>
           <Link href="/admin/seed" className="text-sm text-gray-600 hover:text-gray-900">
-            Gestión de Láminas
+            Láminas
           </Link>
           <Link href="/dashboard" className="text-sm text-gray-400 hover:text-gray-600 ml-auto">
             ← Volver al dashboard
