@@ -18,7 +18,7 @@ export async function POST(request: Request) {
   const supabase = await createServerSideClient();
   const body = await request.json();
 
-  const { code, team_id, category_id, player_nombre, player_apellido, player_fecha_nacimiento, player_estatura, player_peso, player_club_actual, player_pais_club } = body;
+  const { code, team_id, category_id, image_url, player_nombre, player_apellido, player_fecha_nacimiento, player_estatura, player_peso, player_club_actual, player_pais_club } = body;
 
   if (!code || !team_id || !category_id) {
     return NextResponse.json({ error: 'code, team_id, and category_id are required' }, { status: 400 });
@@ -26,13 +26,24 @@ export async function POST(request: Request) {
 
   const albumId = '00000000-0000-0000-0000-000000000001';
 
+  const [maxSticker, firstStickerType] = await Promise.all([
+    supabase.from('stickers').select('number').eq('album_id', albumId).order('number', { ascending: false }).limit(1).single(),
+    supabase.from('sticker_types').select('id').limit(1).single(),
+  ]);
+
+  const nextNumber = (maxSticker.data?.number || 0) + 1;
+  const stickerTypeId = firstStickerType.data?.id || '00000000-0000-0000-0000-000000000001';
+
   const { data, error } = await supabase
     .from('stickers')
     .insert({
       album_id: albumId,
       code: code.toUpperCase(),
+      number: nextNumber,
       team_id,
       category_id,
+      sticker_type_id: stickerTypeId,
+      image_url: image_url || `/api/placeholder/sticker/${code}`,
       player_nombre: player_nombre || null,
       player_apellido: player_apellido || null,
       player_fecha_nacimiento: player_fecha_nacimiento || null,
@@ -40,10 +51,7 @@ export async function POST(request: Request) {
       player_peso: player_peso ? parseFloat(player_peso) : null,
       player_club_actual: player_club_actual || null,
       player_pais_club: player_pais_club || null,
-      number: 0,
-      sticker_type_id: '00000000-0000-0000-0000-000000000001',
       rarity: 'common',
-      image_url: `/api/placeholder/sticker/${code}`,
     })
     .select()
     .single();

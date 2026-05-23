@@ -21,6 +21,7 @@ interface Sticker {
   code: string;
   team: { name: string; code: string } | null;
   category: { name: string; code: string } | null;
+  image_url: string | null;
   player_nombre: string | null;
   player_apellido: string | null;
   player_fecha_nacimiento: string | null;
@@ -282,6 +283,8 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
   const [clubActual, setClubActual] = useState('');
   const [paisClub, setPaisClub] = useState('');
 
+  const [imageUrl, setImageUrl] = useState('');
+
   const [filterTeamId, setFilterTeamId] = useState('');
 
   const filteredStickers = filterTeamId
@@ -300,6 +303,7 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
           code,
           team_id: teamId,
           category_id: categoryId,
+          image_url: imageUrl || null,
           player_nombre: nombre || null,
           player_apellido: apellido || null,
           player_fecha_nacimiento: fechaNacimiento || null,
@@ -313,7 +317,7 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
       if (data.error) toast.error(data.error);
       else {
         toast.success(`Lámina "${code}" creada`);
-        setCode(''); setNombre(''); setApellido(''); setFechaNacimiento('');
+        setCode(''); setImageUrl(''); setNombre(''); setApellido(''); setFechaNacimiento('');
         setEstatura(''); setPeso(''); setClubActual(''); setPaisClub('');
         onSuccess();
       }
@@ -325,9 +329,6 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
     await fetch(`/admin/seed/api/stickers?id=${id}`, { method: 'DELETE' });
     onSuccess();
   };
-
-  const selectedCategory = categories.find(c => c.id === categoryId);
-  const isPlayerCategory = selectedCategory?.code === 'PLAYER';
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -369,78 +370,86 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
             </select>
           </div>
 
-          {isPlayerCategory && (
-            <div className="border-t pt-3 mt-3">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Datos del Jugador</h3>
-              <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Imagen URL (opcional)</label>
+            <input
+              value={imageUrl}
+              onChange={e => setImageUrl(e.target.value)}
+              className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
+              placeholder="https://ejemplo.com/imagen.jpg"
+            />
+          </div>
+
+          <div className="border-t pt-3 mt-3">
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Datos del Jugador</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                <input
+                  value={nombre}
+                  onChange={e => setNombre(e.target.value)}
+                  className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
+                  placeholder="Ej: Lionel"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
+                <input
+                  value={apellido}
+                  onChange={e => setApellido(e.target.value)}
+                  className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
+                  placeholder="Ej: Messi"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento</label>
+                <input
+                  value={fechaNacimiento}
+                  onChange={e => setFechaNacimiento(e.target.value)}
+                  className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
+                  placeholder="Ej: 24-6-1987"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Estatura (cm)</label>
                   <input
-                    value={nombre}
-                    onChange={e => setNombre(e.target.value)}
+                    value={estatura}
+                    onChange={e => setEstatura(e.target.value.replace(/[^0-9.]/g, ''))}
                     className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
-                    placeholder="Ej: Lionel"
+                    placeholder="Ej: 170"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Peso (kg)</label>
                   <input
-                    value={apellido}
-                    onChange={e => setApellido(e.target.value)}
+                    value={peso}
+                    onChange={e => setPeso(e.target.value.replace(/[^0-9.]/g, ''))}
                     className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
-                    placeholder="Ej: Messi"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento</label>
-                  <input
-                    value={fechaNacimiento}
-                    onChange={e => setFechaNacimiento(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
-                    placeholder="Ej: 24-6-1987"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Estatura (cm)</label>
-                    <input
-                      value={estatura}
-                      onChange={e => setEstatura(e.target.value.replace(/[^0-9.]/g, ''))}
-                      className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
-                      placeholder="Ej: 170"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Peso (kg)</label>
-                    <input
-                      value={peso}
-                      onChange={e => setPeso(e.target.value.replace(/[^0-9.]/g, ''))}
-                      className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
-                      placeholder="Ej: 72"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Club Actual</label>
-                  <input
-                    value={clubActual}
-                    onChange={e => setClubActual(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
-                    placeholder="Ej: Inter Miami"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">País del Club</label>
-                  <input
-                    value={paisClub}
-                    onChange={e => setPaisClub(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
-                    placeholder="Ej: Estados Unidos"
+                    placeholder="Ej: 72"
                   />
                 </div>
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Club Actual</label>
+                <input
+                  value={clubActual}
+                  onChange={e => setClubActual(e.target.value)}
+                  className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
+                  placeholder="Ej: Inter Miami"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">País del Club</label>
+                <input
+                  value={paisClub}
+                  onChange={e => setPaisClub(e.target.value)}
+                  className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
+                  placeholder="Ej: Estados Unidos"
+                />
+              </div>
             </div>
-          )}
+          </div>
 
           <button
             type="submit"
@@ -474,6 +483,9 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
             {filteredStickers.map(s => (
               <div key={s.id} className="flex items-center justify-between p-2 rounded-lg bg-gray-50 text-sm">
                 <div className="flex items-center gap-2 min-w-0">
+                  {s.image_url && (
+                    <img src={s.image_url} alt={s.code} className="w-8 h-8 rounded object-cover shrink-0" />
+                  )}
                   <span className="font-mono text-xs font-bold text-indigo-600 w-14 shrink-0">{s.code}</span>
                   <span className="font-medium truncate">
                     {[s.player_nombre, s.player_apellido].filter(Boolean).join(' ') || s.team?.name}
