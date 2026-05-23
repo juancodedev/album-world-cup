@@ -67,8 +67,8 @@ export default function LoginPage() {
       } else {
         await signInWithEmail(email, password);
       }
-    } catch (err: any) {
-      const msg = err?.message || '';
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : '';
       if (msg.includes('Invalid login credentials')) {
         setError('Correo o contraseña incorrectos');
       } else if (msg.includes('Email not confirmed')) {
