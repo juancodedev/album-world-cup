@@ -37,8 +37,17 @@ Aplicación web para coleccionar y dar seguimiento a las láminas del Álbum Pan
 - Cada chip togglea el sticker a adquirido vía `useTracker`
 - Estado vacío con mensaje de colección completa
 - Ruta: `/tracker/missing` (enlace desde el header del tracker)
-### ⬜ Fase 4 — Ranking coleccionistas
-### ⬜ Fase 5 — Búsqueda y operaciones bulk
+### ✅ Fase 4 — Ranking coleccionistas (Completada)
+- Leaderboard de miembros de la cuenta ordenado por stickers obtenidos
+- `RankingScreen`: medallas 🥇🥈🥉 para top 3, barra de progreso, nombre, avatar
+- Usuario actual destacado con badge "TÚ" y fondo rosado
+- Ruta: `/tracker/ranking` (enlace desde el header del tracker)
+- API: `GET /api/ranking` — progreso de todos los miembros de la cuenta
+
+### ✅ Fase 5 — Búsqueda y operaciones bulk (Completada en Fase 2)
+- SearchBar para buscar equipo por nombre o código
+- Chips de filtro por grupo (Todos, A–L)
+- Botones "Marcar todas" / "Limpiar" por equipo en TeamRow
 
 ## Getting Started
 
