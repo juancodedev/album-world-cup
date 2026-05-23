@@ -4,6 +4,8 @@ export const ROUTES = {
   callback: '/auth/callback',
   dashboard: '/dashboard',
   collection: '/collection',
+  tracker: '/tracker',
+  trackerMissing: '/tracker/missing',
   stickerDetail: (id: string) => `/collection/${id}`,
   statistics: '/statistics',
   settings: '/settings',

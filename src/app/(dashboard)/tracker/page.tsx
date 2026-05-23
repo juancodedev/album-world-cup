@@ -7,6 +7,7 @@ import { useTracker } from '../../../presentation/hooks/useTracker';
 import { GroupCard } from '../../../presentation/components/tracker/GroupCard';
 import { SpecialCard } from '../../../presentation/components/tracker/SpecialCard';
 import { DashboardLayout } from '../../../presentation/layouts/DashboardLayout';
+import Link from 'next/link';
 import { Progress } from '../../../components/ui/progress';
 import { GROUP_ORDER } from '../../../shared/constants/tracker.constants';
 import { GROUP_COLORS } from '../../../shared/constants/tracker.constants';
@@ -73,7 +74,12 @@ export default function TrackerPage() {
           <div className="flex justify-between items-end mb-2">
             <div>
               <div className="text-3xl font-black text-pink-300">{pct}%</div>
-              <div className="text-xs font-bold text-yellow-300">⚡ {missing} faltantes</div>
+              <Link
+            href="/tracker/missing"
+            className="text-xs font-bold text-yellow-300 underline underline-offset-2 hover:text-yellow-200 transition-colors"
+          >
+            ⚡ {missing} faltantes
+          </Link>
             </div>
             <div className="text-right text-xs opacity-70">
               <div>{data?.totalOwned || 0} / {data?.totalCount || 1005}</div>

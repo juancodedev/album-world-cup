@@ -2,7 +2,20 @@ import { IUserCollectionRepository } from '../../domain/repositories/user-collec
 import { IStickerDuplicateRepository } from '../../domain/repositories/sticker-duplicate.repository';
 import { IStickerRepository } from '../../domain/repositories/sticker.repository';
 import { IAlbumRepository } from '../../domain/repositories/album.repository';
+import { ITeamRepository } from '../../domain/repositories/team.repository';
 import { Progress } from '../../domain/value-objects/progress.vo';
+import { FLAG_EMOJI } from '../../shared/constants/flags.constants';
+
+export interface TeamProgressEntry {
+  teamId: string;
+  teamName: string;
+  teamCode: string;
+  teamFlag: string | null;
+  groupStage: string | null;
+  total: number;
+  owned: number;
+  percentage: number;
+}
 
 export class StatisticsService {
   constructor(
@@ -10,6 +23,7 @@ export class StatisticsService {
     private readonly stickerDuplicateRepository: IStickerDuplicateRepository,
     private readonly stickerRepository: IStickerRepository,
     private readonly albumRepository: IAlbumRepository,
+    private readonly teamRepository: ITeamRepository,
   ) {}
 
   async getUserProgress(accountId: string, albumId: string): Promise<Progress> {
@@ -27,11 +41,14 @@ export class StatisticsService {
     );
   }
 
-  async getTeamProgress(accountId: string, albumId: string): Promise<Record<string, Progress>> {
-    const stickers = await this.stickerRepository.getByAlbum(albumId);
-    const userStickers = await this.userCollectionRepository.findByAccountAndAlbum(accountId, albumId);
-    const ownedSet = new Set(userStickers.map(us => us.stickerId));
+  async getTeamProgress(accountId: string, albumId: string): Promise<TeamProgressEntry[]> {
+    const [stickers, userStickers, teams] = await Promise.all([
+      this.stickerRepository.getByAlbum(albumId),
+      this.userCollectionRepository.findByAccountAndAlbum(accountId, albumId),
+      this.teamRepository.getByAlbum(albumId),
+    ]);
 
+    const ownedSet = new Set(userStickers.map(us => us.stickerId));
     const teamMap = new Map<string, { total: number; owned: number }>();
 
     for (const sticker of stickers) {
@@ -42,11 +59,25 @@ export class StatisticsService {
       teamMap.set(sticker.teamId, entry);
     }
 
-    const result: Record<string, Progress> = {};
+    const teamLookup = new Map(teams.map(t => [t.id, t]));
+
+    const result: TeamProgressEntry[] = [];
     teamMap.forEach((value, teamId) => {
-      result[teamId] = new Progress(value.total, value.owned, 0);
+      const team = teamLookup.get(teamId);
+      const code = team?.code || '';
+      result.push({
+        teamId,
+        teamName: team?.name || 'Desconocido',
+        teamCode: code,
+        teamFlag: team?.flagUrl || FLAG_EMOJI[code] || null,
+        groupStage: team?.groupStage || null,
+        total: value.total,
+        owned: value.owned,
+        percentage: value.total > 0 ? Math.round((value.owned / value.total) * 100) : 0,
+      });
     });
 
+    result.sort((a, b) => a.teamName.localeCompare(b.teamName));
     return result;
   }
 }
