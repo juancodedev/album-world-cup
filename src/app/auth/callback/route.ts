@@ -24,14 +24,18 @@ export async function GET(request: NextRequest) {
         .maybeSingle();
 
       if (!existing) {
-        await supabase.from('users').insert({
+        const { error: insertError } = await supabase.from('users').insert({
           id: user.id,
           email,
           full_name: fullName,
           avatar_url: avatarUrl || null,
           auth_provider: authProvider,
           auth_uid: user.id,
-        });
+        }).maybeSingle();
+
+        if (insertError) {
+          console.error('Failed to create user in public.users:', insertError.message);
+        }
       }
 
       return NextResponse.redirect(`${origin}${next}`);

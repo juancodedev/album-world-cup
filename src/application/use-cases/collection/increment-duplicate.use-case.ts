@@ -18,6 +18,10 @@ export class IncrementDuplicateUseCase {
   ) {}
 
   async execute(input: IncrementDuplicateInput): Promise<StickerDuplicateDTO> {
+    if (!input.accountId) {
+      throw new Error('Account ID is required to manage duplicates');
+    }
+
     const sticker = await this.stickerRepository.getById(input.stickerId);
     if (!sticker) {
       throw new NotFoundError(`Sticker with ID ${input.stickerId} not found`);

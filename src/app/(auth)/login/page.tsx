@@ -6,6 +6,7 @@ import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Separator } from '../../../components/ui/separator';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 import { Mail, Lock, Eye, EyeOff, Loader2, ArrowRight } from 'lucide-react';
 
 type AuthMode = 'login' | 'register';
@@ -27,6 +28,14 @@ export default function LoginPage() {
       emailRef.current.focus();
     }
   }, [tab]);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.replace('/dashboard');
+    }
+  }, [user, router]);
 
   if (user) {
     return null;

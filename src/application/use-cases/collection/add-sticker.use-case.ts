@@ -20,6 +20,10 @@ export class AddStickerUseCase {
   ) {}
 
   async execute(input: AddStickerInput): Promise<UserCollectionDTO> {
+    if (!input.accountId) {
+      throw new Error('Account ID is required to add stickers to collection');
+    }
+
     const sticker = await this.stickerRepository.getById(input.stickerId);
     if (!sticker) {
       throw new NotFoundError(`Sticker with ID ${input.stickerId} not found`);

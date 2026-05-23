@@ -103,16 +103,23 @@ export default function StickerDetailPage() {
               </div>
             )}
 
-            <div className="flex items-center justify-center py-3">
-              <DuplicateCounter
-                count={sticker.duplicateCount}
-                onIncrement={() => incrementDuplicate({ stickerId, userId: user.id, quantity: 1 })}
-                onDecrement={() => removeDuplicate({ stickerId, userId: user.id, quantity: 1 })}
-              />
-            </div>
+            {accountId && (
+              <div className="flex items-center justify-center py-3">
+                <DuplicateCounter
+                  count={sticker.duplicateCount}
+                  onIncrement={() => incrementDuplicate({ stickerId, userId: user.id, quantity: 1 })}
+                  onDecrement={() => removeDuplicate({ stickerId, userId: user.id, quantity: 1 })}
+                />
+              </div>
+            )}
 
             <div className="flex gap-2">
-              {sticker.state === 'missing' && (
+              {!accountId && (
+                <p className="text-sm text-gray-500 text-center w-full">
+                  Necesitas tener una cuenta para coleccionar láminas
+                </p>
+              )}
+              {sticker.state === 'missing' && accountId && (
                 <Button className="flex-1" onClick={() => addSticker({ stickerId, userId: user.id })}>
                   ✓ Marcar como obtenida
                 </Button>

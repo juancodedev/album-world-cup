@@ -14,6 +14,10 @@ export class RemoveDuplicateUseCase {
   ) {}
 
   async execute(input: RemoveDuplicateInput): Promise<void> {
+    if (!input.accountId) {
+      throw new Error('Account ID is required to manage duplicates');
+    }
+
     const duplicate = await this.duplicateRepository.getByUserAndSticker(
       input.accountId,
       input.userId,
