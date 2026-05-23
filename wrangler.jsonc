@@ -2,6 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
   "name": "album-world-cup",
+  "account_id": "86331ad9df5aa0e6430123dbffeb69ed",
   "compatibility_date": "2026-05-22",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
