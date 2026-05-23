@@ -1,11 +1,31 @@
 {
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
   "name": "album-world-cup",
   "compatibility_date": "2026-05-22",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "album-world-cup"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "album-world-cup-opennext-cache"
+    }
+  ],
+  "images": {
+    "binding": "IMAGES"
+  },
   "vars": {
     "NEXT_PUBLIC_SUPABASE_URL": "https://qwlopuygvhkopgsatdcl.supabase.co",
     "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3bG9wdXlndmhrb3Bnc2F0ZGNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjYxNzEsImV4cCI6MjA5NTA0MjE3MX0.3Cfy5Xas6tf8QNWr_O3xEkPEcrH-r4wrF8OGJucm7f8",
     "NEXT_PUBLIC_APP_URL": "https://album.juancode.dev"
-  },
-  "pages_build_output_dir": ".vercel/output/static"
+  }
 }
