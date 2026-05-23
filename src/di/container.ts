@@ -13,6 +13,7 @@ import { SupabaseAccountMemberRepository } from '../infrastructure/repositories/
 import { AddStickerUseCase } from '../application/use-cases/collection/add-sticker.use-case';
 import { IncrementDuplicateUseCase } from '../application/use-cases/collection/increment-duplicate.use-case';
 import { RemoveDuplicateUseCase } from '../application/use-cases/collection/remove-duplicate.use-case';
+import { RemoveStickerFromCollectionUseCase } from '../application/use-cases/collection/remove-sticker-from-collection.use-case';
 import { GetUserCollectionUseCase } from '../application/use-cases/collection/get-user-collection.use-case';
 import { GetCollectionStatsUseCase } from '../application/use-cases/collection/get-collection-stats.use-case';
 import { SearchStickersUseCase } from '../application/use-cases/search/search-stickers.use-case';
@@ -126,6 +127,11 @@ class DIContainer {
   getRemoveDuplicateUseCase() {
     return this.getInstance('removeDuplicate', () =>
       new RemoveDuplicateUseCase(this.getStickerDuplicateRepository()));
+  }
+
+  getRemoveStickerFromCollectionUseCase() {
+    return this.getInstance('removeStickerFromCollection', () =>
+      new RemoveStickerFromCollectionUseCase(this.getUserCollectionRepository()));
   }
 
   getGetUserCollectionUseCase() {
@@ -249,6 +255,7 @@ class DIContainer {
         this.getAddStickerUseCase(),
         this.getIncrementDuplicateUseCase(),
         this.getRemoveDuplicateUseCase(),
+        this.getRemoveStickerFromCollectionUseCase(),
         this.getGetUserCollectionUseCase(),
         this.getGetCollectionStatsUseCase(),
       ));

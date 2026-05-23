@@ -1,6 +1,7 @@
 import { AddStickerUseCase } from '../use-cases/collection/add-sticker.use-case';
 import { IncrementDuplicateUseCase } from '../use-cases/collection/increment-duplicate.use-case';
 import { RemoveDuplicateUseCase } from '../use-cases/collection/remove-duplicate.use-case';
+import { RemoveStickerFromCollectionUseCase } from '../use-cases/collection/remove-sticker-from-collection.use-case';
 import { GetUserCollectionUseCase } from '../use-cases/collection/get-user-collection.use-case';
 import { GetCollectionStatsUseCase } from '../use-cases/collection/get-collection-stats.use-case';
 import { CollectionStatsDTO } from '../dtos/collection-stats.dto';
@@ -13,6 +14,7 @@ export class CollectionService {
     private readonly addStickerUseCase: AddStickerUseCase,
     private readonly incrementDuplicateUseCase: IncrementDuplicateUseCase,
     private readonly removeDuplicateUseCase: RemoveDuplicateUseCase,
+    private readonly removeStickerFromCollectionUseCase: RemoveStickerFromCollectionUseCase,
     private readonly getUserCollectionUseCase: GetUserCollectionUseCase,
     private readonly getCollectionStatsUseCase: GetCollectionStatsUseCase,
   ) {}
@@ -33,6 +35,12 @@ export class CollectionService {
     accountId: string; userId: string; stickerId: string; quantity?: number;
   }): Promise<void> {
     return this.removeDuplicateUseCase.execute(input);
+  }
+
+  async removeStickerFromCollection(input: {
+    accountId: string; userId: string; stickerId: string;
+  }): Promise<void> {
+    return this.removeStickerFromCollectionUseCase.execute(input);
   }
 
   async getUserCollection(accountId: string, albumId: string): Promise<StickerDTO[]> {

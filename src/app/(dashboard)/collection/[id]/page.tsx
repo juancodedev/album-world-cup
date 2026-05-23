@@ -30,7 +30,7 @@ export default function StickerDetailPage() {
   }, [user, authLoading, router]);
 
   const { data: sticker, isLoading } = useStickerDetail(stickerId, user?.id, accountId);
-  const { addSticker, incrementDuplicate, removeDuplicate } = useCollection(
+  const { addSticker, addStickerAsync, removeSticker, incrementDuplicate, removeDuplicate } = useCollection(
     accountId,
     DEFAULT_ALBUM_ID,
   );
@@ -120,8 +120,20 @@ export default function StickerDetailPage() {
                 </p>
               )}
               {sticker.state === 'missing' && accountId && (
-                <Button className="flex-1" onClick={() => addSticker({ stickerId, userId: user.id })}>
+                <Button className="flex-1" onClick={async () => {
+                  await addStickerAsync({ stickerId, userId: user.id });
+                  router.push('/search');
+                }}>
                   ✓ Marcar como obtenida
+                </Button>
+              )}
+              {(sticker.state === 'obtained' || sticker.state === 'duplicate') && accountId && (
+                <Button
+                  variant="outline"
+                  className="flex-1 text-red-600 border-red-200 hover:bg-red-50"
+                  onClick={() => removeSticker({ stickerId, userId: user.id })}
+                >
+                  Quitar de colección
                 </Button>
               )}
             </div>

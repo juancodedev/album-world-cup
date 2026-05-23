@@ -60,7 +60,7 @@ DECLARE
 BEGIN
   INSERT INTO accounts (id, name, slug)
   VALUES (
-    uuid_generate_v4(),
+    gen_random_uuid(),
     COALESCE(NEW.full_name, split_part(NEW.email, '@', 1)) || '''s Album',
     'personal-' || NEW.id
   )

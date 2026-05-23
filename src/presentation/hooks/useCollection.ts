@@ -27,6 +27,7 @@ export function useCollection(accountId: string, albumId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['collection', accountId, albumId] });
       queryClient.invalidateQueries({ queryKey: ['collection-stats', accountId, albumId] });
+      queryClient.invalidateQueries({ queryKey: ['sticker-detail'] });
     },
   });
 
@@ -36,6 +37,7 @@ export function useCollection(accountId: string, albumId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['collection', accountId, albumId] });
       queryClient.invalidateQueries({ queryKey: ['collection-stats', accountId, albumId] });
+      queryClient.invalidateQueries({ queryKey: ['sticker-detail'] });
     },
   });
 
@@ -45,6 +47,17 @@ export function useCollection(accountId: string, albumId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['collection', accountId, albumId] });
       queryClient.invalidateQueries({ queryKey: ['collection-stats', accountId, albumId] });
+      queryClient.invalidateQueries({ queryKey: ['sticker-detail'] });
+    },
+  });
+
+  const removeStickerMutation = useMutation({
+    mutationFn: ({ stickerId, userId }: { stickerId: string; userId: string }) =>
+      collectionService.removeStickerFromCollection({ accountId, userId, stickerId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['collection', accountId, albumId] });
+      queryClient.invalidateQueries({ queryKey: ['collection-stats', accountId, albumId] });
+      queryClient.invalidateQueries({ queryKey: ['sticker-detail'] });
     },
   });
 
@@ -54,6 +67,8 @@ export function useCollection(accountId: string, albumId: string) {
     isLoading: collectionQuery.isLoading || statsQuery.isLoading,
     error: collectionQuery.error || statsQuery.error,
     addSticker: addStickerMutation.mutate,
+    addStickerAsync: addStickerMutation.mutateAsync,
+    removeSticker: removeStickerMutation.mutate,
     incrementDuplicate: incrementDuplicateMutation.mutate,
     removeDuplicate: removeDuplicateMutation.mutate,
     isAdding: addStickerMutation.isPending,
