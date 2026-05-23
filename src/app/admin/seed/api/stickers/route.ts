@@ -1,8 +1,16 @@
 import { NextResponse } from 'next/server';
 import { createServerSideClient } from '@/infrastructure/database/supabase.server';
 
-export async function GET() {
+async function getClient() {
   const supabase = await createServerSideClient();
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user) return null;
+  return supabase;
+}
+
+export async function GET() {
+  const supabase = await getClient();
+  if (!supabase) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
   const { data: stickers, error } = await supabase
     .from('stickers')
@@ -15,7 +23,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const supabase = await createServerSideClient();
+  const supabase = await getClient();
+  if (!supabase) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+
   const body = await request.json();
 
   const { code, team_id, category_id, image_url, player_nombre, player_apellido, player_fecha_nacimiento, player_estatura, player_peso, player_club_actual, player_pais_club } = body;
@@ -26,13 +36,15 @@ export async function POST(request: Request) {
 
   const albumId = '00000000-0000-0000-0000-000000000001';
 
-  const [maxSticker, firstStickerType] = await Promise.all([
-    supabase.from('stickers').select('number').eq('album_id', albumId).order('number', { ascending: false }).limit(1).single(),
-    supabase.from('sticker_types').select('id').limit(1).single(),
-  ]);
+  const { data: maxData } = await supabase
+    .from('stickers')
+    .select('number')
+    .eq('album_id', albumId)
+    .order('number', { ascending: false })
+    .limit(1)
+    .single();
 
-  const nextNumber = (maxSticker.data?.number || 0) + 1;
-  const stickerTypeId = firstStickerType.data?.id || '00000000-0000-0000-0000-000000000001';
+  const nextNumber = (maxData?.number || 0) + 1;
 
   const { data, error } = await supabase
     .from('stickers')
@@ -42,7 +54,6 @@ export async function POST(request: Request) {
       number: nextNumber,
       team_id,
       category_id,
-      sticker_type_id: stickerTypeId,
       image_url: image_url || `/api/placeholder/sticker/${code}`,
       player_nombre: player_nombre || null,
       player_apellido: player_apellido || null,
@@ -67,7 +78,9 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const supabase = await createServerSideClient();
+  const supabase = await getClient();
+  if (!supabase) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
 

@@ -12,10 +12,10 @@ export class SupabaseStickerRepository implements IStickerRepository {
       .from(SUPABASE_TABLES.stickers)
       .select(`
         *,
-        players(name, position, jersey_number),
-        teams(name, code, flag_url),
-        sticker_types(name),
-        albums(name)
+        players!left(name, position, jersey_number),
+        teams!left(name, code, flag_url),
+        sticker_types!left(name),
+        albums!left(name)
       `)
       .eq('id', id)
       .maybeSingle();
@@ -37,9 +37,7 @@ export class SupabaseStickerRepository implements IStickerRepository {
     if (filters?.stickerTypeId) query = query.eq('sticker_type_id', filters.stickerTypeId);
 
     if (filters?.search) {
-      query = query.or(
-        `number::text.ilike.%${filters.search}%`
-      );
+      query = query.ilike('code', `%${filters.search}%`);
     }
 
     query = query.order('number', { ascending: true });

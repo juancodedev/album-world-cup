@@ -1,8 +1,16 @@
 import { NextResponse } from 'next/server';
 import { createServerSideClient } from '@/infrastructure/database/supabase.server';
 
-export async function GET() {
+async function getClient() {
   const supabase = await createServerSideClient();
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user) return null;
+  return supabase;
+}
+
+export async function GET() {
+  const supabase = await getClient();
+  if (!supabase) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
   const { data, error } = await supabase
     .from('categories')
@@ -14,7 +22,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const supabase = await createServerSideClient();
+  const supabase = await getClient();
+  if (!supabase) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+
   const body = await request.json();
 
   const { name, code, description } = body;
@@ -40,7 +50,9 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const supabase = await createServerSideClient();
+  const supabase = await getClient();
+  if (!supabase) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
 

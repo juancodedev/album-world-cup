@@ -32,16 +32,20 @@ export class GetStickerDetailsUseCase {
     let duplicateCount = 0;
 
     if (userId && accountId) {
-      const [userSticker, duplicate] = await Promise.all([
-        this.userCollectionRepository.getByUserAndSticker(accountId, userId, stickerId),
-        this.duplicateRepository.getByUserAndSticker(accountId, userId, stickerId),
-      ]);
+      try {
+        const [userSticker, duplicate] = await Promise.all([
+          this.userCollectionRepository.getByUserAndSticker(accountId, userId, stickerId),
+          this.duplicateRepository.getByUserAndSticker(accountId, userId, stickerId),
+        ]);
 
-      if (duplicate) {
-        state = 'duplicate';
-        duplicateCount = duplicate.quantity;
-      } else if (userSticker) {
-        state = 'obtained';
+        if (duplicate) {
+          state = 'duplicate';
+          duplicateCount = duplicate.quantity;
+        } else if (userSticker) {
+          state = 'obtained';
+        }
+      } catch {
+        console.error('Error fetching user collection state:', accountId, userId, stickerId);
       }
     }
 

@@ -283,7 +283,7 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
   const [clubActual, setClubActual] = useState('');
   const [paisClub, setPaisClub] = useState('');
 
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [filterTeamId, setFilterTeamId] = useState('');
 
@@ -296,6 +296,21 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
     if (!code || !teamId || !categoryId) return;
     setLoading(true);
     try {
+      let imageUrl: string | null = null;
+
+      if (imageFile) {
+        const uploadForm = new FormData();
+        uploadForm.append('file', imageFile);
+        uploadForm.append('code', code);
+        const uploadRes = await fetch('/admin/seed/api/upload', {
+          method: 'POST',
+          body: uploadForm,
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadData.error) { toast.error(uploadData.error); setLoading(false); return; }
+        imageUrl = uploadData.url;
+      }
+
       const res = await fetch('/admin/seed/api/stickers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -303,7 +318,7 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
           code,
           team_id: teamId,
           category_id: categoryId,
-          image_url: imageUrl || null,
+          image_url: imageUrl,
           player_nombre: nombre || null,
           player_apellido: apellido || null,
           player_fecha_nacimiento: fechaNacimiento || null,
@@ -317,7 +332,7 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
       if (data.error) toast.error(data.error);
       else {
         toast.success(`Lámina "${code}" creada`);
-        setCode(''); setImageUrl(''); setNombre(''); setApellido(''); setFechaNacimiento('');
+        setCode(''); setImageFile(null); setNombre(''); setApellido(''); setFechaNacimiento('');
         setEstatura(''); setPeso(''); setClubActual(''); setPaisClub('');
         onSuccess();
       }
@@ -371,12 +386,12 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Imagen URL (opcional)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Imagen (opcional)</label>
             <input
-              value={imageUrl}
-              onChange={e => setImageUrl(e.target.value)}
-              className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
-              placeholder="https://ejemplo.com/imagen.jpg"
+              type="file"
+              accept="image/*"
+              onChange={e => setImageFile(e.target.files?.[0] || null)}
+              className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
             />
           </div>
 
