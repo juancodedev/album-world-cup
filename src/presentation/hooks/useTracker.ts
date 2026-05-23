@@ -5,6 +5,7 @@ import { useAuth } from '../providers/AuthProvider';
 import { useCurrentAccount } from './useCurrentAccount';
 import { useCollection } from './useCollection';
 import { GROUP_ORDER, SPECIAL_SECTIONS, STICKERS_PER_TEAM, TOTAL_STICKERS } from '../../shared/constants/tracker.constants';
+import { FLAG_EMOJI } from '../../shared/constants/flags.constants';
 import { StickerDTO } from '../../application/dtos/sticker.dto';
 
 interface TeamInfo {
@@ -75,7 +76,7 @@ function buildTrackerData(collection: StickerDTO[], teams: TeamInfo[]): TrackerD
         id: team.id,
         code: team.code,
         name: team.name,
-        flag: team.flag_url,
+        flag: team.flag_url || FLAG_EMOJI[team.code] || null,
         stickers,
         ownedCount,
       };

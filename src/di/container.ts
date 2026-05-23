@@ -277,6 +277,7 @@ class DIContainer {
         this.getStickerDuplicateRepository(),
         this.getStickerRepository(),
         this.getAlbumRepository(),
+        this.getTeamRepository(),
       ));
   }
 

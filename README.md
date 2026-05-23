@@ -19,7 +19,7 @@ Aplicación web para coleccionar y dar seguimiento a las láminas del Álbum Pan
 - Códigos: `MEX1`–`MEX20`, `ARG1`–`ARG20`, especiales `FWC1`–`FWC20`, `MUS1`–`MUS11`, `COC1`–`COC14`
 - Migración SQL + seed script en `scripts/seed-worldcup.mjs`
 
-### 🟡 Fase 2 — Parrilla de stickers (En progreso)
+### ✅ Fase 2 — Parrilla de stickers (Completada)
 - Tracker visual con grupo → equipo → sticker
 - `StickerGrid`: grid compacto de stickers por equipo
 - `TeamRow`: fila expandible con barra de progreso, marcar todo/limpiar
@@ -29,7 +29,14 @@ Aplicación web para coleccionar y dar seguimiento a las láminas del Álbum Pan
 - Búsqueda por equipo/código + filtro por grupo
 - Ruta: `/tracker`
 
-### ⬜ Fase 3 — Vista de faltantes
+### ✅ Fase 3 — Vista de faltantes (Completada)
+- Listado completo de stickers faltantes organizado por grupo → equipo
+- `MissingListScreen`: cada equipo muestra su bandera, nombre, código y códigos faltantes como chips cliqueables
+- Secciones especiales al final con el mismo diseño
+- Contador total de faltantes en el header
+- Cada chip togglea el sticker a adquirido vía `useTracker`
+- Estado vacío con mensaje de colección completa
+- Ruta: `/tracker/missing` (enlace desde el header del tracker)
 ### ⬜ Fase 4 — Ranking coleccionistas
 ### ⬜ Fase 5 — Búsqueda y operaciones bulk
 

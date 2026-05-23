@@ -89,18 +89,30 @@ export default function StatisticsPage() {
 
             {stats && <CollectionStats stats={stats} />}
 
-            {Object.keys(teamProgress).length > 0 && (
+            {teamProgress.length > 0 && (
               <div>
                 <h3 className="text-sm font-semibold text-gray-700 mb-3">
                   Progreso detallado por selección
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {Object.entries(teamProgress).map(([teamId, teamProgress]) => (
-                    <div key={teamId} className="bg-white rounded-xl border p-3">
-                      <p className="text-xs text-gray-500 truncate">Equipo</p>
-                      <p className="font-bold text-lg text-gray-900">{teamProgress.percentage}%</p>
+                  {teamProgress.map(tp => (
+                    <div key={tp.teamId} className="bg-white rounded-xl border p-3">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-lg">{tp.teamFlag || '🏳️'}</span>
+                        <div className="min-w-0">
+                          <p className="font-semibold text-sm text-gray-900 truncate">{tp.teamName}</p>
+                          <p className="text-[10px] text-gray-400 font-mono">{tp.teamCode}</p>
+                        </div>
+                      </div>
+                      <p className="font-bold text-lg text-gray-900">{tp.percentage}%</p>
+                      <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden mt-1 mb-1.5">
+                        <div
+                          className="h-full bg-blue-500 rounded-full transition-all"
+                          style={{ width: `${tp.percentage}%` }}
+                        />
+                      </div>
                       <p className="text-[10px] text-gray-400">
-                        {teamProgress.owned}/{teamProgress.total}
+                        {tp.owned}/{tp.total} stickers
                       </p>
                     </div>
                   ))}

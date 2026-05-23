@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { container } from '../../di/container';
 import { Progress } from '../../domain/value-objects/progress.vo';
+import { TeamProgressEntry } from '../../application/services/statistics.service';
 
 export function useStatistics(accountId: string, albumId: string) {
   const statsService = container.getStatisticsService();
@@ -13,7 +14,7 @@ export function useStatistics(accountId: string, albumId: string) {
     enabled: !!accountId && !!albumId,
   });
 
-  const teamProgressQuery = useQuery<Record<string, Progress>>({
+  const teamProgressQuery = useQuery<TeamProgressEntry[]>({
     queryKey: ['team-progress', accountId, albumId],
     queryFn: () => statsService.getTeamProgress(accountId, albumId),
     enabled: !!accountId && !!albumId,
@@ -21,7 +22,7 @@ export function useStatistics(accountId: string, albumId: string) {
 
   return {
     progress: progressQuery.data ?? null,
-    teamProgress: teamProgressQuery.data ?? {},
+    teamProgress: teamProgressQuery.data ?? [],
     isLoading: progressQuery.isLoading,
   };
 }
