@@ -38,16 +38,22 @@ Aplicación web para coleccionar y dar seguimiento a las láminas del Álbum Pan
 - Estado vacío con mensaje de colección completa
 - Ruta: `/tracker/missing` (enlace desde el header del tracker)
 ### ✅ Fase 4 — Ranking coleccionistas (Completada)
-- Leaderboard de miembros de la cuenta ordenado por stickers obtenidos
+- Leaderboard global de todos los usuarios de la plataforma
 - `RankingScreen`: medallas 🥇🥈🥉 para top 3, barra de progreso, nombre, avatar
 - Usuario actual destacado con badge "TÚ" y fondo rosado
 - Ruta: `/tracker/ranking` (enlace desde el header del tracker)
-- API: `GET /api/ranking` — progreso de todos los miembros de la cuenta
+- API pública: `GET /api/ranking` — ranking global sin autenticación
 
 ### ✅ Fase 5 — Búsqueda y operaciones bulk (Completada en Fase 2)
 - SearchBar para buscar equipo por nombre o código
 - Chips de filtro por grupo (Todos, A–L)
 - Botones "Marcar todas" / "Limpiar" por equipo en TeamRow
+
+### ✅ Fase 6 — Página pública de ranking con CTA (Completada)
+- Ranking movido a ruta pública (accesible sin login) fuera del grupo `(dashboard)`
+- CTA para visitantes: banner con "Crear cuenta gratis" y "Inicia sesión" para no registrados
+- Usuarios autenticados ven el ranking dentro de `DashboardLayout` con sidebar y navegación
+- Ruta: `/tracker/ranking`
 
 ## Getting Started
 
