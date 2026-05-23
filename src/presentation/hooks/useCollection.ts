@@ -27,6 +27,7 @@ export function useCollection(accountId: string, albumId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['collection', accountId, albumId] });
       queryClient.invalidateQueries({ queryKey: ['collection-stats', accountId, albumId] });
+      queryClient.invalidateQueries({ queryKey: ['progress', accountId, albumId] });
       queryClient.invalidateQueries({ queryKey: ['sticker-detail'] });
     },
   });
@@ -37,6 +38,7 @@ export function useCollection(accountId: string, albumId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['collection', accountId, albumId] });
       queryClient.invalidateQueries({ queryKey: ['collection-stats', accountId, albumId] });
+      queryClient.invalidateQueries({ queryKey: ['progress', accountId, albumId] });
       queryClient.invalidateQueries({ queryKey: ['sticker-detail'] });
     },
   });
@@ -47,6 +49,7 @@ export function useCollection(accountId: string, albumId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['collection', accountId, albumId] });
       queryClient.invalidateQueries({ queryKey: ['collection-stats', accountId, albumId] });
+      queryClient.invalidateQueries({ queryKey: ['progress', accountId, albumId] });
       queryClient.invalidateQueries({ queryKey: ['sticker-detail'] });
     },
   });
@@ -57,6 +60,7 @@ export function useCollection(accountId: string, albumId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['collection', accountId, albumId] });
       queryClient.invalidateQueries({ queryKey: ['collection-stats', accountId, albumId] });
+      queryClient.invalidateQueries({ queryKey: ['progress', accountId, albumId] });
       queryClient.invalidateQueries({ queryKey: ['sticker-detail'] });
     },
   });

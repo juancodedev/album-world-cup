@@ -11,7 +11,12 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  const supabase = createServerClient(supabaseUrl!, supabaseKey!, {
+  if (!supabaseUrl || !supabaseKey) {
+    console.warn('Supabase env vars not configured — skipping session refresh');
+    return supabaseResponse;
+  }
+
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
     cookies: {
       getAll() {
         return request.cookies.getAll();
