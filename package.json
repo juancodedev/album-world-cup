@@ -10,7 +10,7 @@
     "deploy:cf": "opennextjs-cloudflare deploy",
     "start": "next start",
     "lint": "eslint",
-    "seed:worldcup": "node scripts/seed-worldcup.mjs"
+    "seed:worldcup": "node scripts/seed-worldcup.mjs",
     "test": "jest"
   },
   "dependencies": {
