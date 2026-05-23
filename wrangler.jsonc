@@ -15,12 +15,7 @@
       "service": "album-world-cup"
     }
   ],
-  "r2_buckets": [
-    {
-      "binding": "NEXT_INC_CACHE_R2_BUCKET",
-      "bucket_name": "album-world-cup-opennext-cache"
-    }
-  ],
+
   "images": {
     "binding": "IMAGES"
   },
