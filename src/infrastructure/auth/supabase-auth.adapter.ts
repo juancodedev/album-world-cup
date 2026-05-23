@@ -88,7 +88,7 @@ export class SupabaseAuthAdapter {
 
   onAuthStateChange(callback: (session: AuthSession) => void): () => void {
     const { data: { subscription } } = this.getClient().auth.onAuthStateChange(
-      async (_event: string, session: any) => {
+      async (_event: string, session) => {
         if (session) {
           callback({
             user: {
