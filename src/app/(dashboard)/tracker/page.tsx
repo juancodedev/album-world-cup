@@ -74,12 +74,20 @@ export default function TrackerPage() {
           <div className="flex justify-between items-end mb-2">
             <div>
               <div className="text-3xl font-black text-pink-300">{pct}%</div>
-              <Link
-            href="/tracker/missing"
-            className="text-xs font-bold text-yellow-300 underline underline-offset-2 hover:text-yellow-200 transition-colors"
-          >
-            ⚡ {missing} faltantes
-          </Link>
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/tracker/missing"
+                  className="text-xs font-bold text-yellow-300 underline underline-offset-2 hover:text-yellow-200 transition-colors"
+                >
+                  ⚡ {missing} faltantes
+                </Link>
+                <Link
+                  href="/tracker/ranking"
+                  className="text-xs font-bold text-yellow-300 underline underline-offset-2 hover:text-yellow-200 transition-colors"
+                >
+                  🏆 Ranking
+                </Link>
+              </div>
             </div>
             <div className="text-right text-xs opacity-70">
               <div>{data?.totalOwned || 0} / {data?.totalCount || 1005}</div>

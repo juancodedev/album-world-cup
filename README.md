@@ -37,8 +37,23 @@ Aplicación web para coleccionar y dar seguimiento a las láminas del Álbum Pan
 - Cada chip togglea el sticker a adquirido vía `useTracker`
 - Estado vacío con mensaje de colección completa
 - Ruta: `/tracker/missing` (enlace desde el header del tracker)
-### ⬜ Fase 4 — Ranking coleccionistas
-### ⬜ Fase 5 — Búsqueda y operaciones bulk
+### ✅ Fase 4 — Ranking coleccionistas (Completada)
+- Leaderboard global de todos los usuarios de la plataforma
+- `RankingScreen`: medallas 🥇🥈🥉 para top 3, barra de progreso, nombre, avatar
+- Usuario actual destacado con badge "TÚ" y fondo rosado
+- Ruta: `/tracker/ranking` (enlace desde el header del tracker)
+- API pública: `GET /api/ranking` — ranking global sin autenticación
+
+### ✅ Fase 5 — Búsqueda y operaciones bulk (Completada en Fase 2)
+- SearchBar para buscar equipo por nombre o código
+- Chips de filtro por grupo (Todos, A–L)
+- Botones "Marcar todas" / "Limpiar" por equipo en TeamRow
+
+### ✅ Fase 6 — Página pública de ranking con CTA (Completada)
+- Ranking movido a ruta pública (accesible sin login) fuera del grupo `(dashboard)`
+- CTA para visitantes: banner con "Crear cuenta gratis" y "Inicia sesión" para no registrados
+- Usuarios autenticados ven el ranking dentro de `DashboardLayout` con sidebar y navegación
+- Ruta: `/tracker/ranking`
 
 ## Getting Started
 
@@ -55,7 +70,23 @@ Open [http://localhost:3000](http://localhost:3000).
 | `pnpm dev` | Dev server |
 | `pnpm build` | Build Next.js |
 | `pnpm lint` | ESLint |
+| `pnpm test` | Jest (121 tests) |
 | `pnpm seed:worldcup` | Seed stickers via Supabase REST API |
+
+## Tests
+
+121 tests en 19 suites, todas con datos mock:
+
+| Categoría | Archivos | Tests |
+|-----------|----------|-------|
+| Value Objects | `rarity.vo`, `progress.vo`, `sticker-state.vo`, `sticker-type.vo` | 4 suites |
+| Domain Entities | `user-collection.entity`, `team.entity`, `sticker.entity`, `user.entity`, `album.entity`, `account.entity`, `account-member.entity` | 7 suites |
+| Use Cases | `add-sticker.use-case` | 2 suites (unit + integration) |
+| Services | `statistics.service` | 1 suite |
+
+```
+pnpm test        # 19 suites, 121 tests
+```
 
 ## Plan detallado
 

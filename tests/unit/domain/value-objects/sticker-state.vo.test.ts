@@ -1,4 +1,4 @@
-import { StickerState } from '../../../src/domain/value-objects/sticker-state.vo';
+import { StickerState } from '../../../../src/domain/value-objects/sticker-state.vo';
 
 describe('StickerState', () => {
   describe('from', () => {
