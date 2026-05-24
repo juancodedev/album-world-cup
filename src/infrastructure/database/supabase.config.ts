@@ -10,6 +10,7 @@ export const SUPABASE_TABLES = {
   sharedCollections: 'shared_collections',
   confederations: 'confederations',
   auditLogs: 'audit_logs',
+  accessLogs: 'access_logs',
   accounts: 'accounts',
   accountMembers: 'account_members',
 } as const;

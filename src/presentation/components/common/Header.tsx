@@ -6,7 +6,12 @@ import { useAuth } from '../../providers/AuthProvider';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../components/ui/avatar';
 import { Button } from '../../../components/ui/button';
 
-export function Header() {
+interface HeaderProps {
+  accessStatus?: string;
+  remainingDays?: number;
+}
+
+export function Header({ accessStatus, remainingDays }: HeaderProps) {
   const { user, signOut } = useAuth();
   const [profile, setProfile] = useState<{ fullName?: string; avatarUrl?: string } | null>(null);
 
@@ -20,6 +25,7 @@ export function Header() {
 
   const displayName = profile?.fullName || user?.fullName || user?.email || '';
   const displayAvatar = profile?.avatarUrl || user?.avatarUrl || '';
+  const isTrial = accessStatus === 'trial' && remainingDays !== undefined;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md">
@@ -31,7 +37,13 @@ export function Header() {
           <span className="font-semibold text-lg hidden sm:block">Album World 2026</span>
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {isTrial && (
+            <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+              {remainingDays} {remainingDays === 1 ? 'día' : 'días'} restantes
+            </span>
+          )}
           {user ? (
             <>
               <div className="hidden sm:block text-right">
