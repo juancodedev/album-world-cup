@@ -9,9 +9,10 @@ interface SpecialCardProps {
   section: SpecialData;
   ownedSet: Set<string>;
   onToggle: (stickerId: string) => void;
+  onDuplicate?: (stickerId: string) => void;
 }
 
-export function SpecialCard({ section, ownedSet, onToggle }: SpecialCardProps) {
+export function SpecialCard({ section, ownedSet, onToggle, onDuplicate }: SpecialCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pct = section.count > 0 ? Math.round((section.ownedCount / section.count) * 100) : 0;
 
@@ -47,6 +48,7 @@ export function SpecialCard({ section, ownedSet, onToggle }: SpecialCardProps) {
               stickers={section.stickers}
               ownedSet={ownedSet}
               onToggle={onToggle}
+              onDuplicate={onDuplicate}
             />
           </div>
         </div>

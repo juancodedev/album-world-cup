@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { StickerDTO } from '../../../application/dtos/sticker.dto';
 import { STICKERS_PER_TEAM } from '../../../shared/constants/tracker.constants';
 
@@ -9,16 +9,36 @@ interface StickerGridProps {
   stickers: StickerDTO[];
   ownedSet: Set<string>;
   onToggle: (stickerId: string) => void;
+  onDuplicate?: (stickerId: string) => void;
 }
 
-export function StickerGrid({ teamCode, stickers, ownedSet, onToggle }: StickerGridProps) {
+export function StickerGrid({ teamCode, stickers, ownedSet, onToggle, onDuplicate }: StickerGridProps) {
   const allNumbers = Array.from({ length: STICKERS_PER_TEAM }, (_, i) => i + 1);
+  const clickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleClick = (stickerId: string) => {
+    if (!onDuplicate) {
+      onToggle(stickerId);
+      return;
+    }
+    if (clickTimer.current) {
+      clearTimeout(clickTimer.current);
+      clickTimer.current = null;
+      onDuplicate(stickerId);
+    } else {
+      clickTimer.current = setTimeout(() => {
+        clickTimer.current = null;
+        onToggle(stickerId);
+      }, 250);
+    }
+  };
 
   return (
     <div className="grid grid-cols-5 sm:grid-cols-10 gap-1.5">
       {allNumbers.map(n => {
         const sticker = stickers.find(s => s.number % STICKERS_PER_TEAM === n % STICKERS_PER_TEAM || s.number === n);
         const owned = sticker ? ownedSet.has(sticker.id) : false;
+        const dupCount = sticker?.duplicateCount || 0;
         const code = `${teamCode}${n}`;
 
         return (
@@ -34,7 +54,7 @@ export function StickerGrid({ teamCode, stickers, ownedSet, onToggle }: StickerG
             `}
           >
             <button
-              onClick={() => sticker && onToggle(sticker.id)}
+              onClick={() => sticker && handleClick(sticker.id)}
               className="absolute inset-0 w-full h-full z-10"
               aria-label={owned ? `Desmarcar sticker #${n}` : `Marcar sticker #${n}`}
             />
@@ -64,6 +84,12 @@ export function StickerGrid({ teamCode, stickers, ownedSet, onToggle }: StickerG
             {owned && (
               <div className="absolute bottom-0 left-0 right-0 bg-green-500 text-white text-[6px] sm:text-[7px] font-bold text-center py-0.5 leading-none">
                 ✓
+              </div>
+            )}
+
+            {dupCount > 0 && (
+              <div className="absolute -top-1 -right-1 bg-blue-500 text-white text-[7px] sm:text-[8px] rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center font-bold shadow-md z-20">
+                {dupCount}
               </div>
             )}
           </div>

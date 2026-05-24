@@ -15,7 +15,7 @@ import { GROUP_COLORS } from '../../../shared/constants/tracker.constants';
 export default function TrackerPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
-  const { data, isLoading, addSticker, removeSticker, ownedSet } = useTracker();
+  const { data, isLoading, addSticker, removeSticker, incrementDuplicate, ownedSet } = useTracker();
   const [tab, setTab] = useState<'grupos' | 'especial'>('grupos');
   const [search, setSearch] = useState('');
   const [activeGroup, setActiveGroup] = useState('Todos');
@@ -41,6 +41,7 @@ export default function TrackerPage() {
 
   const pct = data ? Math.round((data.totalOwned / data.totalCount) * 100) : 0;
   const missing = data ? data.totalCount - data.totalOwned : 0;
+  const totalDuplicates = data?.totalDuplicates || 0;
 
   const handleToggle = (stickerId: string) => {
     if (ownedSet.has(stickerId)) {
@@ -48,6 +49,10 @@ export default function TrackerPage() {
     } else {
       addSticker(stickerId);
     }
+  };
+
+  const handleDuplicate = (stickerId: string) => {
+    incrementDuplicate(stickerId);
   };
 
   const handleMarkAllTeam = (teamId: string, stickerIds: string[]) => {
@@ -90,6 +95,12 @@ export default function TrackerPage() {
                 className="text-[11px] sm:text-xs font-bold text-yellow-300 underline underline-offset-2 hover:text-yellow-200 whitespace-nowrap"
               >
                 🏆
+              </Link>
+              <Link
+                href="/tracker/duplicates"
+                className="text-[11px] sm:text-xs font-bold text-blue-300 underline underline-offset-2 hover:text-blue-200 whitespace-nowrap"
+              >
+                🔁 {totalDuplicates}
               </Link>
             </div>
           </div>
@@ -191,6 +202,7 @@ export default function TrackerPage() {
                     group={group}
                     ownedSet={ownedSet}
                     onToggle={handleToggle}
+                    onDuplicate={handleDuplicate}
                     onMarkAllTeam={handleMarkAllTeam}
                     onClearAllTeam={handleClearAllTeam}
                   />
@@ -211,6 +223,7 @@ export default function TrackerPage() {
                 section={section}
                 ownedSet={ownedSet}
                 onToggle={handleToggle}
+                onDuplicate={handleDuplicate}
               />
             ))}
           </div>

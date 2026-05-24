@@ -47,6 +47,7 @@ interface TrackerData {
   specials: SpecialData[];
   totalOwned: number;
   totalCount: number;
+  totalDuplicates: number;
 }
 
 const ALBUM_ID = '00000000-0000-0000-0000-000000000001';
@@ -119,11 +120,14 @@ function buildTrackerData(collection: StickerDTO[], teams: TeamInfo[], localTogg
     };
   });
 
+  const totalDuplicates = collection.reduce((sum, s) => sum + s.duplicateCount, 0);
+
   return {
     groups,
     specials,
     totalOwned,
     totalCount: TOTAL_STICKERS,
+    totalDuplicates,
   };
 }
 
@@ -137,6 +141,8 @@ export function useTracker() {
     isLoading: collectionLoading,
     addSticker: addStickerMutation,
     removeSticker: removeStickerMutation,
+    incrementDuplicate: incrementDuplicateMutation,
+    removeDuplicate: removeDuplicateMutation,
   } = useCollection(accountId, ALBUM_ID);
 
   const teamsQuery = useQuery<TeamInfo[]>({
@@ -220,6 +226,12 @@ export function useTracker() {
     },
     removeSticker: (stickerId: string) => {
       enqueue('remove', stickerId);
+    },
+    incrementDuplicate: (stickerId: string) => {
+      incrementDuplicateMutation({ stickerId, userId: userId! });
+    },
+    removeDuplicate: (stickerId: string) => {
+      removeDuplicateMutation({ stickerId, userId: userId! });
     },
     ownedSet,
   };

@@ -10,11 +10,12 @@ interface GroupCardProps {
   group: GroupData;
   ownedSet: Set<string>;
   onToggle: (stickerId: string) => void;
+  onDuplicate?: (stickerId: string) => void;
   onMarkAllTeam: (teamId: string, stickerIds: string[]) => void;
   onClearAllTeam: (teamId: string, stickerIds: string[]) => void;
 }
 
-export function GroupCard({ group, ownedSet, onToggle, onMarkAllTeam, onClearAllTeam }: GroupCardProps) {
+export function GroupCard({ group, ownedSet, onToggle, onDuplicate, onMarkAllTeam, onClearAllTeam }: GroupCardProps) {
   if (!group || !group.teams) return null;
   const color = GROUP_COLORS[group.id] || '#6b7280';
   const pct = group.totalCount > 0 ? Math.round((group.totalOwned / group.totalCount) * 100) : 0;
@@ -66,6 +67,7 @@ export function GroupCard({ group, ownedSet, onToggle, onMarkAllTeam, onClearAll
             groupColor={color}
             ownedSet={ownedSet}
             onToggle={onToggle}
+            onDuplicate={onDuplicate}
             onMarkAll={() => onMarkAllTeam(team.id, team.stickers.map(s => s.id))}
             onClearAll={() => onClearAllTeam(team.id, getOwnedStickerIds(team.stickers))}
           />

@@ -15,6 +15,7 @@ interface TeamRowProps {
   groupColor: string;
   ownedSet: Set<string>;
   onToggle: (stickerId: string) => void;
+  onDuplicate?: (stickerId: string) => void;
   onMarkAll: () => void;
   onClearAll: () => void;
 }
@@ -28,6 +29,7 @@ export function TeamRow({
   groupColor,
   ownedSet,
   onToggle,
+  onDuplicate,
   onMarkAll,
   onClearAll,
 }: TeamRowProps) {
@@ -79,6 +81,7 @@ export function TeamRow({
               stickers={stickers}
               ownedSet={ownedSet}
               onToggle={onToggle}
+              onDuplicate={onDuplicate}
             />
           </div>
           <div className="flex gap-2 mt-2">
