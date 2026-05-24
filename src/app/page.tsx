@@ -17,7 +17,7 @@ export default function HomePage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-600 to-purple-600">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-600 to-violet-700">
         <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <span className="text-white text-3xl font-bold">AW</span>
         </div>

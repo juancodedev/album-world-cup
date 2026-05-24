@@ -31,7 +31,7 @@ export function Header({ accessStatus, remainingDays }: HeaderProps) {
     <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md">
       <div className="flex h-16 items-center justify-between px-4 max-w-7xl mx-auto">
         <Link href="/tracker" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-xl flex items-center justify-center shadow-sm">
             <span className="text-white font-bold text-sm">AW</span>
           </div>
           <span className="font-semibold text-lg hidden sm:block">Album World 2026</span>
@@ -52,7 +52,7 @@ export function Header({ accessStatus, remainingDays }: HeaderProps) {
               </div>
               <Avatar className="h-8 w-8">
                 <AvatarImage src={displayAvatar} alt={displayName} />
-                <AvatarFallback className="bg-blue-100 text-blue-700 text-xs font-bold">
+                <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
                   {displayName.charAt(0).toUpperCase() || 'U'}
                 </AvatarFallback>
               </Avatar>

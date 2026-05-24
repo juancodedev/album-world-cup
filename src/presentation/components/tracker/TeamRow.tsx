@@ -38,8 +38,8 @@ export function TeamRow({
 
   return (
     <div
-      className="rounded-xl border overflow-hidden transition-all duration-200"
-      style={{ borderColor: isComplete ? groupColor : 'rgba(0,0,0,0.07)' }}
+      className="rounded-xl border border-border overflow-hidden transition-all duration-200"
+      style={{ borderColor: isComplete ? groupColor : undefined }}
     >
       <button
         onClick={() => setIsOpen(!isOpen)}

@@ -17,7 +17,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <LoadingSpinner size="lg" />
       </div>
     );
@@ -26,7 +26,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   if (!allowed) return null;
 
   return (
-    <div className="bg-gray-50">
+    <div className="bg-background">
       <Header accessStatus={status} remainingDays={remainingDays} />
       <div className="flex">
         <Sidebar />

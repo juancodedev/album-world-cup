@@ -17,7 +17,7 @@ export function SpecialCard({ section, ownedSet, onToggle, onDuplicate }: Specia
   const pct = section.count > 0 ? Math.round((section.ownedCount / section.count) * 100) : 0;
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-gray-200 bg-white">
+    <div className="rounded-2xl overflow-hidden border border-border bg-card shadow-sm">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-3 sm:gap-4 hover:bg-gray-50 transition-colors text-left"

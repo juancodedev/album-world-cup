@@ -33,15 +33,15 @@ export function Countdown() {
   return (
     <div className="text-center">
       <div className="flex items-center justify-center gap-1.5 font-mono text-xs font-bold tracking-wider">
-        <span className="bg-gray-900 text-white rounded-md px-1.5 py-1 min-w-[28px]">{t.days}</span>
-        <span className="text-gray-400">:</span>
-        <span className="bg-gray-900 text-white rounded-md px-1.5 py-1 min-w-[24px]">{t.hrs}</span>
-        <span className="text-gray-400">:</span>
-        <span className="bg-gray-900 text-white rounded-md px-1.5 py-1 min-w-[24px]">{t.min}</span>
-        <span className="text-gray-400">:</span>
-        <span className="bg-gray-900 text-white rounded-md px-1.5 py-1 min-w-[24px]">{t.sec}</span>
+        <span className="bg-secondary text-secondary-foreground rounded-md px-1.5 py-1 min-w-[28px]">{t.days}</span>
+        <span className="text-muted-foreground">:</span>
+        <span className="bg-secondary text-secondary-foreground rounded-md px-1.5 py-1 min-w-[24px]">{t.hrs}</span>
+        <span className="text-muted-foreground">:</span>
+        <span className="bg-secondary text-secondary-foreground rounded-md px-1.5 py-1 min-w-[24px]">{t.min}</span>
+        <span className="text-muted-foreground">:</span>
+        <span className="bg-secondary text-secondary-foreground rounded-md px-1.5 py-1 min-w-[24px]">{t.sec}</span>
       </div>
-      <p className="text-[10px] text-gray-400 mt-1">Para el mundial 2026</p>
+      <p className="text-[10px] text-muted-foreground mt-1">Para el mundial 2026</p>
     </div>
   );
 }

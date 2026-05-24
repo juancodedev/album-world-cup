@@ -15,7 +15,7 @@ export default function SharedCollectionPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <LoadingSpinner size="lg" />
       </div>
     );
@@ -23,7 +23,7 @@ export default function SharedCollectionPage() {
 
   if (error || !share) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <EmptyState
           icon="🔗"
           title="Colección no encontrada"
@@ -34,10 +34,10 @@ export default function SharedCollectionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="max-w-lg mx-auto p-4 space-y-4">
         <div className="bg-white rounded-2xl p-6 text-center shadow-sm">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <span className="text-white text-2xl font-bold">AW</span>
           </div>
           <h1 className="text-xl font-bold text-gray-900">{share.userName}</h1>
@@ -84,16 +84,16 @@ export default function SharedCollectionPage() {
                     className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
                   >
                     <span className="text-lg">{FLAG_EMOJI[team.teamCode] || team.teamFlag || '🏳️'}</span>
-                    <span className="text-sm text-gray-700 flex-1 font-medium truncate">{team.teamName}</span>
+                    <span className="text-sm text-foreground flex-1 font-medium truncate">{team.teamName}</span>
                     <div className="flex-1 max-w-[120px]">
-                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-2 bg-muted rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all"
+                          className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full transition-all duration-500 ease-out"
                           style={{ width: `${team.total > 0 ? (team.owned / team.total) * 100 : 0}%` }}
                         />
                       </div>
                     </div>
-                    <span className="text-xs font-medium text-gray-600 w-14 text-right">
+                    <span className="text-xs font-medium text-muted-foreground w-14 text-right">
                       {team.owned}/{team.total}
                     </span>
                     <span className="text-gray-400 text-xs transition-transform" style={{ transform: expandedTeam === team.teamId ? 'rotate(180deg)' : 'none' }}>
@@ -135,7 +135,7 @@ export default function SharedCollectionPage() {
           </div>
         )}
 
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 text-center shadow-sm">
+        <div className="bg-gradient-to-r from-indigo-600 to-violet-700 rounded-2xl p-6 text-center shadow-md">
           <h3 className="text-white font-bold text-lg mb-2">¿Tú también coleccionas?</h3>
           <p className="text-blue-100 text-sm mb-4">
             Registra tus láminas, sigue tu progreso y compite con tus amigos.

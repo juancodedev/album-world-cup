@@ -25,7 +25,7 @@ export function GroupCard({ group, ownedSet, onToggle, onDuplicate, onMarkAllTea
   }
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-gray-200 bg-white">
+    <div className="rounded-2xl overflow-hidden border border-border bg-card shadow-sm">
       <div
         className="px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-3 sm:gap-4"
         style={{

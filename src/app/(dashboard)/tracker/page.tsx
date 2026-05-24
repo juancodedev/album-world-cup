@@ -70,59 +70,57 @@ export default function TrackerPage() {
   return (
     <DashboardLayout>
       <div className="space-y-4">
-        {/* Header with progress */}
-        <div className="bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl p-3 sm:p-5 text-white">
-          <div className="flex items-center justify-between mb-1 sm:mb-2">
+        {/* Header card with progress */}
+        <div className="bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-white shadow-md">
+          <div className="flex items-center justify-between mb-2">
             <div className="text-[9px] sm:text-[10px] tracking-[3px] font-bold opacity-70">ÁLBUM PANINI</div>
-            <div className="text-[10px] sm:text-xs opacity-70 leading-tight text-right">
+            <div className="text-[10px] sm:text-xs opacity-70 leading-tight text-right font-mono">
               {data?.totalOwned || 0}/{data?.totalCount || 1005}
             </div>
           </div>
-          <h1 className="text-sm sm:text-xl font-black mb-2 sm:mb-3 leading-tight">
-            FIFA WORLD CUP <span className="text-yellow-300">2026</span>
+          <h1 className="text-base sm:text-2xl font-black mb-3 sm:mb-4 leading-tight">
+            FIFA WORLD CUP <span className="text-amber-400">2026</span>
           </h1>
-          <div className="flex items-center justify-between gap-2 mb-2 sm:mb-3">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <span className="text-xl sm:text-4xl font-black text-pink-300">{pct}%</span>
-              <Link
-                href="/tracker/missing"
-                className="text-[11px] sm:text-xs font-bold text-yellow-300 underline underline-offset-2 hover:text-yellow-200 whitespace-nowrap"
-              >
-                ⚡ {missing}
-              </Link>
-              <Link
-                href="/tracker/ranking"
-                className="text-[11px] sm:text-xs font-bold text-yellow-300 underline underline-offset-2 hover:text-yellow-200 whitespace-nowrap"
-              >
-                🏆
-              </Link>
-              <Link
-                href="/tracker/duplicates"
-                className="text-[11px] sm:text-xs font-bold text-blue-300 underline underline-offset-2 hover:text-blue-200 whitespace-nowrap"
-              >
-                🔁 {totalDuplicates}
-              </Link>
-            </div>
+          <div className="flex items-center gap-3 mb-3 sm:mb-4">
+            <span className="text-2xl sm:text-5xl font-black text-pink-300">{pct}%</span>
+            <Link
+              href="/tracker/missing"
+              className="text-[11px] sm:text-xs font-bold text-amber-400 underline underline-offset-2 hover:text-amber-300 whitespace-nowrap"
+            >
+              ⚡ {missing}
+            </Link>
+            <Link
+              href="/tracker/ranking"
+              className="text-[11px] sm:text-xs font-bold text-amber-400 underline underline-offset-2 hover:text-amber-300 whitespace-nowrap"
+            >
+              🏆
+            </Link>
+            <Link
+              href="/tracker/duplicates"
+              className="text-[11px] sm:text-xs font-bold text-amber-400 underline underline-offset-2 hover:text-amber-300 whitespace-nowrap"
+            >
+              🔁 {totalDuplicates}
+            </Link>
           </div>
-          <Progress value={pct} className="h-1.5 sm:h-2 bg-white/20 [&>div]:bg-pink-400" />
-          <div className="flex items-center justify-around gap-1 mt-2 sm:mt-3 text-center">
+          <Progress value={pct} className="h-1.5 sm:h-2 bg-white/20" />
+          <div className="flex items-center justify-around gap-1 mt-3 sm:mt-4 text-center">
             <div>
-              <div className="font-bold text-xs sm:text-sm">{data ? data.groups.filter(g =>
+              <div className="font-bold text-xs sm:text-base">{data ? data.groups.filter(g =>
                 g.teams.every(t => t.ownedCount === 20)
               ).length : '-'}/12</div>
-              <div className="opacity-60 text-[9px] sm:text-[10px]">Grupos</div>
+              <div className="opacity-70 text-[9px] sm:text-[10px] font-medium">Grupos</div>
             </div>
-            <div className="w-px h-7 sm:h-8 bg-white/20" />
+            <div className="w-px h-8 sm:h-10 bg-white/20" />
             <div>
-              <div className="font-bold text-xs sm:text-sm">{data ? data.groups.flatMap(g => g.teams).filter(t =>
+              <div className="font-bold text-xs sm:text-base">{data ? data.groups.flatMap(g => g.teams).filter(t =>
                 t.ownedCount === 20
               ).length : '-'}</div>
-              <div className="opacity-60 text-[9px] sm:text-[10px]">Equipos</div>
+              <div className="opacity-70 text-[9px] sm:text-[10px] font-medium">Equipos</div>
             </div>
-            <div className="w-px h-7 sm:h-8 bg-white/20" />
+            <div className="w-px h-8 sm:h-10 bg-white/20" />
             <div>
-              <div className="font-bold text-xs sm:text-sm">{data?.totalOwned || '-'}</div>
-              <div className="opacity-60 text-[9px] sm:text-[10px]">Stickers</div>
+              <div className="font-bold text-xs sm:text-base">{data?.totalOwned || '-'}</div>
+              <div className="opacity-70 text-[9px] sm:text-[10px] font-medium">Stickers</div>
             </div>
           </div>
         </div>
@@ -132,7 +130,7 @@ export default function TrackerPage() {
           <button
             onClick={() => setTab('grupos')}
             className={`flex-1 sm:flex-none px-5 py-2.5 rounded-full text-xs font-bold tracking-wide transition-all ${
-              tab === 'grupos' ? 'bg-pink-500 text-white shadow-md' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+              tab === 'grupos' ? 'bg-primary text-primary-foreground shadow-sm' : 'bg-muted text-muted-foreground hover:bg-muted/80'
             }`}
           >
             ⚽ GRUPOS (A–L)
@@ -140,7 +138,7 @@ export default function TrackerPage() {
           <button
             onClick={() => setTab('especial')}
             className={`flex-1 sm:flex-none px-5 py-2.5 rounded-full text-xs font-bold tracking-wide transition-all ${
-              tab === 'especial' ? 'bg-pink-500 text-white shadow-md' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+              tab === 'especial' ? 'bg-primary text-primary-foreground shadow-sm' : 'bg-muted text-muted-foreground hover:bg-muted/80'
             }`}
           >
             ✨ ESPECIALES
@@ -154,15 +152,15 @@ export default function TrackerPage() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="🔍 Buscar equipo o código..."
-              className="w-full h-10 px-4 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-pink-300"
+              className="w-full h-11 px-5 rounded-full border-0 text-sm bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
             />
 
-            {/* Group filter chips */}
+            {/* Group filter pills */}
             <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-2 scrollbar-none">
               <button
                 onClick={() => setActiveGroup('Todos')}
-                className={`px-3 sm:px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
-                  activeGroup === 'Todos' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                className={`px-4 sm:px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+                  activeGroup === 'Todos' ? 'bg-primary text-primary-foreground shadow-sm' : 'bg-muted text-muted-foreground hover:bg-muted/80'
                 }`}
               >
                 Todos
@@ -176,7 +174,7 @@ export default function TrackerPage() {
                     key={gid}
                     onClick={() => setActiveGroup(gid)}
                     className={`px-3 sm:px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all flex flex-col items-center leading-tight ${
-                      activeGroup === gid ? 'text-white' : 'text-gray-500 bg-gray-100 hover:bg-gray-200'
+                      activeGroup === gid ? 'text-white shadow-sm' : 'text-muted-foreground bg-muted hover:bg-muted/80'
                     }`}
                     style={activeGroup === gid ? { backgroundColor: color } : {}}
                   >

@@ -90,22 +90,22 @@ export function MissingListScreen({ groups, specials, ownedSet: _ownedSet, onTog
       <div className="flex items-center gap-3">
         <Link
           href="/tracker"
-          className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors flex-shrink-0"
+          className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors flex-shrink-0"
         >
-          <ChevronLeft className="w-5 h-5 text-gray-600" />
+          <ChevronLeft className="w-5 h-5 text-muted-foreground" />
         </Link>
         <div>
-          <div className="text-[10px] tracking-[3px] font-bold text-pink-500">LISTADO COMPLETO</div>
-          <h1 className="text-lg font-black text-gray-900">Faltantes por equipo y grupo</h1>
+          <div className="text-[10px] tracking-[3px] font-bold text-primary">LISTADO COMPLETO</div>
+          <h1 className="text-lg font-black text-foreground">Faltantes por equipo y grupo</h1>
         </div>
         <div className="ml-auto text-right">
-          <div className="text-2xl font-black text-pink-500">{totalMissing}</div>
-          <div className="text-[10px] text-gray-400 font-medium">faltantes</div>
+          <div className="text-2xl font-black text-primary">{totalMissing}</div>
+          <div className="text-[10px] text-muted-foreground font-medium">faltantes</div>
         </div>
       </div>
 
       {/* Hint */}
-      <p className="text-xs text-gray-400 bg-gray-50 rounded-xl px-4 py-2.5">
+      <p className="text-xs text-muted-foreground bg-muted/50 rounded-xl px-4 py-2.5">
         Tocá un código de sticker para marcarlo como adquirido.
       </p>
 
@@ -115,7 +115,7 @@ export function MissingListScreen({ groups, specials, ownedSet: _ownedSet, onTog
           const color = GROUP_COLORS[group.id] || '#6b7280';
           const groupMissing = group.teams.reduce((a, t) => a + t.missing.length, 0);
           return (
-            <div key={group.id} className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
+            <div key={group.id} className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
               <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: `2px solid ${color}` }}>
                 <div className="flex items-center gap-3">
                   <div
@@ -124,18 +124,18 @@ export function MissingListScreen({ groups, specials, ownedSet: _ownedSet, onTog
                   >
                     {group.id}
                   </div>
-                  <span className="font-bold text-sm text-gray-700">Grupo {group.id}</span>
+                  <span className="font-bold text-sm text-foreground">Grupo {group.id}</span>
                 </div>
                 <span className="text-xs font-bold text-gray-400">{groupMissing} faltantes</span>
               </div>
               <div className="p-3 space-y-2">
                 {group.teams.map(team => (
-                  <div key={team.id} className="bg-gray-50 rounded-xl p-3">
+                  <div key={team.id} className="bg-muted/50 rounded-xl p-3">
                     <div className="flex items-center gap-2.5 mb-2.5">
                       <span className="text-xl">{team.flag || '🏳️'}</span>
                       <div>
-                        <div className="font-semibold text-sm text-gray-900">{team.name}</div>
-                        <div className="text-xs text-gray-400">
+                        <div className="font-semibold text-sm text-foreground">{team.name}</div>
+                        <div className="text-xs text-muted-foreground">
                           {team.code} · {team.missing.length} faltantes
                         </div>
                       </div>
@@ -145,7 +145,7 @@ export function MissingListScreen({ groups, specials, ownedSet: _ownedSet, onTog
                         <button
                           key={id}
                           onClick={() => onToggle(id)}
-                          className="px-3 py-2 sm:py-1.5 rounded-full text-xs font-bold border border-gray-200 bg-white text-gray-600 hover:bg-pink-50 hover:border-pink-200 hover:text-pink-600 transition-all active:scale-95"
+                          className="px-3 py-2 sm:py-1.5 rounded-full text-xs font-bold border border-border bg-card text-muted-foreground hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all active:scale-95"
                         >
                           {code}
                         </button>
@@ -161,19 +161,19 @@ export function MissingListScreen({ groups, specials, ownedSet: _ownedSet, onTog
 
       {/* Special sections */}
       {missingSpecials.length > 0 && (
-        <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-100">
-            <span className="font-bold text-sm text-amber-700">✨ Especiales</span>
+        <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+          <div className="px-4 py-3 border-b border-border">
+            <span className="font-bold text-sm text-accent">✨ Especiales</span>
           </div>
           <div className="p-3 space-y-2">
             {missingSpecials.map(section => (
-              <div key={section.code} className="bg-gray-50 rounded-xl p-3">
+              <div key={section.code} className="bg-muted/50 rounded-xl p-3">
                 <div className="flex items-center justify-between mb-2.5">
                   <div className="flex items-center gap-2.5">
                     <span className="text-xl">{section.icon}</span>
-                    <span className="font-semibold text-sm text-gray-900">{section.name}</span>
+                    <span className="font-semibold text-sm text-foreground">{section.name}</span>
                   </div>
-                  <span className="text-xs font-bold text-gray-400">
+                  <span className="text-xs font-bold text-muted-foreground">
                     {section.missing.length} faltantes
                   </span>
                 </div>
@@ -182,7 +182,7 @@ export function MissingListScreen({ groups, specials, ownedSet: _ownedSet, onTog
                     <button
                       key={id}
                       onClick={() => onToggle(id)}
-                      className="px-3 py-2 sm:py-1.5 rounded-full text-xs font-bold border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all active:scale-95"
+                      className="px-3 py-2 sm:py-1.5 rounded-full text-xs font-bold border border-border bg-card text-muted-foreground hover:bg-accent/10 hover:border-accent/30 hover:text-accent transition-all active:scale-95"
                     >
                       {code}
                     </button>
