@@ -131,7 +131,7 @@ describe('GetSharedCollectionUseCase', () => {
     mockShareRepo.getByCode.mockResolvedValue(share);
     mockUserRepo.getById.mockResolvedValue(user);
     mockStickerRepo.getByAlbum.mockResolvedValue([sticker]);
-    mockUserCollectionRepo.findByAccount.mockResolvedValue([ownedSticker]);
+    mockUserCollectionRepo.findByAccountAndAlbum.mockResolvedValue([ownedSticker]);
     mockTeamRepo.getByAlbum.mockResolvedValue([team]);
 
     const result = await useCase.execute('TEST123');
@@ -217,7 +217,7 @@ describe('GetSharedCollectionUseCase', () => {
     mockShareRepo.getByCode.mockResolvedValue(share);
     mockUserRepo.getById.mockResolvedValue(user);
     mockStickerRepo.getByAlbum.mockResolvedValue([]);
-    mockUserCollectionRepo.findByAccount.mockResolvedValue([]);
+    mockUserCollectionRepo.findByAccountAndAlbum.mockResolvedValue([]);
     mockTeamRepo.getByAlbum.mockResolvedValue([]);
 
     const result = await useCase.execute('TEST789');
