@@ -16,3 +16,4 @@
 
 ### Pendientes
 - [x] **Sincronizar usuarios de auth.users a public.users**: Migración 008 ejecutada en Supabase SQL Editor
+- [x] **SaaS - Subscription access system**: Migración 009 ejecutada via `supabase db push`, columnas `trial_started_at`/`trial_ends_at`/`access_status` agregadas a `public.users`, tabla `access_logs` creada

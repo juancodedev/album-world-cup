@@ -136,6 +136,12 @@ export default function SettingsPage() {
             >
               Panel de Administración
             </a>
+            <a
+              href="/admin/users"
+              className="flex items-center gap-2 w-full h-10 px-4 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100 transition-colors"
+            >
+              Gestión de Usuarios
+            </a>
           </div>
         )}
 
