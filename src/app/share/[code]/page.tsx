@@ -13,6 +13,10 @@ export default function SharedCollectionPage() {
   const { data: share, isLoading, error } = useSharedCollection(code);
   const [expandedTeam, setExpandedTeam] = useState<string | null>(null);
 
+  const totalDuplicates = share ? share.teams.reduce(
+    (sum, t) => sum + t.stickers.reduce((a, s) => a + s.duplicateCount, 0), 0
+  ) : 0;
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -47,7 +51,7 @@ export default function SharedCollectionPage() {
         {share.stats && (
           <div className="bg-white rounded-2xl p-6 shadow-sm">
             <h3 className="font-semibold text-gray-900 mb-4">Progreso</h3>
-            <div className="grid grid-cols-3 gap-4 text-center">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
               <div>
                 <p className="text-2xl font-bold text-blue-600">{share.stats.percentage}%</p>
                 <p className="text-xs text-gray-500">Completado</p>
@@ -60,15 +64,19 @@ export default function SharedCollectionPage() {
                 <p className="text-2xl font-bold text-red-600">{share.stats.missing}</p>
                 <p className="text-xs text-gray-500">Faltantes</p>
               </div>
+              <div>
+                <p className="text-2xl font-bold text-blue-600">{totalDuplicates}</p>
+                <p className="text-xs text-gray-500">Repetidas</p>
+              </div>
             </div>
           </div>
         )}
 
-        {share.showDuplicates && share.teams.some(t => t.stickers.some(s => s.duplicateCount > 0)) && (
+        {share.showDuplicates && totalDuplicates > 0 && (
           <div className="bg-white rounded-2xl p-6 shadow-sm">
             <h3 className="font-semibold text-gray-900 mb-4">Repetidas</h3>
             <p className="text-sm text-gray-600">
-              {share.teams.reduce((sum, t) => sum + t.stickers.reduce((a, s) => a + s.duplicateCount, 0), 0)} stickers repetidos
+              {totalDuplicates} stickers repetidos
             </p>
           </div>
         )}
@@ -110,16 +118,16 @@ export default function SharedCollectionPage() {
                             <div
                               key={s.number}
                               className={`
-                                aspect-[3/4] rounded text-[9px] font-bold flex flex-col items-center justify-center relative
+                                aspect-[3/4] rounded text-[9px] font-bold flex flex-col items-center justify-center gap-0.5
                                 ${s.owned
                                   ? 'bg-gradient-to-br from-green-500 to-green-700 text-white shadow-sm'
                                   : 'bg-gray-100 border border-dashed border-gray-200 text-gray-400'
                                 }
                               `}
                             >
-                              <span>{s.owned ? '✓' : stickerCode}</span>
+                              <span>{stickerCode}</span>
                               {dupCount > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-[7px] rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold shadow">
+                                <span className="bg-blue-500 text-white text-[7px] rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold shadow">
                                   {dupCount}
                                 </span>
                               )}

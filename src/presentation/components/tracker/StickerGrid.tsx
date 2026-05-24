@@ -64,32 +64,26 @@ export function StickerGrid({ teamCode, stickers, ownedSet, onToggle, onDuplicat
                 src={sticker.imageThumbnail || sticker.imageUrl}
                 alt={code}
                 owned={owned}
+                dupCount={dupCount}
               />
             ) : sticker ? (
-              <div className="w-full h-full flex flex-col items-center justify-center p-0.5 sm:p-1">
+              <div className="w-full h-full flex flex-col items-center justify-center p-0.5 sm:p-1 gap-0.5">
                 <span className={`font-bold leading-tight text-center break-all px-0.5 ${
                   owned
                     ? 'text-green-700 text-[10px] sm:text-sm'
                     : 'text-gray-400 text-[9px] sm:text-xs'
                 }`}>
-                  {owned ? '✓ OBTENIDA' : code}
+                  {code}
                 </span>
+                {dupCount > 0 && (
+                  <div className="bg-blue-500 text-white text-[7px] sm:text-[8px] rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center font-bold shadow-md">
+                    {dupCount}
+                  </div>
+                )}
               </div>
             ) : (
               <div className="w-full h-full flex items-center justify-center p-0.5">
                 <span className="text-[7px] sm:text-[8px] text-gray-300 font-mono text-center leading-tight">{code}</span>
-              </div>
-            )}
-
-            {owned && (
-              <div className="absolute bottom-0 left-0 right-0 bg-green-500 text-white text-[6px] sm:text-[7px] font-bold text-center py-0.5 leading-none">
-                ✓
-              </div>
-            )}
-
-            {dupCount > 0 && (
-              <div className="absolute -top-1 -right-1 bg-blue-500 text-white text-[7px] sm:text-[8px] rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center font-bold shadow-md z-20">
-                {dupCount}
               </div>
             )}
           </div>
@@ -99,19 +93,24 @@ export function StickerGrid({ teamCode, stickers, ownedSet, onToggle, onDuplicat
   );
 }
 
-function Thumbnail({ src, alt, owned }: { src: string; alt: string; owned: boolean }) {
+function Thumbnail({ src, alt, owned, dupCount }: { src: string; alt: string; owned: boolean; dupCount?: number }) {
   const [error, setError] = useState(false);
 
   if (error) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center p-0.5 sm:p-1">
+      <div className="w-full h-full flex flex-col items-center justify-center p-0.5 sm:p-1 gap-0.5">
         <span className={`font-bold leading-tight text-center break-all px-0.5 ${
           owned
             ? 'text-green-700 text-[10px] sm:text-sm'
             : 'text-gray-400 text-[9px] sm:text-xs'
         }`}>
-          {owned ? '✓' : alt.replace('#', '')}
+          {alt.replace('#', '')}
         </span>
+        {(dupCount ?? 0) > 0 && (
+          <div className="bg-blue-500 text-white text-[7px] sm:text-[8px] rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center font-bold shadow-md">
+            {dupCount}
+          </div>
+        )}
       </div>
     );
   }

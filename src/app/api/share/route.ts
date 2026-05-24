@@ -3,6 +3,7 @@ import { createServerSideClient, createServiceRoleClient } from '../../../infras
 import { SupabaseShareCollectionRepository } from '../../../infrastructure/repositories/supabase-share-collection.repository';
 import { SupabaseUserCollectionRepository } from '../../../infrastructure/repositories/supabase-user-collection.repository';
 import { SupabaseStickerRepository } from '../../../infrastructure/repositories/supabase-sticker.repository';
+import { SupabaseStickerDuplicateRepository } from '../../../infrastructure/repositories/supabase-sticker-duplicate.repository';
 import { SupabaseUserRepository } from '../../../infrastructure/repositories/supabase-user.repository';
 import { SupabaseTeamRepository } from '../../../infrastructure/repositories/supabase-team.repository';
 import { GenerateShareCodeUseCase } from '../../../application/use-cases/share/generate-share-code.use-case';
@@ -54,6 +55,7 @@ export async function GET(request: NextRequest) {
     const useCase = new GetSharedCollectionUseCase(
       new SupabaseShareCollectionRepository(supabase),
       new SupabaseUserCollectionRepository(supabase),
+      new SupabaseStickerDuplicateRepository(supabase),
       new SupabaseStickerRepository(supabase),
       new SupabaseUserRepository(supabase),
       new SupabaseTeamRepository(supabase),
