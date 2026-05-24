@@ -26,8 +26,15 @@ export default function DashboardPage() {
     }
   }, [user, authLoading, router]);
 
-  const { data: defaultAccount } = useCurrentAccount(user?.id);
+  const { data: defaultAccount, isLoading: accountLoading } = useCurrentAccount(user?.id);
   const accountId = defaultAccount?.id || '';
+
+  useEffect(() => {
+    if (user && !accountLoading && !defaultAccount) {
+      router.replace('/settings?setup=true');
+    }
+  }, [user, defaultAccount, accountLoading, router]);
+
   const { progress } = useStatistics(accountId, DEFAULT_ALBUM_ID);
   const { stats, isLoading } = useCollection(accountId, DEFAULT_ALBUM_ID);
 

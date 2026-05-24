@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { RareStickerBadge } from './RareStickerBadge';
 
 interface StickerCardProps {
@@ -37,7 +36,9 @@ export function StickerCard({
   onDeleteClick,
   variant = 'grid',
 }: StickerCardProps) {
-  const [imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
+
+  const hasImage = Boolean(imageUrl);
 
   const stateStyles = {
     missing: 'border-gray-200 opacity-80',
@@ -51,20 +52,41 @@ export function StickerCard({
     duplicate: '🔄',
   };
 
+  const renderPlaceholder = () => (
+    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+      <div className="text-center">
+        <span className="text-4xl text-gray-300 block mb-1">
+          {state === 'obtained' ? '✓' : '?'}
+        </span>
+        {state === 'obtained' && (
+          <span className="text-[8px] font-bold text-green-500 bg-green-100 px-1.5 py-0.5 rounded-full">
+            OBTENIDA
+          </span>
+        )}
+      </div>
+    </div>
+  );
+
+  const renderImage = () => {
+    if (imageError || !hasImage) return renderPlaceholder();
+    return (
+      <img
+        src={imageUrl}
+        alt={`Sticker #${number}`}
+        className="w-full h-full object-cover"
+        onError={() => setImageError(true)}
+      />
+    );
+  };
+
   if (variant === 'list') {
     return (
       <div
         onClick={onClick}
         className={`flex items-center gap-3 p-3 bg-white rounded-lg border-2 ${stateStyles[state]} hover:shadow-md transition-all cursor-pointer`}
       >
-        <div className="relative w-12 h-16 shrink-0">
-          <Image
-            src={imageUrl}
-            alt={`#${number}`}
-            fill
-            className="object-cover rounded"
-            onLoadingComplete={() => setImageLoading(false)}
-          />
+        <div className="relative w-12 h-16 shrink-0 rounded overflow-hidden bg-gray-100">
+          {renderImage()}
         </div>
 
         <div className="flex-1 min-w-0">
@@ -111,16 +133,7 @@ export function StickerCard({
         className={`relative overflow-hidden rounded-xl border-2 ${stateStyles[state]} bg-white shadow-sm hover:shadow-lg transition-shadow`}
       >
         <div className="aspect-[63/88] relative">
-          <Image
-            src={imageUrl}
-            alt={`Sticker #${number}`}
-            fill
-            className="object-cover"
-            onLoadingComplete={() => setImageLoading(false)}
-          />
-          {imageLoading && (
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-200 animate-pulse" />
-          )}
+          {renderImage()}
 
           {/* Rarity indicator line */}
           <div

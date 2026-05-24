@@ -150,6 +150,7 @@ class DIContainer {
         this.getStickerDuplicateRepository(),
         this.getStickerRepository(),
         this.getAlbumRepository(),
+        this.getTeamRepository(),
       ));
   }
 
@@ -180,6 +181,7 @@ class DIContainer {
         this.getUserCollectionRepository(),
         this.getStickerRepository(),
         this.getUserRepository(),
+        this.getTeamRepository(),
       ));
   }
 

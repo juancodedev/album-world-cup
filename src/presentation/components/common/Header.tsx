@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../../providers/AuthProvider';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../components/ui/avatar';
@@ -7,6 +8,18 @@ import { Button } from '../../../components/ui/button';
 
 export function Header() {
   const { user, signOut } = useAuth();
+  const [profile, setProfile] = useState<{ fullName?: string; avatarUrl?: string } | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    fetch('/api/user/profile')
+      .then(r => r.json())
+      .then(d => setProfile(d.user))
+      .catch(() => {});
+  }, [user]);
+
+  const displayName = profile?.fullName || user?.fullName || user?.email || '';
+  const displayAvatar = profile?.avatarUrl || user?.avatarUrl || '';
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md">
@@ -21,10 +34,14 @@ export function Header() {
         <div className="flex items-center gap-3">
           {user ? (
             <>
+              <div className="hidden sm:block text-right">
+                <p className="text-sm font-medium text-gray-900 leading-tight">{displayName}</p>
+                <p className="text-[10px] text-gray-400">Coleccionista</p>
+              </div>
               <Avatar className="h-8 w-8">
-                <AvatarImage src={user.avatarUrl || ''} alt={user.fullName || ''} />
-                <AvatarFallback className="bg-blue-100 text-blue-700">
-                  {user.fullName?.charAt(0) || user.email?.charAt(0) || 'U'}
+                <AvatarImage src={displayAvatar} alt={displayName} />
+                <AvatarFallback className="bg-blue-100 text-blue-700 text-xs font-bold">
+                  {displayName.charAt(0).toUpperCase() || 'U'}
                 </AvatarFallback>
               </Avatar>
               <Button variant="ghost" size="sm" onClick={signOut}>

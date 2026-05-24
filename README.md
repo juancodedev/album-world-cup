@@ -55,6 +55,18 @@ Aplicación web para coleccionar y dar seguimiento a las láminas del Álbum Pan
 - Usuarios autenticados ven el ranking dentro de `DashboardLayout` con sidebar y navegación
 - Ruta: `/tracker/ranking`
 
+### ✅ Fase 7 — Mejoras UI/UX y funcionalidades (Completada)
+- **Avatar en header**: Muestra nombre completo del usuario (desde `public.users`) en vez de solo email
+- **Miniaturas en StickerGrid**: Las celdas del tracker muestran miniatura real de cada lámina (`imageThumbnail`)
+- **Placeholder en imágenes**: Si una lámina no tiene imagen o falla al cargar, se muestra placeholder SVG con "?" y badge "OBTENIDA"
+- **Debounce en Tracker**: Toggled de stickers se acumulan y guardan 5s después de la última acción
+- **Compartir colección**: Página pública `/share/[code]` con stats, progreso por selección (banderas + barras), y CTA para registrarse
+- **Editar láminas en Admin**: Panel admin con editor de stickers (imagen, jugador, rarity) y PATCH endpoint
+- **Restricción Admin**: Solo `cl.jmunoz@gmail.com` puede acceder al panel de administración
+- **Progreso por Selección**: Names de equipos correctamente poblados en barras de progreso
+- **Eliminar "Buscar" del menú**: Opción de búsqueda removida del Sidebar y BottomNav
+- **Atribución**: Footer con crédito a [Juan Muñoz](https://www.juancode.dev)
+
 ## Getting Started
 
 ```bash
@@ -70,22 +82,22 @@ Open [http://localhost:3000](http://localhost:3000).
 | `pnpm dev` | Dev server |
 | `pnpm build` | Build Next.js |
 | `pnpm lint` | ESLint |
-| `pnpm test` | Jest (121 tests) |
+| `pnpm test` | Jest (126 tests) |
 | `pnpm seed:worldcup` | Seed stickers via Supabase REST API |
 
 ## Tests
 
-121 tests en 19 suites, todas con datos mock:
+126 tests en 20 suites, todas con datos mock:
 
 | Categoría | Archivos | Tests |
 |-----------|----------|-------|
 | Value Objects | `rarity.vo`, `progress.vo`, `sticker-state.vo`, `sticker-type.vo` | 4 suites |
 | Domain Entities | `user-collection.entity`, `team.entity`, `sticker.entity`, `user.entity`, `album.entity`, `account.entity`, `account-member.entity` | 7 suites |
-| Use Cases | `add-sticker.use-case` | 2 suites (unit + integration) |
+| Use Cases | `add-sticker.use-case`, `get-shared-collection.use-case` | 3 suites (unit + integration) |
 | Services | `statistics.service` | 1 suite |
 
 ```
-pnpm test        # 19 suites, 121 tests
+pnpm test        # 20 suites, 126 tests
 ```
 
 ## Plan detallado

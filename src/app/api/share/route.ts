@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSideClient } from '../../../infrastructure/database/supabase.server';
+import { createServerSideClient, createServiceRoleClient } from '../../../infrastructure/database/supabase.server';
 import { SupabaseShareCollectionRepository } from '../../../infrastructure/repositories/supabase-share-collection.repository';
+import { SupabaseUserCollectionRepository } from '../../../infrastructure/repositories/supabase-user-collection.repository';
+import { SupabaseStickerRepository } from '../../../infrastructure/repositories/supabase-sticker.repository';
+import { SupabaseUserRepository } from '../../../infrastructure/repositories/supabase-user.repository';
+import { SupabaseTeamRepository } from '../../../infrastructure/repositories/supabase-team.repository';
 import { GenerateShareCodeUseCase } from '../../../application/use-cases/share/generate-share-code.use-case';
+import { GetSharedCollectionUseCase } from '../../../application/use-cases/share/get-shared-collection.use-case';
 import { shareCollectionMapper } from '../../../application/mappers/share-collection.mapper';
 
 export async function POST(request: NextRequest) {
@@ -41,19 +46,23 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'code is required' }, { status: 400 });
   }
 
-  const supabase = await createServerSideClient();
+  const supabase = createServiceRoleClient();
+  if (!supabase) {
+    return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+  }
 
   try {
-    const repo = new SupabaseShareCollectionRepository(supabase);
-    const share = await repo.getByCode(code);
+    const useCase = new GetSharedCollectionUseCase(
+      new SupabaseShareCollectionRepository(supabase),
+      new SupabaseUserCollectionRepository(supabase),
+      new SupabaseStickerRepository(supabase),
+      new SupabaseUserRepository(supabase),
+      new SupabaseTeamRepository(supabase),
+    );
 
-    if (!share) {
-      return NextResponse.json({ error: 'Not found' }, { status: 404 });
-    }
+    const result = await useCase.execute(code);
 
-    return NextResponse.json({
-      data: shareCollectionMapper.toDTO(share),
-    });
+    return NextResponse.json({ data: result });
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to fetch shared collection' },

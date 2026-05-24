@@ -1,3 +1,20 @@
+export interface ShareStickerInfo {
+  number: number;
+  position: number;
+  owned: boolean;
+  duplicateCount: number;
+}
+
+export interface ShareTeamStats {
+  teamId: string;
+  teamCode: string;
+  teamName: string;
+  teamFlag: string | null;
+  total: number;
+  owned: number;
+  stickers: ShareStickerInfo[];
+}
+
 export interface ShareCollectionDTO {
   id: string;
   userId: string;
@@ -16,4 +33,5 @@ export interface ShareCollectionDTO {
     missing: number;
     percentage: number;
   } | null;
+  teams: ShareTeamStats[];
 }

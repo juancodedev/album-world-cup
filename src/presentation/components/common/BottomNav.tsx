@@ -7,7 +7,6 @@ const navItems = [
   { href: '/dashboard', label: 'Inicio', icon: '🏠' },
   { href: '/tracker', label: 'Tracker', icon: '⚽' },
   { href: '/collection', label: 'Colección', icon: '📦' },
-  { href: '/search', label: 'Buscar', icon: '🔍' },
   { href: '/statistics', label: 'Estadísticas', icon: '📊' },
   { href: '/settings', label: 'Ajustes', icon: '⚙️' },
 ];

@@ -79,8 +79,8 @@ export class SupabaseAuthAdapter {
       user: {
         id: session.user.id,
         email: session.user.email || '',
-        fullName: session.user.user_metadata?.full_name,
-        avatarUrl: session.user.user_metadata?.avatar_url,
+        fullName: session.user.user_metadata?.full_name as string | undefined,
+        avatarUrl: session.user.user_metadata?.avatar_url as string | undefined,
       },
       isLoading: false,
     };
@@ -88,14 +88,14 @@ export class SupabaseAuthAdapter {
 
   onAuthStateChange(callback: (session: AuthSession) => void): () => void {
     const { data: { subscription } } = this.getClient().auth.onAuthStateChange(
-      async (_event: string, session) => {
+      (_event: string, session) => {
         if (session) {
           callback({
             user: {
               id: session.user.id,
               email: session.user.email || '',
-              fullName: session.user.user_metadata?.full_name,
-              avatarUrl: session.user.user_metadata?.avatar_url,
+              fullName: session.user.user_metadata?.full_name as string | undefined,
+              avatarUrl: session.user.user_metadata?.avatar_url as string | undefined,
             },
             isLoading: false,
           });
