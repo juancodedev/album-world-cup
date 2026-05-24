@@ -6,6 +6,7 @@ import { useAuth } from '../../../presentation/providers/AuthProvider';
 import { useTracker } from '../../../presentation/hooks/useTracker';
 import { GroupCard } from '../../../presentation/components/tracker/GroupCard';
 import { SpecialCard } from '../../../presentation/components/tracker/SpecialCard';
+import { CircularProgress } from '../../../presentation/components/tracker/CircularProgress';
 import { DashboardLayout } from '../../../presentation/layouts/DashboardLayout';
 import { Progress } from '../../../components/ui/progress';
 import { GROUP_ORDER } from '../../../shared/constants/tracker.constants';
@@ -80,8 +81,8 @@ export default function TrackerPage() {
           <h1 className="text-base sm:text-2xl font-black mb-3 sm:mb-4 leading-tight">
             FIFA WORLD CUP <span className="text-amber-400">2026</span>
           </h1>
-          <div className="flex items-center gap-3 mb-3 sm:mb-4">
-            <span className="text-2xl sm:text-5xl font-black text-pink-300">{pct}%</span>
+          <div className="flex justify-start mb-3 sm:mb-4">
+            <CircularProgress value={pct} size={120} strokeWidth={7} />
           </div>
           <Progress value={pct} className="h-1.5 sm:h-2 bg-white/20" />
           <div className="flex items-center justify-around gap-1 mt-3 sm:mt-4 text-center">
