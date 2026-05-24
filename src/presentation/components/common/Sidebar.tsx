@@ -6,8 +6,6 @@ import { Countdown } from './Countdown';
 
 const navItems = [
   { href: '/tracker', label: 'Tracker', icon: '⚽' },
-  { href: '/collection', label: 'Mi Colección', icon: '📦' },
-  { href: '/statistics', label: 'Estadísticas', icon: '📊' },
   { href: '/share', label: 'Compartir', icon: '📤' },
   { href: '/settings', label: 'Configuración', icon: '⚙️' },
 ];

@@ -127,24 +127,6 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {user.email === 'cl.jmunoz@gmail.com' && (
-          <div className="bg-white rounded-xl border p-6 space-y-4">
-            <h3 className="font-semibold text-gray-900">Administración</h3>
-            <a
-              href="/admin/seed"
-              className="flex items-center gap-2 w-full h-10 px-4 bg-indigo-50 text-indigo-700 rounded-lg text-sm font-medium hover:bg-indigo-100 transition-colors"
-            >
-              Panel de Administración
-            </a>
-            <a
-              href="/admin/users"
-              className="flex items-center gap-2 w-full h-10 px-4 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100 transition-colors"
-            >
-              Gestión de Usuarios
-            </a>
-          </div>
-        )}
-
         <div className="bg-white rounded-xl border p-6 space-y-4">
           <h3 className="font-semibold text-gray-900">Cuenta</h3>
           <Button variant="destructive" onClick={signOut} className="w-full">

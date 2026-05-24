@@ -52,7 +52,7 @@ export default function SearchPage() {
             teams={results.teams}
             isSearching={isSearching}
             query={typeof query === 'function' ? '' : query}
-            onStickerClick={(id) => router.push(`/collection/${id}`)}
+
           />
         )}
       </div>
