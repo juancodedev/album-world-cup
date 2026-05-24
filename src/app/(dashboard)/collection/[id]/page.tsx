@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { useAuth } from '../../../../presentation/providers/AuthProvider';
 import { useStickerDetail } from '../../../../presentation/hooks/useStickers';
 import { useCollection } from '../../../../presentation/hooks/useCollection';
@@ -12,6 +11,29 @@ import { DuplicateCounter } from '../../../../presentation/components/collection
 import { Skeleton } from '../../../../components/ui/skeleton';
 import { Button } from '../../../../components/ui/button';
 import { DashboardLayout } from '../../../../presentation/layouts/DashboardLayout';
+
+function StickerImage({ imageUrl, number }: { imageUrl: string; number: number }) {
+  const [error, setError] = useState(false);
+  const hasImage = Boolean(imageUrl);
+
+  if (!hasImage || error) {
+    return (
+      <div className="text-center">
+        <span className="text-5xl text-gray-300 block mb-1">?</span>
+        <span className="text-[10px] font-bold text-gray-400">#{number}</span>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imageUrl}
+      alt={`#${number}`}
+      className="w-full h-full object-contain p-4"
+      onError={() => setError(true)}
+    />
+  );
+}
 
 const DEFAULT_ALBUM_ID = '00000000-0000-0000-0000-000000000001';
 
@@ -68,13 +90,8 @@ export default function StickerDetailPage() {
         </button>
 
         <div className="bg-white rounded-2xl overflow-hidden shadow-lg border">
-          <div className="aspect-[63/88] relative bg-gradient-to-br from-gray-50 to-gray-100">
-            <Image
-              src={sticker.imageUrl}
-              alt={`#${sticker.number}`}
-              fill
-              className="object-contain p-4"
-            />
+          <div className="aspect-[63/88] relative bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+            <StickerImage imageUrl={sticker.imageUrl} number={sticker.number} />
           </div>
 
           <div className="p-5 space-y-4">

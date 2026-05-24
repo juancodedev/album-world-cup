@@ -26,11 +26,14 @@ export function useShare(accountId?: string, userId?: string) {
 }
 
 export function useSharedCollection(code: string) {
-  const shareService = container.getShareService();
-
   return useQuery<ShareCollectionDTO>({
     queryKey: ['shared-collection', code],
-    queryFn: () => shareService.getSharedCollection(code),
+    queryFn: async () => {
+      const res = await fetch(`/api/share?code=${encodeURIComponent(code)}`);
+      if (!res.ok) throw new Error('Not found');
+      const json = await res.json();
+      return json.data;
+    },
     enabled: !!code,
     retry: false,
   });

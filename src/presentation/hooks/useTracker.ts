@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef, useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../providers/AuthProvider';
 import { useCurrentAccount } from './useCurrentAccount';
@@ -49,8 +50,16 @@ interface TrackerData {
 }
 
 const ALBUM_ID = '00000000-0000-0000-0000-000000000001';
+const DEBOUNCE_MS = 5000;
 
-function buildTrackerData(collection: StickerDTO[], teams: TeamInfo[]): TrackerData {
+function buildTrackerData(collection: StickerDTO[], teams: TeamInfo[], localToggles: Set<string>): TrackerData {
+  const collectionMap = new Map(collection.map(s => [s.id, s]));
+
+  function isOwned(sticker: StickerDTO): boolean {
+    if (localToggles.has(sticker.id)) return !(sticker.state !== 'missing');
+    return sticker.state !== 'missing';
+  }
+
   const groupMap = new Map<string, TeamInfo[]>();
 
   for (const team of teams) {
@@ -67,11 +76,11 @@ function buildTrackerData(collection: StickerDTO[], teams: TeamInfo[]): TrackerD
     if (!groupTeams) continue;
 
     const groupTeamsData = groupTeams.map(team => {
-      const stickers = collection
+      const stickers = (collection
         .filter(s => s.teamId === team.id)
-        .sort((a, b) => a.number - b.number);
+        .sort((a, b) => a.number - b.number));
 
-      const ownedCount = stickers.filter(s => s.state !== 'missing').length;
+      const ownedCount = stickers.filter(s => isOwned(s)).length;
       return {
         id: team.id,
         code: team.code,
@@ -99,7 +108,7 @@ function buildTrackerData(collection: StickerDTO[], teams: TeamInfo[]): TrackerD
       .filter(s => s.isSpecial && s.specialAttribute === section.code)
       .sort((a, b) => a.number - b.number);
 
-    const ownedCount = specialStickers.filter(s => s.state !== 'missing').length;
+    const ownedCount = specialStickers.filter(s => isOwned(s)).length;
     totalOwned += ownedCount;
 
     return {
@@ -142,23 +151,78 @@ export function useTracker() {
     enabled: !!accountId,
   });
 
+  const userId = user?.id;
+
+  const pendingQueue = useRef<Array<{ type: 'add' | 'remove'; stickerId: string }>>([]);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [toggleVersion, setToggleVersion] = useState(0);
+  const localToggles = useRef<Set<string>>(new Set());
+
+  const flushQueue = useCallback(() => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+      debounceTimer.current = null;
+    }
+    const queue = pendingQueue.current;
+    pendingQueue.current = [];
+    localToggles.current = new Set();
+    setToggleVersion(v => v + 1);
+
+    const adds = queue.filter(i => i.type === 'add').map(i => i.stickerId);
+    const removes = queue.filter(i => i.type === 'remove').map(i => i.stickerId);
+
+    for (const id of adds) {
+      addStickerMutation({ stickerId: id, userId: userId! });
+    }
+    for (const id of removes) {
+      removeStickerMutation({ stickerId: id, userId: userId! });
+    }
+  }, [addStickerMutation, removeStickerMutation, userId]);
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+      flushQueue();
+    };
+  }, [flushQueue]);
+
+  const enqueue = useCallback((type: 'add' | 'remove', stickerId: string) => {
+    pendingQueue.current.push({ type, stickerId });
+    localToggles.current.add(stickerId);
+    setToggleVersion(v => v + 1);
+
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(flushQueue, DEBOUNCE_MS);
+  }, [flushQueue]);
+
   const isLoading = authLoading || collectionLoading || teamsQuery.isLoading;
 
-  let data: TrackerData | null = null;
-  if (collection.length > 0 && teamsQuery.data) {
-    data = buildTrackerData(collection, teamsQuery.data);
-  }
+  const data = useMemo(() => {
+    if (collection.length > 0 && teamsQuery.data) {
+      return buildTrackerData(collection, teamsQuery.data, localToggles.current);
+    }
+    return null;
+  }, [collection, teamsQuery.data, toggleVersion]);
+
+  const ownedSet = useMemo(() => {
+    const base = new Set(collection.filter(s => s.state !== 'missing').map(s => s.id));
+    for (const id of localToggles.current) {
+      if (base.has(id)) base.delete(id);
+      else base.add(id);
+    }
+    return base;
+  }, [collection, toggleVersion]);
 
   return {
     data,
     isLoading,
     collection,
     addSticker: (stickerId: string) => {
-      addStickerMutation({ stickerId, userId: user!.id });
+      enqueue('add', stickerId);
     },
     removeSticker: (stickerId: string) => {
-      removeStickerMutation({ stickerId, userId: user!.id });
+      enqueue('remove', stickerId);
     },
-    ownedSet: new Set(collection.filter(s => s.state !== 'missing').map(s => s.id)),
+    ownedSet,
   };
 }

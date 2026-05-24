@@ -68,6 +68,41 @@ export class SupabaseAuthAdapter {
     if (error) throw error;
   }
 
+  private async enrichWithPublicProfile(base: {
+    id: string;
+    email: string;
+    fullName?: string;
+    avatarUrl?: string;
+  }): Promise<typeof base> {
+    try {
+      const { data } = await this.getClient()
+        .from('users')
+        .select('full_name, avatar_url')
+        .eq('auth_uid', base.id)
+        .maybeSingle();
+
+      if (data) {
+        return {
+          ...base,
+          fullName: data.full_name || base.fullName,
+          avatarUrl: data.avatar_url || base.avatarUrl,
+        };
+      }
+    } catch {
+      // fallback to auth metadata
+    }
+    return base;
+  }
+
+  private buildUser(session: import('@supabase/supabase-js').Session) {
+    return {
+      id: session.user.id,
+      email: session.user.email || '',
+      fullName: session.user.user_metadata?.full_name as string | undefined,
+      avatarUrl: session.user.user_metadata?.avatar_url as string | undefined,
+    };
+  }
+
   async getSession(): Promise<AuthSession> {
     const { data: { session }, error } = await this.getClient().auth.getSession();
 
@@ -76,12 +111,7 @@ export class SupabaseAuthAdapter {
     }
 
     return {
-      user: {
-        id: session.user.id,
-        email: session.user.email || '',
-        fullName: session.user.user_metadata?.full_name,
-        avatarUrl: session.user.user_metadata?.avatar_url,
-      },
+      user: await this.enrichWithPublicProfile(this.buildUser(session)),
       isLoading: false,
     };
   }
@@ -91,12 +121,7 @@ export class SupabaseAuthAdapter {
       async (_event: string, session) => {
         if (session) {
           callback({
-            user: {
-              id: session.user.id,
-              email: session.user.email || '',
-              fullName: session.user.user_metadata?.full_name,
-              avatarUrl: session.user.user_metadata?.avatar_url,
-            },
+            user: await this.enrichWithPublicProfile(this.buildUser(session)),
             isLoading: false,
           });
         } else {

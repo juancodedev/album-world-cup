@@ -5,12 +5,18 @@ import { createServerSideClient } from '../../infrastructure/database/supabase.s
 
 export const dynamic = 'force-dynamic';
 
+const ADMIN_EMAIL = 'cl.jmunoz@gmail.com';
+
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const supabase = await createServerSideClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     redirect('/login');
+  }
+
+  if (user.email !== ADMIN_EMAIL) {
+    redirect('/dashboard');
   }
 
   return (

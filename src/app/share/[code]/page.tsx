@@ -61,6 +61,19 @@ export default function SharedCollectionPage() {
           </div>
         )}
 
+        <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 text-center shadow-sm">
+          <h3 className="text-white font-bold text-lg mb-2">¿Tú también coleccionas?</h3>
+          <p className="text-blue-100 text-sm mb-4">
+            Registra tus láminas, sigue tu progreso y compite con tus amigos.
+          </p>
+          <a
+            href="/login"
+            className="inline-block bg-white text-blue-600 font-bold px-6 py-2.5 rounded-xl hover:bg-blue-50 transition-colors"
+          >
+            Comenzar ahora
+          </a>
+        </div>
+
         <div className="text-center text-xs text-gray-400">
           Creado con Album World Cup 2026
         </div>

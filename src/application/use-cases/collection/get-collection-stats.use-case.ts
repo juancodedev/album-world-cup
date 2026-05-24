@@ -2,6 +2,7 @@ import { IUserCollectionRepository } from '../../../domain/repositories/user-col
 import { IStickerDuplicateRepository } from '../../../domain/repositories/sticker-duplicate.repository';
 import { IStickerRepository } from '../../../domain/repositories/sticker.repository';
 import { IAlbumRepository } from '../../../domain/repositories/album.repository';
+import { ITeamRepository } from '../../../domain/repositories/team.repository';
 import { CollectionStatsDTO, TeamStatsDTO, RarityStatsDTO } from '../../dtos/collection-stats.dto';
 
 export class GetCollectionStatsUseCase {
@@ -10,15 +11,19 @@ export class GetCollectionStatsUseCase {
     private readonly stickerDuplicateRepository: IStickerDuplicateRepository,
     private readonly stickerRepository: IStickerRepository,
     private readonly albumRepository: IAlbumRepository,
+    private readonly teamRepository: ITeamRepository,
   ) {}
 
   async execute(accountId: string, albumId: string): Promise<CollectionStatsDTO> {
     const album = await this.albumRepository.getById(albumId);
     if (!album) throw new Error('Album not found');
 
-    const allStickers = await this.stickerRepository.getByAlbum(albumId);
-    const userStickers = await this.userCollectionRepository.findByAccountAndAlbum(accountId, albumId);
-    const duplicates = await this.stickerDuplicateRepository.findByAccount(accountId);
+    const [allStickers, userStickers, duplicates, teams] = await Promise.all([
+      this.stickerRepository.getByAlbum(albumId),
+      this.userCollectionRepository.findByAccountAndAlbum(accountId, albumId),
+      this.stickerDuplicateRepository.findByAccount(accountId),
+      this.teamRepository.getByAlbum(albumId),
+    ]);
 
     const ownedStickers = userStickers.length;
     const missingStickers = album.totalStickers - ownedStickers;
@@ -28,23 +33,25 @@ export class GetCollectionStatsUseCase {
       : 0;
 
     const ownedSet = new Set(userStickers.map(us => us.stickerId));
+    const teamLookup = new Map(teams.map(t => [t.id, t]));
 
     const byTeam: TeamStatsDTO[] = [];
-    const teamMap = new Map<string, { total: number; owned: number; name: string; flag: string | null }>();
+    const teamMap = new Map<string, { total: number; owned: number }>();
 
     for (const sticker of allStickers) {
       if (!sticker.teamId) continue;
-      const entry = teamMap.get(sticker.teamId) || { total: 0, owned: 0, name: '', flag: null };
+      const entry = teamMap.get(sticker.teamId) || { total: 0, owned: 0 };
       entry.total += 1;
       if (ownedSet.has(sticker.id)) entry.owned += 1;
       teamMap.set(sticker.teamId, entry);
     }
 
     teamMap.forEach((value, teamId) => {
+      const team = teamLookup.get(teamId);
       byTeam.push({
         teamId,
-        teamName: value.name,
-        teamFlag: value.flag,
+        teamName: team?.name || '',
+        teamFlag: team?.flagUrl || null,
         total: value.total,
         owned: value.owned,
         progressPercentage: value.total > 0 ? Math.round((value.owned / value.total) * 100) : 0,

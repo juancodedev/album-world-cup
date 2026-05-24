@@ -274,6 +274,7 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
   const [teamId, setTeamId] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [loading, setLoading] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
@@ -282,6 +283,7 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
   const [peso, setPeso] = useState('');
   const [clubActual, setClubActual] = useState('');
   const [paisClub, setPaisClub] = useState('');
+  const [imageUrlInput, setImageUrlInput] = useState('');
 
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -291,12 +293,34 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
     ? stickers.filter(s => s.team?.code === teams.find(t => t.id === filterTeamId)?.code)
     : stickers;
 
+  const resetForm = () => {
+    setCode(''); setTeamId(''); setCategoryId(''); setImageFile(null);
+    setNombre(''); setApellido(''); setFechaNacimiento('');
+    setEstatura(''); setPeso(''); setClubActual(''); setPaisClub('');
+    setImageUrlInput(''); setEditingId(null);
+  };
+
+  const startEdit = (s: Sticker) => {
+    setEditingId(s.id);
+    setCode(s.code);
+    setTeamId(s.team ? (teams.find(t => t.code === s.team?.code)?.id || '') : '');
+    setCategoryId(s.category ? (categories.find(c => c.code === s.category?.code)?.id || '') : '');
+    setNombre(s.player_nombre || '');
+    setApellido(s.player_apellido || '');
+    setFechaNacimiento(s.player_fecha_nacimiento || '');
+    setEstatura(s.player_estatura?.toString() || '');
+    setPeso(s.player_peso?.toString() || '');
+    setClubActual(s.player_club_actual || '');
+    setPaisClub(s.player_pais_club || '');
+    setImageUrlInput(s.image_url || '');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!code || !teamId || !categoryId) return;
     setLoading(true);
     try {
-      let imageUrl: string | null = null;
+      let imageUrl: string | null = imageUrlInput || null;
 
       if (imageFile) {
         const uploadForm = new FormData();
@@ -311,32 +335,56 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
         imageUrl = uploadData.url;
       }
 
-      const res = await fetch('/admin/seed/api/stickers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          code,
-          team_id: teamId,
-          category_id: categoryId,
-          image_url: imageUrl,
-          player_nombre: nombre || null,
-          player_apellido: apellido || null,
-          player_fecha_nacimiento: fechaNacimiento || null,
-          player_estatura: estatura || null,
-          player_peso: peso || null,
-          player_club_actual: clubActual || null,
-          player_pais_club: paisClub || null,
-        }),
-      });
-      const data = await res.json();
-      if (data.error) toast.error(data.error);
-      else {
-        toast.success(`Lámina "${code}" creada`);
-        setCode(''); setImageFile(null); setNombre(''); setApellido(''); setFechaNacimiento('');
-        setEstatura(''); setPeso(''); setClubActual(''); setPaisClub('');
-        onSuccess();
+      if (editingId) {
+        const res = await fetch('/admin/seed/api/stickers', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: editingId,
+            image_url: imageUrl,
+            player_nombre: nombre || null,
+            player_apellido: apellido || null,
+            player_fecha_nacimiento: fechaNacimiento || null,
+            player_estatura: estatura || null,
+            player_peso: peso || null,
+            player_club_actual: clubActual || null,
+            player_pais_club: paisClub || null,
+          }),
+        });
+        const data = await res.json();
+        if (data.error) toast.error(data.error);
+        else {
+          toast.success(`Lámina "${code}" actualizada`);
+          resetForm();
+          onSuccess();
+        }
+      } else {
+        const res = await fetch('/admin/seed/api/stickers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            code,
+            team_id: teamId,
+            category_id: categoryId,
+            image_url: imageUrl,
+            player_nombre: nombre || null,
+            player_apellido: apellido || null,
+            player_fecha_nacimiento: fechaNacimiento || null,
+            player_estatura: estatura || null,
+            player_peso: peso || null,
+            player_club_actual: clubActual || null,
+            player_pais_club: paisClub || null,
+          }),
+        });
+        const data = await res.json();
+        if (data.error) toast.error(data.error);
+        else {
+          toast.success(`Lámina "${code}" creada`);
+          resetForm();
+          onSuccess();
+        }
       }
-    } catch { toast.error('Error al crear lámina'); }
+    } catch { toast.error('Error al guardar lámina'); }
     finally { setLoading(false); }
   };
 
@@ -348,7 +396,12 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <div className="bg-white rounded-xl p-6 shadow-sm border">
-        <h2 className="font-semibold text-gray-900 mb-4">Agregar Lámina</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-semibold text-gray-900">{editingId ? 'Editar Lámina' : 'Agregar Lámina'}</h2>
+          {editingId && (
+            <button onClick={resetForm} className="text-xs text-gray-500 hover:text-gray-700">✕ Cancelar</button>
+          )}
+        </div>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -358,6 +411,7 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
                 onChange={e => setCode(e.target.value.toUpperCase())}
                 className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm uppercase"
                 placeholder="Ej: MEX1, FWC"
+                disabled={!!editingId}
               />
             </div>
             <div>
@@ -366,6 +420,7 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
                 value={teamId}
                 onChange={e => setTeamId(e.target.value)}
                 className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
+                disabled={!!editingId}
               >
                 <option value="">Seleccionar...</option>
                 {teams.map(t => <option key={t.id} value={t.id}>{t.name} ({t.code})</option>)}
@@ -379,6 +434,7 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
               value={categoryId}
               onChange={e => setCategoryId(e.target.value)}
               className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
+              disabled={!!editingId}
             >
               <option value="">Seleccionar...</option>
               {categories.map(c => <option key={c.id} value={c.id}>{c.name} ({c.code})</option>)}
@@ -386,7 +442,17 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Imagen (opcional)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">URL de Imagen</label>
+            <input
+              value={imageUrlInput}
+              onChange={e => setImageUrlInput(e.target.value)}
+              className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm"
+              placeholder="https://..."
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">O subir archivo</label>
             <input
               type="file"
               accept="image/*"
@@ -471,7 +537,7 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
             disabled={loading || !code || !teamId || !categoryId}
             className="w-full h-10 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
           >
-            {loading ? 'Creando...' : 'Crear Lámina'}
+            {loading ? 'Guardando...' : editingId ? 'Actualizar Lámina' : 'Crear Lámina'}
           </button>
         </form>
       </div>
@@ -498,9 +564,12 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
             {filteredStickers.map(s => (
               <div key={s.id} className="flex items-center justify-between p-2 rounded-lg bg-gray-50 text-sm">
                 <div className="flex items-center gap-2 min-w-0">
-                  {s.image_url && (
-                    <img src={s.image_url} alt={s.code} className="w-8 h-8 rounded object-cover shrink-0" />
-                  )}
+                  <img
+                    src={s.image_url || ''}
+                    alt={s.code}
+                    className="w-8 h-8 rounded object-cover shrink-0"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
                   <span className="font-mono text-xs font-bold text-indigo-600 w-14 shrink-0">{s.code}</span>
                   <span className="font-medium truncate">
                     {[s.player_nombre, s.player_apellido].filter(Boolean).join(' ') || s.team?.name}
@@ -510,6 +579,13 @@ function StickerPanel({ categories, teams, stickers, onSuccess }: {
                 <div className="flex items-center gap-2 shrink-0">
                   <span className="text-xs bg-gray-100 px-2 py-0.5 rounded">{s.category?.code}</span>
                   {s.player_estatura && <span className="text-xs text-gray-400">{s.player_estatura}cm</span>}
+                  <button
+                    onClick={() => startEdit(s)}
+                    className="text-xs text-indigo-400 hover:text-indigo-600"
+                    title="Editar"
+                  >
+                    ✏️
+                  </button>
                   <button
                     onClick={() => deleteSticker(s.id)}
                     className="text-xs text-red-400 hover:text-red-600"

@@ -21,10 +21,14 @@ export function Header() {
         <div className="flex items-center gap-3">
           {user ? (
             <>
+              <div className="hidden sm:block text-right">
+                <p className="text-sm font-medium text-gray-900 leading-tight">{user.fullName || user.email}</p>
+                <p className="text-[10px] text-gray-400">Coleccionista</p>
+              </div>
               <Avatar className="h-8 w-8">
                 <AvatarImage src={user.avatarUrl || ''} alt={user.fullName || ''} />
-                <AvatarFallback className="bg-blue-100 text-blue-700">
-                  {user.fullName?.charAt(0) || user.email?.charAt(0) || 'U'}
+                <AvatarFallback className="bg-blue-100 text-blue-700 text-xs font-bold">
+                  {(user.fullName || user.email).charAt(0).toUpperCase() || 'U'}
                 </AvatarFallback>
               </Avatar>
               <Button variant="ghost" size="sm" onClick={signOut}>

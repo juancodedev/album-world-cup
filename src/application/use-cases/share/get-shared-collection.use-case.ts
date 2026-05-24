@@ -27,8 +27,9 @@ export class GetSharedCollectionUseCase {
     share.incrementViewCount();
     await this.shareRepository.update(share);
 
-    // Get stats
-    const allStickers = await this.stickerRepository.getByAlbum(''); // TODO: Pass album ID
+    const DEFAULT_ALBUM_ID = '00000000-0000-0000-0000-000000000001';
+
+    const allStickers = await this.stickerRepository.getByAlbum(DEFAULT_ALBUM_ID);
     const userStickers = await this.userCollectionRepository.findByAccount(share.accountId);
 
     return shareCollectionMapper.toDTO(share, {
