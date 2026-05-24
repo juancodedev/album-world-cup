@@ -64,53 +64,54 @@ export default function TrackerPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-4 max-w-3xl mx-auto">
+      <div className="space-y-4">
         {/* Header with progress */}
-        <div className="bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl p-5 text-white">
-          <div className="text-[10px] tracking-[3px] font-bold opacity-70 mb-1">ÁLBUM PANINI</div>
-          <h1 className="text-xl font-black mb-1">
-            FIFA WORLD CUP <span className="text-yellow-300">2026</span>
-          </h1>
-          <div className="flex justify-between items-end mb-2">
-            <div>
-              <div className="text-3xl font-black text-pink-300">{pct}%</div>
-              <div className="flex items-center gap-3">
-                <Link
-                  href="/tracker/missing"
-                  className="text-xs font-bold text-yellow-300 underline underline-offset-2 hover:text-yellow-200 transition-colors"
-                >
-                  ⚡ {missing} faltantes
-                </Link>
-                <Link
-                  href="/tracker/ranking"
-                  className="text-xs font-bold text-yellow-300 underline underline-offset-2 hover:text-yellow-200 transition-colors"
-                >
-                  🏆 Ranking
-                </Link>
-              </div>
-            </div>
-            <div className="text-right text-xs opacity-70">
-              <div>{data?.totalOwned || 0} / {data?.totalCount || 1005}</div>
-              <div>completados</div>
+        <div className="bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl p-3 sm:p-5 text-white">
+          <div className="flex items-center justify-between mb-1 sm:mb-2">
+            <div className="text-[9px] sm:text-[10px] tracking-[3px] font-bold opacity-70">ÁLBUM PANINI</div>
+            <div className="text-[10px] sm:text-xs opacity-70 leading-tight text-right">
+              {data?.totalOwned || 0}/{data?.totalCount || 1005}
             </div>
           </div>
-          <Progress value={pct} className="h-2 bg-white/20 [&>div]:bg-pink-400" />
-          <div className="flex gap-3 mt-3 text-xs">
-            <div className="flex-1 bg-white/10 rounded-lg p-2 text-center">
-              <div className="font-black text-sm">{data ? data.groups.filter(g =>
+          <h1 className="text-sm sm:text-xl font-black mb-2 sm:mb-3 leading-tight">
+            FIFA WORLD CUP <span className="text-yellow-300">2026</span>
+          </h1>
+          <div className="flex items-center justify-between gap-2 mb-2 sm:mb-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <span className="text-xl sm:text-4xl font-black text-pink-300">{pct}%</span>
+              <Link
+                href="/tracker/missing"
+                className="text-[11px] sm:text-xs font-bold text-yellow-300 underline underline-offset-2 hover:text-yellow-200 whitespace-nowrap"
+              >
+                ⚡ {missing}
+              </Link>
+              <Link
+                href="/tracker/ranking"
+                className="text-[11px] sm:text-xs font-bold text-yellow-300 underline underline-offset-2 hover:text-yellow-200 whitespace-nowrap"
+              >
+                🏆
+              </Link>
+            </div>
+          </div>
+          <Progress value={pct} className="h-1.5 sm:h-2 bg-white/20 [&>div]:bg-pink-400" />
+          <div className="flex items-center justify-around gap-1 mt-2 sm:mt-3 text-center">
+            <div>
+              <div className="font-bold text-xs sm:text-sm">{data ? data.groups.filter(g =>
                 g.teams.every(t => t.ownedCount === 20)
               ).length : '-'}/12</div>
-              <div className="opacity-60 text-[10px]">Grupos</div>
+              <div className="opacity-60 text-[9px] sm:text-[10px]">Grupos</div>
             </div>
-            <div className="flex-1 bg-white/10 rounded-lg p-2 text-center">
-              <div className="font-black text-sm">{data ? data.groups.flatMap(g => g.teams).filter(t =>
+            <div className="w-px h-7 sm:h-8 bg-white/20" />
+            <div>
+              <div className="font-bold text-xs sm:text-sm">{data ? data.groups.flatMap(g => g.teams).filter(t =>
                 t.ownedCount === 20
               ).length : '-'}</div>
-              <div className="opacity-60 text-[10px]">Equipos</div>
+              <div className="opacity-60 text-[9px] sm:text-[10px]">Equipos</div>
             </div>
-            <div className="flex-1 bg-white/10 rounded-lg p-2 text-center">
-              <div className="font-black text-sm">{data?.totalOwned || '-'}</div>
-              <div className="opacity-60 text-[10px]">Stickers</div>
+            <div className="w-px h-7 sm:h-8 bg-white/20" />
+            <div>
+              <div className="font-bold text-xs sm:text-sm">{data?.totalOwned || '-'}</div>
+              <div className="opacity-60 text-[9px] sm:text-[10px]">Stickers</div>
             </div>
           </div>
         </div>
@@ -119,7 +120,7 @@ export default function TrackerPage() {
         <div className="flex gap-2">
           <button
             onClick={() => setTab('grupos')}
-            className={`px-5 py-2 rounded-full text-xs font-bold tracking-wide transition-all ${
+            className={`flex-1 sm:flex-none px-5 py-2.5 rounded-full text-xs font-bold tracking-wide transition-all ${
               tab === 'grupos' ? 'bg-pink-500 text-white shadow-md' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
             }`}
           >
@@ -127,7 +128,7 @@ export default function TrackerPage() {
           </button>
           <button
             onClick={() => setTab('especial')}
-            className={`px-5 py-2 rounded-full text-xs font-bold tracking-wide transition-all ${
+            className={`flex-1 sm:flex-none px-5 py-2.5 rounded-full text-xs font-bold tracking-wide transition-all ${
               tab === 'especial' ? 'bg-pink-500 text-white shadow-md' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
             }`}
           >
@@ -146,10 +147,10 @@ export default function TrackerPage() {
             />
 
             {/* Group filter chips */}
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+            <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-2 scrollbar-none">
               <button
                 onClick={() => setActiveGroup('Todos')}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+                className={`px-3 sm:px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
                   activeGroup === 'Todos' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                 }`}
               >
@@ -163,13 +164,13 @@ export default function TrackerPage() {
                   <button
                     key={gid}
                     onClick={() => setActiveGroup(gid)}
-                    className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all flex flex-col items-center leading-tight ${
+                    className={`px-3 sm:px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all flex flex-col items-center leading-tight ${
                       activeGroup === gid ? 'text-white' : 'text-gray-500 bg-gray-100 hover:bg-gray-200'
                     }`}
                     style={activeGroup === gid ? { backgroundColor: color } : {}}
                   >
                     <span>Grupo {gid}</span>
-                    <span className="text-[9px] opacity-70">{gpct}%</span>
+                    <span className="text-[9px] sm:text-[10px] opacity-70">{gpct}%</span>
                   </button>
                 );
               })}

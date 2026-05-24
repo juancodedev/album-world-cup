@@ -30,7 +30,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <Header accessStatus={status} remainingDays={remainingDays} />
       <div className="flex">
         <Sidebar />
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <div className="md:hidden px-4 pt-3 pb-0">
             <Countdown />
           </div>

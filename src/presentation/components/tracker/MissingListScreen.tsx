@@ -145,7 +145,7 @@ export function MissingListScreen({ groups, specials, ownedSet: _ownedSet, onTog
                         <button
                           key={id}
                           onClick={() => onToggle(id)}
-                          className="px-3 py-1.5 rounded-full text-xs font-bold border border-gray-200 bg-white text-gray-600 hover:bg-pink-50 hover:border-pink-200 hover:text-pink-600 transition-all active:scale-95"
+                          className="px-3 py-2 sm:py-1.5 rounded-full text-xs font-bold border border-gray-200 bg-white text-gray-600 hover:bg-pink-50 hover:border-pink-200 hover:text-pink-600 transition-all active:scale-95"
                         >
                           {code}
                         </button>
@@ -182,7 +182,7 @@ export function MissingListScreen({ groups, specials, ownedSet: _ownedSet, onTog
                     <button
                       key={id}
                       onClick={() => onToggle(id)}
-                      className="px-3 py-1.5 rounded-full text-xs font-bold border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all active:scale-95"
+                      className="px-3 py-2 sm:py-1.5 rounded-full text-xs font-bold border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600 transition-all active:scale-95"
                     >
                       {code}
                     </button>

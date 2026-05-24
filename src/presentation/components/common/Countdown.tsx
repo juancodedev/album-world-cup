@@ -41,7 +41,7 @@ export function Countdown() {
         <span className="text-gray-400">:</span>
         <span className="bg-gray-900 text-white rounded-md px-1.5 py-1 min-w-[24px]">{t.sec}</span>
       </div>
-      <p className="text-[10px] text-gray-400 mt-1">para el mundial 2026</p>
+      <p className="text-[10px] text-gray-400 mt-1">Para el mundial 2026</p>
     </div>
   );
 }

@@ -26,35 +26,35 @@ export function GroupCard({ group, ownedSet, onToggle, onMarkAllTeam, onClearAll
   return (
     <div className="rounded-2xl overflow-hidden border border-gray-200 bg-white">
       <div
-        className="px-4 py-3 flex items-center gap-4"
+        className="px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-3 sm:gap-4"
         style={{
           background: `linear-gradient(135deg, ${color}15, ${color}08)`,
           borderBottom: `2px solid ${color}`,
         }}
       >
         <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white text-lg flex-shrink-0"
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center font-black text-white text-base sm:text-lg flex-shrink-0"
           style={{ backgroundColor: color }}
         >
           {group.id}
         </div>
-        <div className="flex-1">
-          <div className="flex justify-between items-center mb-1.5">
-            <span className="text-xs font-bold uppercase tracking-wide" style={{ color: `${color}cc` }}>
+        <div className="flex-1 min-w-0">
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wide truncate min-w-0 mr-2" style={{ color: `${color}cc` }}>
               Grupo {group.id}
             </span>
-            <span className="text-lg font-black" style={{ color }}>
+            <span className="text-base sm:text-lg font-black flex-shrink-0" style={{ color }}>
               {pct}%
             </span>
           </div>
-          <Progress value={pct} className="h-1.5" style={{ backgroundColor: `${color}20` }} />
-          <span className="text-[10px] text-gray-400 mt-1 block">
+          <Progress value={pct} className="h-1 sm:h-1.5" style={{ backgroundColor: `${color}20` }} />
+          <span className="text-[9px] sm:text-[10px] text-gray-400 mt-0.5 block">
             {group.totalOwned}/{group.totalCount} stickers
           </span>
         </div>
       </div>
 
-      <div className="p-2 space-y-2">
+      <div className="p-1.5 sm:p-2 space-y-1.5 sm:space-y-2">
         {group.teams.map(team => (
           <TeamRow
             key={team.id}
