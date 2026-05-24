@@ -51,6 +51,13 @@ export class SupabaseAuthAdapter {
     if (error) throw error;
   }
 
+  async resetPassword(email: string): Promise<{ error: string | null }> {
+    const { error } = await this.getClient().auth.resetPasswordForEmail(email, {
+      redirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback`,
+    });
+    return { error: error?.message || null };
+  }
+
   async signUp(email: string, password: string): Promise<{ error: string | null }> {
     const { error } = await this.getClient().auth.signUp({
       email,
