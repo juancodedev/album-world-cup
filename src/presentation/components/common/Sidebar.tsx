@@ -49,7 +49,7 @@ export function Sidebar() {
 
       <div className="px-4 py-4 border-t">
         <p className="text-xs text-gray-400 text-center">
-          Album World Cup 2026 v1.0
+          por <a href="https://www.juancode.dev" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Juan Muñoz</a>
         </p>
       </div>
     </aside>

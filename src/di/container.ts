@@ -181,6 +181,7 @@ class DIContainer {
         this.getUserCollectionRepository(),
         this.getStickerRepository(),
         this.getUserRepository(),
+        this.getTeamRepository(),
       ));
   }
 

@@ -1,11 +1,12 @@
 import { ShareCollection } from '../../domain/entities/share-collection.entity';
-import { ShareCollectionDTO } from '../dtos/share-collection.dto';
+import { ShareCollectionDTO, ShareTeamStats } from '../dtos/share-collection.dto';
 
 export class ShareCollectionMapper {
   toDTO(share: ShareCollection, context?: {
     userName?: string;
     userAvatar?: string | null;
     stats?: { total: number; owned: number; missing: number; percentage: number } | null;
+    teams?: ShareTeamStats[];
   }): ShareCollectionDTO {
     return {
       id: share.id,
@@ -20,6 +21,7 @@ export class ShareCollectionMapper {
       viewCount: share.viewCount,
       createdAt: share.createdAt.toISOString(),
       stats: context?.stats || null,
+      teams: context?.teams || [],
     };
   }
 

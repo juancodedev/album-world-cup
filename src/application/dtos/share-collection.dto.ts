@@ -1,3 +1,11 @@
+export interface ShareTeamStats {
+  teamId: string;
+  teamName: string;
+  teamFlag: string | null;
+  total: number;
+  owned: number;
+}
+
 export interface ShareCollectionDTO {
   id: string;
   userId: string;
@@ -16,4 +24,5 @@ export interface ShareCollectionDTO {
     missing: number;
     percentage: number;
   } | null;
+  teams: ShareTeamStats[];
 }

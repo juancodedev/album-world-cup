@@ -4,6 +4,7 @@ import { SupabaseShareCollectionRepository } from '../../../infrastructure/repos
 import { SupabaseUserCollectionRepository } from '../../../infrastructure/repositories/supabase-user-collection.repository';
 import { SupabaseStickerRepository } from '../../../infrastructure/repositories/supabase-sticker.repository';
 import { SupabaseUserRepository } from '../../../infrastructure/repositories/supabase-user.repository';
+import { SupabaseTeamRepository } from '../../../infrastructure/repositories/supabase-team.repository';
 import { GenerateShareCodeUseCase } from '../../../application/use-cases/share/generate-share-code.use-case';
 import { GetSharedCollectionUseCase } from '../../../application/use-cases/share/get-shared-collection.use-case';
 import { shareCollectionMapper } from '../../../application/mappers/share-collection.mapper';
@@ -56,6 +57,7 @@ export async function GET(request: NextRequest) {
       new SupabaseUserCollectionRepository(supabase),
       new SupabaseStickerRepository(supabase),
       new SupabaseUserRepository(supabase),
+      new SupabaseTeamRepository(supabase),
     );
 
     const result = await useCase.execute(code);
