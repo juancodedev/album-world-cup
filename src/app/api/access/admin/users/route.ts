@@ -6,9 +6,9 @@ const ADMIN_EMAIL = 'cl.jmunoz@gmail.com';
 
 export async function GET() {
   const supabase = await createServerSideClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user: authUser } } = await supabase.auth.getUser();
 
-  if (!session?.user?.email || session.user.email !== ADMIN_EMAIL) {
+  if (!authUser?.email || authUser.email !== ADMIN_EMAIL) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -33,9 +33,9 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSideClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user: authUser } } = await supabase.auth.getUser();
 
-  if (!session?.user?.email || session.user.email !== ADMIN_EMAIL) {
+  if (!authUser?.email || authUser.email !== ADMIN_EMAIL) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     action: action === 'enable' ? 'enabled' : 'disabled',
     reason: logReason,
     notes: notes || null,
-    created_by: session.user.id,
+    created_by: authUser.id,
   });
 
   return NextResponse.json({ success: true });

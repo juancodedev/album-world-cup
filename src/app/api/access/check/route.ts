@@ -6,13 +6,13 @@ const ADMIN_EMAIL = 'cl.jmunoz@gmail.com';
 
 export async function GET() {
   const supabase = await createServerSideClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user: authUser }, error } = await supabase.auth.getUser();
 
-  if (!session?.user?.id) {
+  if (error || !authUser) {
     return NextResponse.json({ access: false }, { status: 401 });
   }
 
-  if (session.user.email === ADMIN_EMAIL) {
+  if (authUser.email === ADMIN_EMAIL) {
     return NextResponse.json({ access: true, status: 'active' });
   }
 
@@ -24,7 +24,7 @@ export async function GET() {
   const { data: user } = await admin
     .from(SUPABASE_TABLES.users)
     .select('id, access_status, trial_started_at, trial_ends_at')
-    .eq('auth_uid', session.user.id)
+    .eq('auth_uid', authUser.id)
     .maybeSingle();
 
   if (!user) {

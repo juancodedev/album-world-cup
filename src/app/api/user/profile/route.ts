@@ -4,9 +4,9 @@ import { SUPABASE_TABLES } from '../../../../infrastructure/database/supabase.co
 
 export async function GET() {
   const supabase = await createServerSideClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user: authUser }, error } = await supabase.auth.getUser();
 
-  if (!session?.user?.id) {
+  if (error || !authUser) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -18,13 +18,13 @@ export async function GET() {
   const { data } = await admin
     .from(SUPABASE_TABLES.users)
     .select('full_name, avatar_url')
-    .eq('auth_uid', session.user.id)
+    .eq('auth_uid', authUser.id)
     .maybeSingle();
 
   return NextResponse.json({
     user: {
-      fullName: data?.full_name || session.user.user_metadata?.full_name || null,
-      avatarUrl: data?.avatar_url || session.user.user_metadata?.avatar_url || null,
+      fullName: data?.full_name || authUser.user_metadata?.full_name || null,
+      avatarUrl: data?.avatar_url || authUser.user_metadata?.avatar_url || null,
     },
   });
 }
