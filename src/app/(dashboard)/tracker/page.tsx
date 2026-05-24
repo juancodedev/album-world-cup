@@ -7,7 +7,6 @@ import { useTracker } from '../../../presentation/hooks/useTracker';
 import { GroupCard } from '../../../presentation/components/tracker/GroupCard';
 import { SpecialCard } from '../../../presentation/components/tracker/SpecialCard';
 import { DashboardLayout } from '../../../presentation/layouts/DashboardLayout';
-import Link from 'next/link';
 import { Progress } from '../../../components/ui/progress';
 import { GROUP_ORDER } from '../../../shared/constants/tracker.constants';
 import { GROUP_COLORS } from '../../../shared/constants/tracker.constants';
@@ -83,24 +82,6 @@ export default function TrackerPage() {
           </h1>
           <div className="flex items-center gap-3 mb-3 sm:mb-4">
             <span className="text-2xl sm:text-5xl font-black text-pink-300">{pct}%</span>
-            <Link
-              href="/tracker/missing"
-              className="text-[11px] sm:text-xs font-bold text-amber-400 underline underline-offset-2 hover:text-amber-300 whitespace-nowrap"
-            >
-              ⚡ {missing}
-            </Link>
-            <Link
-              href="/tracker/ranking"
-              className="text-[11px] sm:text-xs font-bold text-amber-400 underline underline-offset-2 hover:text-amber-300 whitespace-nowrap"
-            >
-              🏆
-            </Link>
-            <Link
-              href="/tracker/duplicates"
-              className="text-[11px] sm:text-xs font-bold text-amber-400 underline underline-offset-2 hover:text-amber-300 whitespace-nowrap"
-            >
-              🔁 {totalDuplicates}
-            </Link>
           </div>
           <Progress value={pct} className="h-1.5 sm:h-2 bg-white/20" />
           <div className="flex items-center justify-around gap-1 mt-3 sm:mt-4 text-center">
@@ -121,6 +102,16 @@ export default function TrackerPage() {
             <div>
               <div className="font-bold text-xs sm:text-base">{data?.totalOwned || '-'}</div>
               <div className="opacity-70 text-[9px] sm:text-[10px] font-medium">Stickers</div>
+            </div>
+            <div className="w-px h-8 sm:h-10 bg-white/20" />
+            <div>
+              <div className="font-bold text-xs sm:text-base">{missing}</div>
+              <div className="opacity-70 text-[9px] sm:text-[10px] font-medium">Faltantes</div>
+            </div>
+            <div className="w-px h-8 sm:h-10 bg-white/20" />
+            <div>
+              <div className="font-bold text-xs sm:text-base">{totalDuplicates}</div>
+              <div className="opacity-70 text-[9px] sm:text-[10px] font-medium">Repetidas</div>
             </div>
           </div>
         </div>

@@ -37,7 +37,7 @@ export default function RankingPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="space-y-3 w-full max-w-xl px-4">
           <div className="h-12 rounded-2xl shimmer" />
           {[1, 2, 3].map(i => (

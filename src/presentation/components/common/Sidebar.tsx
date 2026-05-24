@@ -5,8 +5,9 @@ import { usePathname } from 'next/navigation';
 import { Countdown } from './Countdown';
 
 const navItems = [
-  { href: '/tracker', label: 'Tracker', icon: '⚽' },
+  { href: '/tracker', label: 'Tracker', icon: '⚽', exact: true },
   { href: '/tracker/duplicates', label: 'Repetidas', icon: '🔁' },
+  { href: '/tracker/ranking', label: 'Ranking', icon: '🏆' },
   { href: '/share', label: 'Compartir', icon: '📤' },
   { href: '/settings', label: 'Configuración', icon: '⚙️' },
 ];
@@ -21,7 +22,7 @@ export function Sidebar() {
       </div>
       <nav className="flex-1 px-3 py-2 space-y-1">
         {navItems.map((item) => {
-          const isActive = pathname.startsWith(item.href);
+          const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href);
           return (
             <Link
               key={item.href}
