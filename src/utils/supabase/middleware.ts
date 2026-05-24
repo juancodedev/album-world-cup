@@ -39,7 +39,13 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  await supabase.auth.getClaims();
+  try {
+    await supabase.auth.getClaims();
+  } catch {
+    request.cookies.getAll()
+      .filter(c => c.name.startsWith('sb-'))
+      .forEach(c => supabaseResponse.cookies.set(c.name, '', { maxAge: 0, path: '/' }));
+  }
 
   return supabaseResponse;
 }
