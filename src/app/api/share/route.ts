@@ -7,7 +7,6 @@ import { SupabaseUserRepository } from '../../../infrastructure/repositories/sup
 import { SupabaseTeamRepository } from '../../../infrastructure/repositories/supabase-team.repository';
 import { GenerateShareCodeUseCase } from '../../../application/use-cases/share/generate-share-code.use-case';
 import { GetSharedCollectionUseCase } from '../../../application/use-cases/share/get-shared-collection.use-case';
-import { shareCollectionMapper } from '../../../application/mappers/share-collection.mapper';
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSideClient();

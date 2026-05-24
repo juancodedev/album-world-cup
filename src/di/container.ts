@@ -39,10 +39,6 @@ import { ShareService } from '../application/services/share.service';
 import { AuthService } from '../application/services/auth.service';
 
 import { CollectionMapper } from '../application/mappers/collection.mapper';
-import { albumMapper } from '../application/mappers/album.mapper';
-import { teamMapper } from '../application/mappers/team.mapper';
-import { playerMapper } from '../application/mappers/player.mapper';
-import { shareCollectionMapper } from '../application/mappers/share-collection.mapper';
 
 class DIContainer {
   private instances = new Map<string, unknown>();

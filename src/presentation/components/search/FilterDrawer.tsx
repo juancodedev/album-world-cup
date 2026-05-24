@@ -21,7 +21,7 @@ export function FilterDrawer({
   teamId,
   isSpecial,
   onRarityChange,
-  onTeamChange,
+  _onTeamChange,
   onSpecialChange,
   onReset,
 }: FilterDrawerProps) {

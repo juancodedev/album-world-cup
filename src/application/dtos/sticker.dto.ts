@@ -1,4 +1,3 @@
-import { Rarity } from '../../domain/value-objects/rarity.vo';
 
 export interface StickerDTO {
   id: string;

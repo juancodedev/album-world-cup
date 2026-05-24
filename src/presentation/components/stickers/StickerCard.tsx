@@ -21,7 +21,7 @@ interface StickerCardProps {
 }
 
 export function StickerCard({
-  id,
+  _id,
   number,
   playerName,
   teamName,
@@ -33,7 +33,7 @@ export function StickerCard({
   isSpecial = false,
   onClick,
   onAddClick,
-  onDeleteClick,
+  _onDeleteClick,
   variant = 'grid',
 }: StickerCardProps) {
   const [imageError, setImageError] = useState(false);

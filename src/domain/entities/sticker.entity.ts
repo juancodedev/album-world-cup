@@ -1,5 +1,4 @@
 import { Rarity, RarityValue } from '../value-objects/rarity.vo';
-import { StickerType } from '../value-objects/sticker-type.vo';
 
 export interface StickerProps {
   id?: string;

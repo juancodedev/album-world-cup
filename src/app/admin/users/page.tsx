@@ -25,15 +25,6 @@ interface LogRow {
   created_at: string;
 }
 
-const formatDate = (d: string | null) => {
-  if (!d) return '—';
-  const dt = new Date(d);
-  const day = String(dt.getDate()).padStart(2, '0');
-  const month = String(dt.getMonth() + 1).padStart(2, '0');
-  const year = dt.getFullYear();
-  return `${day}-${month}-${year}`;
-};
-
 const toInputDate = (d: string | null) =>
   d ? new Date(d).toISOString().split('T')[0] : '';
 

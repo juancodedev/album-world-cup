@@ -53,8 +53,6 @@ const ALBUM_ID = '00000000-0000-0000-0000-000000000001';
 const DEBOUNCE_MS = 5000;
 
 function buildTrackerData(collection: StickerDTO[], teams: TeamInfo[], localToggles: Set<string>): TrackerData {
-  const collectionMap = new Map(collection.map(s => [s.id, s]));
-
   function isOwned(sticker: StickerDTO): boolean {
     if (localToggles.has(sticker.id)) return !(sticker.state !== 'missing');
     return sticker.state !== 'missing';
@@ -155,7 +153,7 @@ export function useTracker() {
 
   const pendingQueue = useRef<Array<{ type: 'add' | 'remove'; stickerId: string }>>([]);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [toggleVersion, setToggleVersion] = useState(0);
+  const [, setToggleVersion] = useState(0);
   const localToggles = useRef<Set<string>>(new Set());
 
   const flushQueue = useCallback(() => {
@@ -202,7 +200,7 @@ export function useTracker() {
       return buildTrackerData(collection, teamsQuery.data, localToggles.current);
     }
     return null;
-  }, [collection, teamsQuery.data, toggleVersion]);
+  }, [collection, teamsQuery.data]);
 
   const ownedSet = useMemo(() => {
     const base = new Set(collection.filter(s => s.state !== 'missing').map(s => s.id));
@@ -211,7 +209,7 @@ export function useTracker() {
       else base.add(id);
     }
     return base;
-  }, [collection, toggleVersion]);
+  }, [collection]);
 
   return {
     data,

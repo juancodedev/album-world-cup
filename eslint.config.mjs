@@ -13,12 +13,21 @@ const compat = new FlatCompat({
 const eslintConfig = defineConfig([
   ...compat.config({
     extends: ["next/core-web-vitals", "next/typescript"],
+    rules: {
+      "@next/next/no-img-element": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { caughtErrors: "none", argsIgnorePattern: "^_" },
+      ],
+    },
   }),
   globalIgnores([
     ".next/**",
+    ".open-next/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "jest.config.js",
   ]),
 ]);
 

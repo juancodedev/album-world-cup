@@ -59,7 +59,7 @@ function getMissingSpecials(specials: SpecialData[]) {
     .filter(Boolean) as SectionWithMissing[];
 }
 
-export function MissingListScreen({ groups, specials, ownedSet, onToggle }: MissingListScreenProps) {
+export function MissingListScreen({ groups, specials, _ownedSet, onToggle }: MissingListScreenProps) {
   const missingGroups = getMissingGroupTeams(groups);
   const missingSpecials = getMissingSpecials(specials);
 

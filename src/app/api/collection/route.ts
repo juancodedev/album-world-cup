@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSideClient } from '../../../infrastructure/database/supabase.server';
 import { SupabaseUserCollectionRepository } from '../../../infrastructure/repositories/supabase-user-collection.repository';
 import { SupabaseStickerRepository } from '../../../infrastructure/repositories/supabase-sticker.repository';
-import { SupabaseStickerDuplicateRepository } from '../../../infrastructure/repositories/supabase-sticker-duplicate.repository';
 import { AddStickerUseCase } from '../../../application/use-cases/collection/add-sticker.use-case';
 import { CollectionMapper } from '../../../application/mappers/collection.mapper';
 

@@ -7,7 +7,6 @@ import { useStatistics } from '../../../presentation/hooks/useStatistics';
 import { useCollection } from '../../../presentation/hooks/useCollection';
 import { useCurrentAccount } from '../../../presentation/hooks/useCurrentAccount';
 import { DashboardHero } from '../../../presentation/components/dashboard/DashboardHero';
-import { RecentStickers } from '../../../presentation/components/dashboard/RecentStickers';
 import { CollectionStats } from '../../../presentation/components/collection/CollectionStats';
 import { DashboardLayout } from '../../../presentation/layouts/DashboardLayout';
 import { DashboardSkeleton } from '../../../presentation/components/common/SkeletonLoader';

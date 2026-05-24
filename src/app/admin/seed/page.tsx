@@ -38,8 +38,6 @@ export default function SeedPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [stickers, setStickers] = useState<Sticker[]>([]);
-  const [loading, setLoading] = useState(false);
-
   const fetchData = useCallback(async () => {
     const [catRes, teamsRes, stickersRes] = await Promise.all([
       fetch('/admin/seed/api/categories').then(r => r.json()),

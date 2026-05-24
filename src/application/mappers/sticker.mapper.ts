@@ -1,6 +1,6 @@
 import { Sticker } from '../../domain/entities/sticker.entity';
 import { StickerDTO, StickerDetailDTO } from '../dtos/sticker.dto';
-import { StickerState } from '../../domain/value-objects/sticker-state.vo';
+
 import { RarityValue } from '../../domain/value-objects/rarity.vo';
 
 interface StickerRaw extends Record<string, unknown> {
@@ -76,7 +76,7 @@ export class StickerMapper {
     };
   }
 
-  fromPersistence(raw: StickerRaw, userState?: { owned: boolean; duplicates: number }): Sticker {
+  fromPersistence(raw: StickerRaw, _userState?: { owned: boolean; duplicates: number }): Sticker {
     const sticker = new Sticker({
       id: raw.id,
       albumId: raw.album_id,

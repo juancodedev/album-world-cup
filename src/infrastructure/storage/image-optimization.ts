@@ -1,10 +1,8 @@
 // Placeholder for image optimization utilities
 export function getOptimizedImageUrl(
   url: string,
-  options: { width?: number; height?: number; quality?: number } = {},
+  _options: { width?: number; height?: number; quality?: number } = {},
 ): string {
-  const { width = 300, height = 400, quality = 80 } = options;
-
   // When using a CDN like Cloudflare, Vercel, or imgix:
   // return `${CDN_URL}/cdn-cgi/image/width=${width},height=${height},quality=${quality}/${url}`;
 

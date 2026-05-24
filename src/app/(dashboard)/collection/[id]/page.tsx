@@ -52,7 +52,7 @@ export default function StickerDetailPage() {
   }, [user, authLoading, router]);
 
   const { data: sticker, isLoading } = useStickerDetail(stickerId, user?.id, accountId);
-  const { addSticker, addStickerAsync, removeSticker, incrementDuplicate, removeDuplicate } = useCollection(
+  const { addStickerAsync, removeSticker, incrementDuplicate, removeDuplicate } = useCollection(
     accountId,
     DEFAULT_ALBUM_ID,
   );

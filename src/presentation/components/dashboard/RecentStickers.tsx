@@ -2,7 +2,6 @@
 
 import { StickerDTO } from '../../../application/dtos/sticker.dto';
 import { StickerCard } from '../stickers/StickerCard';
-import { EmptyState } from '../common/EmptyState';
 import Link from 'next/link';
 
 interface RecentStickersProps {
