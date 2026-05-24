@@ -1,5 +1,6 @@
 import { IShareCollectionRepository } from '../../../domain/repositories/share-collection.repository';
 import { IUserCollectionRepository } from '../../../domain/repositories/user-collection.repository';
+import { IStickerDuplicateRepository } from '../../../domain/repositories/sticker-duplicate.repository';
 import { IStickerRepository } from '../../../domain/repositories/sticker.repository';
 import { IUserRepository } from '../../../domain/repositories/user.repository';
 import { ITeamRepository } from '../../../domain/repositories/team.repository';
@@ -11,6 +12,7 @@ export class GetSharedCollectionUseCase {
   constructor(
     private readonly shareRepository: IShareCollectionRepository,
     private readonly userCollectionRepository: IUserCollectionRepository,
+    private readonly stickerDuplicateRepository: IStickerDuplicateRepository,
     private readonly stickerRepository: IStickerRepository,
     private readonly userRepository: IUserRepository,
     private readonly teamRepository: ITeamRepository,
@@ -32,9 +34,10 @@ export class GetSharedCollectionUseCase {
     const DEFAULT_ALBUM_ID = '00000000-0000-0000-0000-000000000001';
 
     const allStickers = await this.stickerRepository.getByAlbum(DEFAULT_ALBUM_ID);
-    const userStickers = await this.userCollectionRepository.findByAccount(share.accountId);
+    const userStickers = await this.userCollectionRepository.findByAccountAndAlbum(share.accountId, DEFAULT_ALBUM_ID);
+    const duplicates = await this.stickerDuplicateRepository.findByAccount(share.accountId);
     const ownedIds = new Set(userStickers.map(s => s.stickerId));
-    const dupMap = new Map(userStickers.map(s => [s.stickerId, s.quantityOwned]));
+    const duplicateMap = new Map(duplicates.map(d => [d.stickerId, d]));
 
     const teams = await this.teamRepository.getByAlbum(DEFAULT_ALBUM_ID);
     const teamStats = teams.map(team => {
@@ -51,7 +54,7 @@ export class GetSharedCollectionUseCase {
           number: s.number,
           position: i + 1,
           owned: ownedIds.has(s.id),
-          duplicateCount: Math.max(0, (dupMap.get(s.id) || 1) - 1),
+          duplicateCount: duplicateMap.get(s.id)?.quantity || 0,
         })),
       };
     }).filter(t => t.total > 0);
@@ -62,10 +65,10 @@ export class GetSharedCollectionUseCase {
       teams: teamStats,
       stats: {
         total: allStickers.length,
-        owned: userStickers.length,
-        missing: allStickers.length - userStickers.length,
+        owned: ownedIds.size,
+        missing: allStickers.length - ownedIds.size,
         percentage: allStickers.length > 0
-          ? Math.round((userStickers.length / allStickers.length) * 100)
+          ? Math.round((ownedIds.size / allStickers.length) * 100)
           : 0,
       },
     });

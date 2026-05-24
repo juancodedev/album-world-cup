@@ -198,8 +198,8 @@ export function StickerCard({
         <div className="p-1.5 text-center">
           <p className="text-[11px] font-semibold text-gray-800 truncate">{playerName || '—'}</p>
           {duplicateCount > 0 && (
-            <span className="text-[9px] text-blue-600 font-medium">
-              +{duplicateCount} repetida{duplicateCount > 1 ? 's' : ''}
+            <span className="text-[10px] text-blue-600 font-semibold">
+              {duplicateCount} repetida{duplicateCount > 1 ? 's' : ''}
             </span>
           )}
         </div>

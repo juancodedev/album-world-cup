@@ -175,6 +175,7 @@ class DIContainer {
       new GetSharedCollectionUseCase(
         this.getShareCollectionRepository(),
         this.getUserCollectionRepository(),
+        this.getStickerDuplicateRepository(),
         this.getStickerRepository(),
         this.getUserRepository(),
         this.getTeamRepository(),

@@ -1,5 +1,6 @@
 import { IShareCollectionRepository } from '../../../../domain/repositories/share-collection.repository';
 import { IUserCollectionRepository } from '../../../../domain/repositories/user-collection.repository';
+import { IStickerDuplicateRepository } from '../../../../domain/repositories/sticker-duplicate.repository';
 import { IStickerRepository } from '../../../../domain/repositories/sticker.repository';
 import { IUserRepository } from '../../../../domain/repositories/user.repository';
 import { ITeamRepository } from '../../../../domain/repositories/team.repository';
@@ -15,6 +16,7 @@ describe('GetSharedCollectionUseCase', () => {
   let useCase: GetSharedCollectionUseCase;
   let mockShareRepo: jest.Mocked<IShareCollectionRepository>;
   let mockUserCollectionRepo: jest.Mocked<IUserCollectionRepository>;
+  let mockDuplicateRepo: jest.Mocked<IStickerDuplicateRepository>;
   let mockStickerRepo: jest.Mocked<IStickerRepository>;
   let mockUserRepo: jest.Mocked<IUserRepository>;
   let mockTeamRepo: jest.Mocked<ITeamRepository>;
@@ -37,6 +39,15 @@ describe('GetSharedCollectionUseCase', () => {
       delete: jest.fn(),
       getCountByAccount: jest.fn(),
       getRecentByAccount: jest.fn(),
+    };
+
+    mockDuplicateRepo = {
+      getByUserAndSticker: jest.fn(),
+      save: jest.fn(),
+      findByAccount: jest.fn(),
+      findByUser: jest.fn(),
+      delete: jest.fn(),
+      getTotalByAccount: jest.fn(),
     };
 
     mockStickerRepo = {
@@ -69,6 +80,7 @@ describe('GetSharedCollectionUseCase', () => {
     useCase = new GetSharedCollectionUseCase(
       mockShareRepo,
       mockUserCollectionRepo,
+      mockDuplicateRepo,
       mockStickerRepo,
       mockUserRepo,
       mockTeamRepo,
