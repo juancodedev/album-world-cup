@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Countdown } from './Countdown';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: '🏠' },
@@ -17,7 +18,10 @@ export function Sidebar() {
 
   return (
     <aside className="hidden md:flex flex-col w-64 border-r bg-white min-h-screen">
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <div className="px-3 pt-4 pb-2 border-b">
+        <Countdown />
+      </div>
+      <nav className="flex-1 px-3 py-2 space-y-1">
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
           return (

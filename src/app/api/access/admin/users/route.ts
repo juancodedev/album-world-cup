@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { userId, action, notes } = body;
+  const { userId, action, notes, trialEndsAt } = body;
 
   if (!userId || !action || !['enable', 'disable'].includes(action)) {
     return NextResponse.json({ error: 'userId and action (enable|disable) required' }, { status: 400 });
@@ -53,8 +53,13 @@ export async function POST(request: NextRequest) {
 
   const newStatus = action === 'enable' ? 'active' : 'disabled';
   const logReason = action === 'enable' ? 'admin_enabled' : 'admin_disabled';
+  const updateData: Record<string, string> = { access_status: newStatus };
 
-  await admin.from(SUPABASE_TABLES.users).update({ access_status: newStatus }).eq('id', userId);
+  if (action === 'enable' && trialEndsAt) {
+    updateData.trial_ends_at = new Date(trialEndsAt).toISOString();
+  }
+
+  await admin.from(SUPABASE_TABLES.users).update(updateData).eq('id', userId);
   await admin.from(SUPABASE_TABLES.accessLogs).insert({
     user_id: userId,
     action: action === 'enable' ? 'enabled' : 'disabled',

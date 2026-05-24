@@ -21,11 +21,26 @@ export async function GET() {
     return NextResponse.json({ access: false, reason: 'config_error' });
   }
 
-  const { data: user } = await admin
+  let { data: user } = await admin
     .from(SUPABASE_TABLES.users)
     .select('id, access_status, trial_started_at, trial_ends_at')
     .eq('auth_uid', authUser.id)
     .maybeSingle();
+
+  if (!user && authUser.email) {
+    const { data: emailUser } = await admin
+      .from(SUPABASE_TABLES.users)
+      .select('id, access_status, trial_started_at, trial_ends_at')
+      .eq('email', authUser.email)
+      .maybeSingle();
+
+    if (emailUser) {
+      await admin.from(SUPABASE_TABLES.users)
+        .update({ auth_uid: authUser.id })
+        .eq('id', emailUser.id);
+      user = emailUser;
+    }
+  }
 
   if (!user) {
     return NextResponse.json({ access: false, reason: 'user_not_found' });

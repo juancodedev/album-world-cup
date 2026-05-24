@@ -25,6 +25,18 @@ interface LogRow {
   created_at: string;
 }
 
+const formatDate = (d: string | null) => {
+  if (!d) return '—';
+  const dt = new Date(d);
+  const day = String(dt.getDate()).padStart(2, '0');
+  const month = String(dt.getMonth() + 1).padStart(2, '0');
+  const year = dt.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
+const toInputDate = (d: string | null) =>
+  d ? new Date(d).toISOString().split('T')[0] : '';
+
 export default function AdminUsersPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
@@ -32,7 +44,9 @@ export default function AdminUsersPage() {
   const [logs, setLogs] = useState<LogRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState<string | null>(null);
+  const [savingExpiry, setSavingExpiry] = useState<string | null>(null);
   const [note, setNote] = useState('');
+  const [expiryDates, setExpiryDates] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (!authLoading && (!user || user.email !== 'cl.jmunoz@gmail.com')) {
@@ -48,14 +62,25 @@ export default function AdminUsersPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    const dates: Record<string, string> = {};
+    for (const u of users) {
+      dates[u.id] = toInputDate(u.trial_ends_at);
+    }
+    setExpiryDates(dates);
+  }, [users]);
+
   const toggleUser = async (userId: string, currentStatus: string) => {
     const action = currentStatus === 'disabled' || currentStatus === 'expired' ? 'enable' : 'disable';
     setToggling(userId);
     try {
+      const body: Record<string, string> = { userId, action };
+      if (note) body.notes = note;
+      if (action === 'enable' && expiryDates[userId]) body.trialEndsAt = expiryDates[userId];
       const res = await fetch('/api/access/admin/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, action, notes: note || undefined }),
+        body: JSON.stringify(body),
       });
       if (res.ok) {
         const d = await fetch('/api/access/admin/users').then(r => r.json());
@@ -65,6 +90,26 @@ export default function AdminUsersPage() {
       }
     } catch {}
     setToggling(null);
+  };
+
+  const saveExpiry = async (userId: string) => {
+    setSavingExpiry(userId);
+    try {
+      const body: Record<string, string> = { userId, action: 'enable', trialEndsAt: expiryDates[userId] || '' };
+      if (note) body.notes = note;
+      const res = await fetch('/api/access/admin/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) {
+        const d = await fetch('/api/access/admin/users').then(r => r.json());
+        setUsers(d.users || []);
+        setLogs(d.logs || []);
+        setNote('');
+      }
+    } catch {}
+    setSavingExpiry(null);
   };
 
   const statusBadge = (status: string) => {
@@ -107,7 +152,7 @@ export default function AdminUsersPage() {
                 <th className="text-left p-3 font-semibold text-gray-600">Email</th>
                 <th className="text-left p-3 font-semibold text-gray-600">Nombre</th>
                 <th className="text-left p-3 font-semibold text-gray-600">Estado</th>
-                <th className="text-left p-3 font-semibold text-gray-600">Trial</th>
+                <th className="text-left p-3 font-semibold text-gray-600">Vence</th>
                 <th className="text-right p-3 font-semibold text-gray-600">Acción</th>
               </tr>
             </thead>
@@ -117,10 +162,26 @@ export default function AdminUsersPage() {
                   <td className="p-3 text-gray-700 font-medium">{u.email}</td>
                   <td className="p-3 text-gray-500">{u.full_name || '—'}</td>
                   <td className="p-3">{statusBadge(u.access_status)}</td>
-                  <td className="p-3 text-xs text-gray-400">
-                    {u.trial_started_at
-                      ? `${new Date(u.trial_started_at).toLocaleDateString()} → ${new Date(u.trial_ends_at!).toLocaleDateString()}`
-                      : '—'}
+                  <td className="p-3">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="date"
+                        value={expiryDates[u.id] || ''}
+                        onChange={e => setExpiryDates(p => ({ ...p, [u.id]: e.target.value }))}
+                        className="h-7 px-2 rounded border border-gray-300 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                      {expiryDates[u.id] && expiryDates[u.id] !== toInputDate(u.trial_ends_at) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => saveExpiry(u.id)}
+                          disabled={savingExpiry === u.id}
+                          className="h-7 text-xs"
+                        >
+                          {savingExpiry === u.id ? '...' : 'Guardar'}
+                        </Button>
+                      )}
+                    </div>
                   </td>
                   <td className="p-3 text-right">
                     <Button
