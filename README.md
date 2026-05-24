@@ -67,6 +67,14 @@ Aplicación web para coleccionar y dar seguimiento a las láminas del Álbum Pan
 - **Eliminar "Buscar" del menú**: Opción de búsqueda removida del Sidebar y BottomNav
 - **Atribución**: Footer con crédito a [Juan Muñoz](https://www.juancode.dev)
 
+### ✅ Fase 8 — Refinamientos de navegación y visuales (Completada)
+- **Nav activo corregido**: "Tracker" usa `exact: true` para no solaparse con subrutas; "Repetidas" y "Ranking" se activan independientemente
+- **Ranking en menú principal**: Agregado a Sidebar y BottomNav como item propio, removido del header del tracker
+- **Stats en header**: Faltantes y Repetidas movidas de links inline a cuadros numéricos en la fila de stats (Grupos | Equipos | Stickers | Faltantes | Repetidas)
+- **CircularProgress**: Componente SVG reutilizable con ring de progreso, texto "Completado" y animación suave
+- **Gradiente mejorado**: Header card con gradiente `from-indigo-500 to-violet-800` para mayor contraste visual
+- **Paleta unificada**: Reemplazados todos los `bg-gray-50`/`text-gray-*` restantes por tokens CSS (`bg-background`, `text-muted-foreground`, etc.)
+
 ## Getting Started
 
 ```bash
