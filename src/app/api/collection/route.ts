@@ -8,9 +8,9 @@ import { CollectionMapper } from '../../../application/mappers/collection.mapper
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSideClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user: authUser } } = await supabase.auth.getUser();
 
-  if (!session?.user?.id) {
+  if (!authUser) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     const useCase = new AddStickerUseCase(userCollectionRepo, stickerRepo, mapper);
     const result = await useCase.execute({
       accountId,
-      userId: session.user.id,
+      userId: authUser.id,
       stickerId,
       albumId,
     });
@@ -48,9 +48,9 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSideClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user: authUser } } = await supabase.auth.getUser();
 
-  if (!session?.user?.id) {
+  if (!authUser) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

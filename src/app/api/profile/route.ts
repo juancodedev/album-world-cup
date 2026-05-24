@@ -4,9 +4,9 @@ import { SUPABASE_TABLES } from '../../../infrastructure/database/supabase.confi
 
 export async function PATCH(request: NextRequest) {
   const supabase = await createServerSideClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user: authUser } } = await supabase.auth.getUser();
 
-  if (!session?.user?.id) {
+  if (!authUser) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -23,7 +23,7 @@ export async function PATCH(request: NextRequest) {
     const { error } = await supabase
       .from(SUPABASE_TABLES.users)
       .update({ full_name: trimmed })
-      .eq('id', session.user.id);
+      .eq('id', authUser.id);
 
     if (error) throw error;
 

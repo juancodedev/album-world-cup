@@ -11,9 +11,9 @@ import { shareCollectionMapper } from '../../../application/mappers/share-collec
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSideClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user: authUser } } = await supabase.auth.getUser();
 
-  if (!session?.user?.id) {
+  if (!authUser) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     const repo = new SupabaseShareCollectionRepository(supabase);
     const useCase = new GenerateShareCodeUseCase(repo);
-    const result = await useCase.execute(accountId, session.user.id);
+    const result = await useCase.execute(accountId, authUser.id);
 
     return NextResponse.json({ data: result });
   } catch (error) {

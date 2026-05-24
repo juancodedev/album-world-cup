@@ -9,8 +9,8 @@ const TOTAL_STICKERS = 1005;
 export async function GET() {
   try {
     const supabase = await createServerSideClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    const currentUserId = session?.user?.id || null;
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    const currentUserId = authUser?.id || null;
 
     const admin = createServiceRoleClient();
     const client = admin || supabase;
