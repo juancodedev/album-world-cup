@@ -14,7 +14,7 @@ export default function ExpiredPage() {
       .then(r => r.json())
       .then(data => {
         if (data.access) {
-          router.replace('/dashboard');
+          router.replace('/tracker');
         } else {
           setChecking(false);
         }

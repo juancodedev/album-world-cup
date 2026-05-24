@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { Countdown } from './Countdown';
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: '🏠' },
   { href: '/tracker', label: 'Tracker', icon: '⚽' },
   { href: '/collection', label: 'Mi Colección', icon: '📦' },
   { href: '/statistics', label: 'Estadísticas', icon: '📊' },

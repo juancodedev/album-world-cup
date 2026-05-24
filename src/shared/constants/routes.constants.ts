@@ -2,7 +2,7 @@ export const ROUTES = {
   home: '/',
   login: '/login',
   callback: '/auth/callback',
-  dashboard: '/dashboard',
+  dashboard: '/tracker',
   collection: '/collection',
   tracker: '/tracker',
   trackerMissing: '/tracker/missing',

@@ -30,7 +30,7 @@ export function Header({ accessStatus, remainingDays }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md">
       <div className="flex h-16 items-center justify-between px-4 max-w-7xl mx-auto">
-        <Link href="/dashboard" className="flex items-center gap-2">
+        <Link href="/tracker" className="flex items-center gap-2">
           <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-sm">AW</span>
           </div>

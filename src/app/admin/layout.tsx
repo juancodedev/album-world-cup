@@ -16,7 +16,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   }
 
   if (user.email !== ADMIN_EMAIL) {
-    redirect('/dashboard');
+    redirect('/tracker');
   }
 
   return (
@@ -32,8 +32,8 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           <Link href="/admin/seed" className="text-sm text-gray-600 hover:text-gray-900">
             Láminas
           </Link>
-          <Link href="/dashboard" className="text-sm text-gray-400 hover:text-gray-600 ml-auto">
-            ← Volver al dashboard
+          <Link href="/tracker" className="text-sm text-gray-400 hover:text-gray-600 ml-auto">
+            ← Volver al tracker
           </Link>
         </div>
       </nav>

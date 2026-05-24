@@ -41,7 +41,7 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     if (!authLoading && (!user || user.email !== 'cl.jmunoz@gmail.com')) {
-      router.replace('/dashboard');
+      router.replace('/tracker');
     }
   }, [user, authLoading, router]);
 
