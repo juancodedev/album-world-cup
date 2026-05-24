@@ -37,14 +37,20 @@ export class GetSharedCollectionUseCase {
 
     const teams = await this.teamRepository.getByAlbum(DEFAULT_ALBUM_ID);
     const teamStats = teams.map(team => {
-      const teamStickers = allStickers.filter(s => s.teamId === team.id);
+      const teamStickers = allStickers.filter(s => s.teamId === team.id).sort((a, b) => a.number - b.number);
       const owned = teamStickers.filter(s => ownedIds.has(s.id)).length;
       return {
         teamId: team.id,
+        teamCode: team.code,
         teamName: team.name,
         teamFlag: team.flagUrl || null,
         total: teamStickers.length,
         owned,
+        stickers: teamStickers.map((s, i) => ({
+          number: s.number,
+          position: i + 1,
+          owned: ownedIds.has(s.id),
+        })),
       };
     }).filter(t => t.total > 0);
 

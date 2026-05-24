@@ -1,9 +1,17 @@
+export interface ShareStickerInfo {
+  number: number;
+  position: number;
+  owned: boolean;
+}
+
 export interface ShareTeamStats {
   teamId: string;
+  teamCode: string;
   teamName: string;
   teamFlag: string | null;
   total: number;
   owned: number;
+  stickers: ShareStickerInfo[];
 }
 
 export interface ShareCollectionDTO {

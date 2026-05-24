@@ -42,15 +42,14 @@ export function StickerGrid({ teamCode, stickers, ownedSet, onToggle }: StickerG
             {sticker && sticker.imageUrl ? (
               <Thumbnail
                 src={sticker.imageThumbnail || sticker.imageUrl}
-                alt={`#${n}`}
+                alt={code}
                 owned={owned}
               />
             ) : sticker ? (
               <div className="w-full h-full flex flex-col items-center justify-center p-1">
                 <span className={`font-bold leading-none ${owned ? 'text-green-700 text-sm' : 'text-gray-400 text-xs'}`}>
-                  {owned ? '✓' : n}
+                  {owned ? '✓' : code}
                 </span>
-                {!owned && <span className="text-[7px] text-gray-300 font-mono mt-0.5">{code}</span>}
               </div>
             ) : (
               <div className="w-full h-full flex items-center justify-center">

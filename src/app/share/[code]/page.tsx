@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useSharedCollection } from '../../../presentation/hooks/useShare';
 import { LoadingSpinner } from '../../../presentation/components/common/LoadingSpinner';
 import { EmptyState } from '../../../presentation/components/common/EmptyState';
+import { FLAG_EMOJI } from '../../../shared/constants/flags.constants';
 
 export default function SharedCollectionPage() {
   const params = useParams();
@@ -68,12 +69,12 @@ export default function SharedCollectionPage() {
             <h3 className="font-semibold text-gray-900 mb-4">Progreso por Selección</h3>
             <div className="space-y-2">
               {share.teams.map((team) => (
-                <div key={team.teamId}>
+                <div key={team.teamId} className="border border-gray-100 rounded-lg overflow-hidden">
                   <div
                     onClick={() => setExpandedTeam(expandedTeam === team.teamId ? null : team.teamId)}
                     className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
                   >
-                    <span className="text-lg">{team.teamFlag || '🏳️'}</span>
+                    <span className="text-lg">{FLAG_EMOJI[team.teamCode] || team.teamFlag || '🏳️'}</span>
                     <span className="text-sm text-gray-700 flex-1 font-medium truncate">{team.teamName}</span>
                     <div className="flex-1 max-w-[120px]">
                       <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -90,6 +91,29 @@ export default function SharedCollectionPage() {
                       ▾
                     </span>
                   </div>
+                  {expandedTeam === team.teamId && (
+                    <div className="px-3 pb-3 border-t border-gray-100">
+                      <div className="grid grid-cols-5 sm:grid-cols-10 gap-1 pt-3">
+                        {team.stickers.map((s) => {
+                          const stickerCode = `${team.teamCode}${s.position}`;
+                          return (
+                            <div
+                              key={s.number}
+                              className={`
+                                aspect-[3/4] rounded text-[9px] font-bold flex flex-col items-center justify-center
+                                ${s.owned
+                                  ? 'bg-gradient-to-br from-green-500 to-green-700 text-white shadow-sm'
+                                  : 'bg-gray-100 border border-dashed border-gray-200 text-gray-400'
+                                }
+                              `}
+                            >
+                              <span>{s.owned ? '✓' : stickerCode}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
