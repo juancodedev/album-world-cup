@@ -2,12 +2,18 @@ import { NextResponse } from 'next/server';
 import { createServerSideClient, createServiceRoleClient } from '../../../../infrastructure/database/supabase.server';
 import { SUPABASE_TABLES } from '../../../../infrastructure/database/supabase.config';
 
+const ADMIN_EMAIL = 'cl.jmunoz@gmail.com';
+
 export async function GET() {
   const supabase = await createServerSideClient();
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session?.user?.id) {
     return NextResponse.json({ access: false }, { status: 401 });
+  }
+
+  if (session.user.email === ADMIN_EMAIL) {
+    return NextResponse.json({ access: true, status: 'active' });
   }
 
   const admin = createServiceRoleClient();

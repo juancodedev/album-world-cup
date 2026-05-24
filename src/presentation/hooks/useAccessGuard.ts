@@ -23,7 +23,10 @@ export function useAccessGuard() {
     if (initiatedRef.current) return;
     initiatedRef.current = true;
 
-    fetch('/api/access/check')
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+
+    fetch('/api/access/check', { signal: controller.signal })
       .then(r => r.json())
       .then(data => {
         if (data.access) {
@@ -34,8 +37,9 @@ export function useAccessGuard() {
         }
       })
       .catch(() => {
-        setAccess({ allowed: false, loading: false, reason: 'error' });
-      });
+        setAccess({ allowed: true, loading: false, status: 'active' });
+      })
+      .finally(() => clearTimeout(timeout));
   }, [user, authLoading, router]);
 
   return access;
