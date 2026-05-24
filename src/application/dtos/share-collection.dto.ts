@@ -2,6 +2,7 @@ export interface ShareStickerInfo {
   number: number;
   position: number;
   owned: boolean;
+  duplicateCount: number;
 }
 
 export interface ShareTeamStats {

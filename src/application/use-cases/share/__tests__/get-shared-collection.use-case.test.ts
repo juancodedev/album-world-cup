@@ -140,7 +140,7 @@ describe('GetSharedCollectionUseCase', () => {
       teamFlag: 'https://example.com/mex.png',
       total: 1,
       owned: 1,
-      stickers: [{ number: 1, position: 1, owned: true }],
+      stickers: [{ number: 1, position: 1, owned: true, duplicateCount: 0 }],
     });
     expect(mockShareRepo.update).toHaveBeenCalled();
   });

@@ -34,8 +34,16 @@ export default function RootLayout({
       <head suppressHydrationWarning>
         <link rel="apple-touch-icon" href="/icons/icon.svg" />
       </head>
-      <body className={inter.className}>
-        <Providers>{children}</Providers>
+      <body className={`${inter.className} flex flex-col min-h-screen`}>
+        <Providers>
+          <div className="flex-1">{children}</div>
+          <footer className="text-center text-xs text-gray-400 py-4 border-t bg-white">
+            Creado por{' '}
+            <a href="https://www.juancode.dev" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+              Juan Muñoz
+            </a>
+          </footer>
+        </Providers>
       </body>
     </html>
   );

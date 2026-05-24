@@ -34,6 +34,7 @@ export class GetSharedCollectionUseCase {
     const allStickers = await this.stickerRepository.getByAlbum(DEFAULT_ALBUM_ID);
     const userStickers = await this.userCollectionRepository.findByAccount(share.accountId);
     const ownedIds = new Set(userStickers.map(s => s.stickerId));
+    const dupMap = new Map(userStickers.map(s => [s.stickerId, s.quantityOwned]));
 
     const teams = await this.teamRepository.getByAlbum(DEFAULT_ALBUM_ID);
     const teamStats = teams.map(team => {
@@ -50,6 +51,7 @@ export class GetSharedCollectionUseCase {
           number: s.number,
           position: i + 1,
           owned: ownedIds.has(s.id),
+          duplicateCount: Math.max(0, (dupMap.get(s.id) || 1) - 1),
         })),
       };
     }).filter(t => t.total > 0);

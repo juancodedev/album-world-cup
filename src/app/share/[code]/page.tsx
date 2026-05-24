@@ -64,6 +64,15 @@ export default function SharedCollectionPage() {
           </div>
         )}
 
+        {share.showDuplicates && share.teams.some(t => t.stickers.some(s => s.duplicateCount > 0)) && (
+          <div className="bg-white rounded-2xl p-6 shadow-sm">
+            <h3 className="font-semibold text-gray-900 mb-4">Repetidas</h3>
+            <p className="text-sm text-gray-600">
+              {share.teams.reduce((sum, t) => sum + t.stickers.reduce((a, s) => a + s.duplicateCount, 0), 0)} stickers repetidos
+            </p>
+          </div>
+        )}
+
         {share.teams.length > 0 && (
           <div className="bg-white rounded-2xl p-6 shadow-sm">
             <h3 className="font-semibold text-gray-900 mb-4">Progreso por Selección</h3>
@@ -96,11 +105,12 @@ export default function SharedCollectionPage() {
                       <div className="grid grid-cols-5 sm:grid-cols-10 gap-1 pt-3">
                         {team.stickers.map((s) => {
                           const stickerCode = `${team.teamCode}${s.position}`;
+                          const dupCount = share.showDuplicates ? s.duplicateCount : 0;
                           return (
                             <div
                               key={s.number}
                               className={`
-                                aspect-[3/4] rounded text-[9px] font-bold flex flex-col items-center justify-center
+                                aspect-[3/4] rounded text-[9px] font-bold flex flex-col items-center justify-center relative
                                 ${s.owned
                                   ? 'bg-gradient-to-br from-green-500 to-green-700 text-white shadow-sm'
                                   : 'bg-gray-100 border border-dashed border-gray-200 text-gray-400'
@@ -108,6 +118,11 @@ export default function SharedCollectionPage() {
                               `}
                             >
                               <span>{s.owned ? '✓' : stickerCode}</span>
+                              {dupCount > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-[7px] rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold shadow">
+                                  {dupCount}
+                                </span>
+                              )}
                             </div>
                           );
                         })}
@@ -133,9 +148,6 @@ export default function SharedCollectionPage() {
           </a>
         </div>
 
-        <div className="text-center text-xs text-gray-400">
-          Creado por <a href="https://www.juancode.dev" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Juan Muñoz</a>
-        </div>
       </div>
     </div>
   );
