@@ -36,8 +36,8 @@ export class GetSharedCollectionUseCase {
     const allStickers = await this.stickerRepository.getByAlbum(DEFAULT_ALBUM_ID);
     const userStickers = await this.userCollectionRepository.findByAccountAndAlbum(share.accountId, DEFAULT_ALBUM_ID);
     const duplicates = await this.stickerDuplicateRepository.findByAccount(share.accountId);
-    const ownedIds = new Set(userStickers.map(s => s.stickerId));
-    const duplicateMap = new Map(duplicates.map(d => [d.stickerId, d]));
+    const ownedIds = new Set((userStickers ?? []).map(s => s.stickerId));
+    const duplicateMap = new Map((duplicates ?? []).map(d => [d.stickerId, d]));
 
     const teams = await this.teamRepository.getByAlbum(DEFAULT_ALBUM_ID);
     const teamStats = teams.map(team => {
