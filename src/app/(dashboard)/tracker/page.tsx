@@ -71,7 +71,7 @@ export default function TrackerPage() {
     <DashboardLayout>
       <div className="space-y-4">
         {/* Header card with progress */}
-        <div className="bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-white shadow-md">
+        <div className="bg-gradient-to-br from-indigo-500 to-violet-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-white shadow-md">
           <div className="flex items-center justify-between mb-2">
             <div className="text-[9px] sm:text-[10px] tracking-[3px] font-bold opacity-70">ÁLBUM PANINI</div>
             <div className="text-[10px] sm:text-xs opacity-70 leading-tight text-right font-mono">
@@ -82,7 +82,7 @@ export default function TrackerPage() {
             FIFA WORLD CUP <span className="text-amber-400">2026</span>
           </h1>
           <div className="flex justify-start mb-3 sm:mb-4">
-            <CircularProgress value={pct} size={120} strokeWidth={7} />
+            <CircularProgress value={pct} size={140} strokeWidth={7} />
           </div>
           <Progress value={pct} className="h-1.5 sm:h-2 bg-white/20" />
           <div className="flex items-center justify-around gap-1 mt-3 sm:mt-4 text-center">

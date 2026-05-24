@@ -36,9 +36,14 @@ export function CircularProgress({ value, size = 144, strokeWidth = 8 }: Circula
           style={{ transition: 'stroke-dashoffset 0.5s ease-out' }}
         />
       </svg>
-      <span className="text-2xl sm:text-5xl font-black text-pink-300">
-        {clamped}%
-      </span>
+      <div className="flex flex-col items-center">
+        <span className="text-2xl sm:text-5xl font-black text-white leading-none">
+          {clamped}%
+        </span>
+        <span className="text-xs sm:text-sm font-semibold text-white tracking-wider mt-0.5">
+          Completado
+        </span>
+      </div>
     </div>
   );
 }
