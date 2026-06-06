@@ -140,15 +140,21 @@ describe('showMutationToast', () => {
   });
 
   describe('on error', () => {
-    it('should call toast.error with descriptive message', () => {
+    it('should call toast.error with descriptive message and logged error', () => {
       const error = new Error('API Error');
       showMutationToast(error, 'addSticker');
-      expect(toast.error).toHaveBeenCalledWith('Error al marcar sticker', { duration: 4000 });
+      expect(toast.error).toHaveBeenCalledWith('Error al marcar sticker', {
+        description: 'API Error',
+        duration: 4000,
+      });
     });
 
     it('should handle empty error object', () => {
       showMutationToast({}, 'addSticker');
-      expect(toast.error).toHaveBeenCalledWith('Error al marcar sticker', { duration: 4000 });
+      expect(toast.error).toHaveBeenCalledWith('Error al marcar sticker', {
+        description: '[object Object]',
+        duration: 4000,
+      });
     });
   });
 
