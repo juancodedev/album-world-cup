@@ -35,6 +35,27 @@ export const MUTATION_MESSAGES: Record<
 };
 
 /**
+ * Optimistically decrement duplicateCount and transition state
+ * for the target sticker. If count reaches 0, state becomes
+ * 'obtained' (the server will correct to 'missing' if not owned).
+ * Pure function — no side effects.
+ */
+export function applyOptimisticRemoveDuplicate(
+  stickers: StickerDTO[],
+  stickerId: string,
+): StickerDTO[] {
+  return stickers.map((s) =>
+    s.id === stickerId
+      ? {
+          ...s,
+          duplicateCount: Math.max(0, s.duplicateCount - 1),
+          state: s.duplicateCount - 1 <= 0 ? 'obtained' as const : s.state,
+        }
+      : s,
+  );
+}
+
+/**
  * Show a success/error toast based on mutation outcome.
  * Logs the full error to console for debugging,
  * and shows the actual error message as a toast description.

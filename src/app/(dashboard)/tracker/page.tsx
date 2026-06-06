@@ -15,7 +15,7 @@ import { GROUP_COLORS } from '../../../shared/constants/tracker.constants';
 export default function TrackerPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
-  const { data, isLoading, addSticker, removeSticker, incrementDuplicate, ownedSet } = useTracker();
+  const { data, isLoading, collection, addSticker, removeSticker, incrementDuplicate, removeDuplicate, ownedSet } = useTracker();
   const [tab, setTab] = useState<'grupos' | 'especial'>('grupos');
   const [search, setSearch] = useState('');
   const [activeGroup, setActiveGroup] = useState('Todos');
@@ -44,7 +44,11 @@ export default function TrackerPage() {
   const totalDuplicates = data?.totalDuplicates || 0;
 
   const handleToggle = (stickerId: string) => {
-    if (ownedSet.has(stickerId)) {
+    if (!collection) return;
+    const sticker = collection.find(s => s.id === stickerId);
+    if (sticker?.state === 'duplicate') {
+      removeDuplicate(stickerId);
+    } else if (ownedSet.has(stickerId)) {
       removeSticker(stickerId);
     } else {
       addSticker(stickerId);
