@@ -56,6 +56,10 @@ export default function TrackerPage() {
   };
 
   const handleDuplicate = (stickerId: string) => {
+    const sticker = collection?.find(s => s.id === stickerId);
+    if (!sticker || sticker.state === 'missing') {
+      return; // Must own the sticker first before marking as duplicate
+    }
     incrementDuplicate(stickerId);
   };
 

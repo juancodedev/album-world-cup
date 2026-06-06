@@ -1,5 +1,6 @@
 import { IStickerDuplicateRepository } from '../../../domain/repositories/sticker-duplicate.repository';
 import { IStickerRepository } from '../../../domain/repositories/sticker.repository';
+import { IUserCollectionRepository } from '../../../domain/repositories/user-collection.repository';
 import { StickerDuplicate } from '../../../domain/entities/sticker-duplicate.entity';
 import { NotFoundError } from '../../../domain/errors/domain.error';
 import { StickerDuplicateDTO } from '../../dtos/sticker-duplicate.dto';
@@ -15,6 +16,7 @@ export class IncrementDuplicateUseCase {
   constructor(
     private readonly duplicateRepository: IStickerDuplicateRepository,
     private readonly stickerRepository: IStickerRepository,
+    private readonly userCollectionRepository: IUserCollectionRepository,
   ) {}
 
   async execute(input: IncrementDuplicateInput): Promise<StickerDuplicateDTO> {
@@ -25,6 +27,16 @@ export class IncrementDuplicateUseCase {
     const sticker = await this.stickerRepository.getById(input.stickerId);
     if (!sticker) {
       throw new NotFoundError(`Sticker with ID ${input.stickerId} not found`);
+    }
+
+    // A sticker must be owned before it can have duplicates
+    const owned = await this.userCollectionRepository.getByUserAndSticker(
+      input.accountId,
+      input.userId,
+      input.stickerId,
+    );
+    if (!owned) {
+      throw new NotFoundError(`Sticker ${input.stickerId} is not in your collection. Mark it as obtained first.`);
     }
 
     let duplicate = await this.duplicateRepository.getByUserAndSticker(

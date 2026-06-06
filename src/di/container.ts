@@ -117,6 +117,7 @@ class DIContainer {
       new IncrementDuplicateUseCase(
         this.getStickerDuplicateRepository(),
         this.getStickerRepository(),
+        this.getUserCollectionRepository(),
       ));
   }
 
