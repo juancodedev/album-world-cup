@@ -12,6 +12,9 @@ export function ToasterProvider() {
     <Toaster
       position="bottom-right"
       richColors
+      visibleToasts={5}
+      // Mobile: sonner automatically overrides to top-center below mobileWidth
+      mobileWidth="640px"
     />
   );
 }

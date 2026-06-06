@@ -30,7 +30,7 @@ export const MUTATION_MESSAGES: Record<
 > = {
   addSticker: { success: 'Agregado', error: 'Error al marcar sticker' },
   removeSticker: { success: 'Eliminado', error: 'Error al marcar sticker' },
-  incrementDuplicate: { success: 'Duplicado', error: 'Error al marcar sticker' },
+  incrementDuplicate: { success: 'Repetida', error: 'Error al marcar sticker' },
   removeDuplicate: { success: 'Eliminado', error: 'Error al marcar sticker' },
 };
 
