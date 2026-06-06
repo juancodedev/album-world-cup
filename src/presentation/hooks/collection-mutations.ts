@@ -36,7 +36,8 @@ export const MUTATION_MESSAGES: Record<
 
 /**
  * Show a success/error toast based on mutation outcome.
- * Pure-ish function (imports toast from sonner).
+ * Logs the full error to console for debugging,
+ * and shows the actual error message as a toast description.
  */
 export function showMutationToast(
   error: unknown,
@@ -44,7 +45,12 @@ export function showMutationToast(
 ): void {
   const msg = MUTATION_MESSAGES[type];
   if (error) {
-    toast.error(msg.error, { duration: 4000 });
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(`[${type}] Mutation failed:`, error);
+    toast.error(msg.error, {
+      description: errorMessage,
+      duration: 4000,
+    });
   } else {
     toast.success(msg.success, { duration: 3000 });
   }

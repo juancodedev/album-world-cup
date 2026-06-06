@@ -172,14 +172,22 @@ export function useTracker() {
     localToggles.current = new Set();
     setToggleVersion(v => v + 1);
 
-    const adds = queue.filter(i => i.type === 'add').map(i => i.stickerId);
-    const removes = queue.filter(i => i.type === 'remove').map(i => i.stickerId);
-
-    for (const id of adds) {
-      addStickerMutation({ stickerId: id, userId: userId! });
+    // Deduplicate: compute net action per sticker.
+    // If the same sticker has both add and remove in the queue,
+    // only the surplus action is sent. Net zero = skip entirely.
+    const netActions = new Map<string, number>();
+    for (const item of queue) {
+      const current = netActions.get(item.stickerId) ?? 0;
+      netActions.set(item.stickerId, current + (item.type === 'add' ? 1 : -1));
     }
-    for (const id of removes) {
-      removeStickerMutation({ stickerId: id, userId: userId! });
+
+    for (const [stickerId, net] of netActions) {
+      if (net > 0) {
+        addStickerMutation({ stickerId, userId: userId! });
+      } else if (net < 0) {
+        removeStickerMutation({ stickerId, userId: userId! });
+      }
+      // net === 0 → skip, no net change to persist
     }
   }, [addStickerMutation, removeStickerMutation, userId]);
 

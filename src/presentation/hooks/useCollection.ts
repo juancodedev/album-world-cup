@@ -22,12 +22,16 @@ export function useCollection(accountId: string, albumId: string) {
     enabled: !!accountId && !!albumId,
   });
 
-  const invalidateAll = () => {
-    queryClient.invalidateQueries({ queryKey: ['collection', accountId, albumId] });
+  /**
+   * Invalidate only aggregate/derived queries after a mutation.
+   * The `onMutate` handler already updates the collection cache optimistically,
+   * so we skip invalidating it — avoids a full refetch of all 1005 stickers.
+   * `sticker-detail` is unrelated to single toggles.
+   */
+  const invalidateDerived = () => {
     queryClient.invalidateQueries({ queryKey: ['collection-stats', accountId, albumId] });
     queryClient.invalidateQueries({ queryKey: ['progress', accountId, albumId] });
     queryClient.invalidateQueries({ queryKey: ['team-progress', accountId, albumId] });
-    queryClient.invalidateQueries({ queryKey: ['sticker-detail'] });
   };
 
   const addStickerMutation = useMutation({
@@ -48,7 +52,7 @@ export function useCollection(accountId: string, albumId: string) {
     },
     onSettled: (_data, error) => {
       showMutationToast(error, 'addSticker');
-      invalidateAll();
+      invalidateDerived();
     },
   });
 
@@ -70,7 +74,7 @@ export function useCollection(accountId: string, albumId: string) {
     },
     onSettled: (_data, error) => {
       showMutationToast(error, 'removeSticker');
-      invalidateAll();
+      invalidateDerived();
     },
   });
 
@@ -92,7 +96,7 @@ export function useCollection(accountId: string, albumId: string) {
     },
     onSettled: (_data, error) => {
       showMutationToast(error, 'incrementDuplicate');
-      invalidateAll();
+      invalidateDerived();
     },
   });
 
@@ -101,7 +105,7 @@ export function useCollection(accountId: string, albumId: string) {
       collectionService.removeDuplicateCount({ accountId, userId, stickerId, quantity }),
     onSettled: (_data, error) => {
       showMutationToast(error, 'removeDuplicate');
-      invalidateAll();
+      invalidateDerived();
     },
   });
 
