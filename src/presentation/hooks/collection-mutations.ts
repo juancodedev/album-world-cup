@@ -30,9 +30,30 @@ export const MUTATION_MESSAGES: Record<
 > = {
   addSticker: { success: 'Agregado', error: 'Error al marcar sticker' },
   removeSticker: { success: 'Eliminado', error: 'Error al marcar sticker' },
-  incrementDuplicate: { success: 'Duplicado', error: 'Error al marcar sticker' },
+  incrementDuplicate: { success: 'Repetida', error: 'Error al marcar sticker' },
   removeDuplicate: { success: 'Eliminado', error: 'Error al marcar sticker' },
 };
+
+/**
+ * Optimistically decrement duplicateCount and transition state
+ * for the target sticker. If count reaches 0, state becomes
+ * 'obtained' (the server will correct to 'missing' if not owned).
+ * Pure function — no side effects.
+ */
+export function applyOptimisticRemoveDuplicate(
+  stickers: StickerDTO[],
+  stickerId: string,
+): StickerDTO[] {
+  return stickers.map((s) =>
+    s.id === stickerId
+      ? {
+          ...s,
+          duplicateCount: Math.max(0, s.duplicateCount - 1),
+          state: s.duplicateCount - 1 <= 0 ? 'obtained' as const : s.state,
+        }
+      : s,
+  );
+}
 
 /**
  * Show a success/error toast based on mutation outcome.

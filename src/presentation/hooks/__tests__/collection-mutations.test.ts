@@ -97,7 +97,7 @@ describe('MUTATION_MESSAGES', () => {
   it('should have correct success messages for each mutation type', () => {
     expect(MUTATION_MESSAGES.addSticker.success).toBe('Agregado');
     expect(MUTATION_MESSAGES.removeSticker.success).toBe('Eliminado');
-    expect(MUTATION_MESSAGES.incrementDuplicate.success).toBe('Duplicado');
+    expect(MUTATION_MESSAGES.incrementDuplicate.success).toBe('Repetida');
   });
 
   it('should have correct error messages for each mutation type', () => {
@@ -130,7 +130,7 @@ describe('showMutationToast', () => {
 
     it('should call toast.success for increment duplicate', () => {
       showMutationToast(null, 'incrementDuplicate');
-      expect(toast.success).toHaveBeenCalledWith('Duplicado', { duration: 3000 });
+      expect(toast.success).toHaveBeenCalledWith('Repetida', { duration: 3000 });
     });
 
     it('should call toast.success for remove duplicate', () => {
