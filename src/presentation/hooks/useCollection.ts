@@ -23,15 +23,24 @@ export function useCollection(accountId: string, albumId: string) {
   });
 
   /**
-   * Invalidate only aggregate/derived queries after a mutation.
+   * Invalidate only aggregate/derived queries after add/remove mutations.
    * The `onMutate` handler already updates the collection cache optimistically,
    * so we skip invalidating it — avoids a full refetch of all 1005 stickers.
-   * `sticker-detail` is unrelated to single toggles.
    */
   const invalidateDerived = () => {
     queryClient.invalidateQueries({ queryKey: ['collection-stats', accountId, albumId] });
     queryClient.invalidateQueries({ queryKey: ['progress', accountId, albumId] });
     queryClient.invalidateQueries({ queryKey: ['team-progress', accountId, albumId] });
+  };
+
+  /**
+   * Invalidate collection + derived after duplicate mutations.
+   * The optimistic update for duplicates can't know if a sticker was also
+   * "obtained" or only "duplicate", so we refetch to get the correct state.
+   */
+  const invalidateAfterDuplicate = () => {
+    queryClient.invalidateQueries({ queryKey: ['collection', accountId, albumId] });
+    invalidateDerived();
   };
 
   const addStickerMutation = useMutation({
@@ -96,7 +105,7 @@ export function useCollection(accountId: string, albumId: string) {
     },
     onSettled: (_data, error) => {
       showMutationToast(error, 'incrementDuplicate');
-      invalidateDerived();
+      invalidateAfterDuplicate();
     },
   });
 
@@ -118,7 +127,7 @@ export function useCollection(accountId: string, albumId: string) {
     },
     onSettled: (_data, error) => {
       showMutationToast(error, 'removeDuplicate');
-      invalidateDerived();
+      invalidateAfterDuplicate();
     },
   });
 
