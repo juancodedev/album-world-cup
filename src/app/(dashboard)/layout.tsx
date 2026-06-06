@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createServerSideClient } from '../../infrastructure/database/supabase.server';
+import { ToasterProvider } from './ToasterProvider';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,5 +16,10 @@ export default async function DashboardGroupLayout({
     redirect('/login');
   }
 
-  return children;
+  return (
+    <>
+      {children}
+      <ToasterProvider />
+    </>
+  );
 }

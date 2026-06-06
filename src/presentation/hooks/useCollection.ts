@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { container } from '../../di/container';
 import { StickerDTO } from '../../application/dtos/sticker.dto';
 import { CollectionStatsDTO } from '../../application/dtos/collection-stats.dto';
+import { applyOptimisticDuplicate, showMutationToast } from './collection-mutations';
 
 export function useCollection(accountId: string, albumId: string) {
   const queryClient = useQueryClient();
@@ -45,7 +46,10 @@ export function useCollection(accountId: string, albumId: string) {
         queryClient.setQueryData(['collection', accountId, albumId], context.previous);
       }
     },
-    onSettled: invalidateAll,
+    onSettled: (_data, error) => {
+      showMutationToast(error, 'addSticker');
+      invalidateAll();
+    },
   });
 
   const removeStickerMutation = useMutation({
@@ -64,19 +68,41 @@ export function useCollection(accountId: string, albumId: string) {
         queryClient.setQueryData(['collection', accountId, albumId], context.previous);
       }
     },
-    onSettled: invalidateAll,
+    onSettled: (_data, error) => {
+      showMutationToast(error, 'removeSticker');
+      invalidateAll();
+    },
   });
 
   const incrementDuplicateMutation = useMutation({
     mutationFn: ({ stickerId, userId, quantity }: { stickerId: string; userId: string; quantity?: number }) =>
       collectionService.incrementDuplicateCount({ accountId, userId, stickerId, quantity }),
-    onSettled: invalidateAll,
+    onMutate: async ({ stickerId }) => {
+      await queryClient.cancelQueries({ queryKey: ['collection', accountId, albumId] });
+      const previous = queryClient.getQueryData<StickerDTO[]>(['collection', accountId, albumId]);
+      queryClient.setQueryData<StickerDTO[]>(['collection', accountId, albumId], (old) =>
+        old ? applyOptimisticDuplicate(old, stickerId) : old,
+      );
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['collection', accountId, albumId], context.previous);
+      }
+    },
+    onSettled: (_data, error) => {
+      showMutationToast(error, 'incrementDuplicate');
+      invalidateAll();
+    },
   });
 
   const removeDuplicateMutation = useMutation({
     mutationFn: ({ stickerId, userId, quantity }: { stickerId: string; userId: string; quantity?: number }) =>
       collectionService.removeDuplicateCount({ accountId, userId, stickerId, quantity }),
-    onSettled: invalidateAll,
+    onSettled: (_data, error) => {
+      showMutationToast(error, 'removeDuplicate');
+      invalidateAll();
+    },
   });
 
   return {
