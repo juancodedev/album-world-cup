@@ -128,7 +128,7 @@ export default function DuplicatesPage() {
             <span className="text-6xl mb-4">📭</span>
             <h2 className="text-xl font-bold text-gray-900 mb-1">Sin repetidas</h2>
             <p className="text-gray-500 text-sm">
-              Hacé doble clic en una figurita del tracker para marcarla como repetida.
+              Haz doble clic en un sticker del tracker para marcarlo como repetido.
             </p>
           </div>
         ) : (
