@@ -13,6 +13,7 @@ export const SUPABASE_TABLES = {
   accessLogs: 'access_logs',
   accounts: 'accounts',
   accountMembers: 'account_members',
+  exchangeOffers: 'exchange_offers',
 } as const;
 
 export const SUPABASE_STORAGE = {

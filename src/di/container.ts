@@ -9,6 +9,13 @@ import { SupabaseStickerDuplicateRepository } from '../infrastructure/repositori
 import { SupabaseShareCollectionRepository } from '../infrastructure/repositories/supabase-share-collection.repository';
 import { SupabaseAccountRepository } from '../infrastructure/repositories/supabase-account.repository';
 import { SupabaseAccountMemberRepository } from '../infrastructure/repositories/supabase-account-member.repository';
+import { SupabaseExchangeOfferRepository } from '../infrastructure/repositories/supabase-exchange-offer.repository';
+
+import { CreateExchangeOfferUseCase } from '../application/use-cases/exchange/create-exchange-offer.use-case';
+import { AcceptExchangeOfferUseCase } from '../application/use-cases/exchange/accept-exchange-offer.use-case';
+import { CancelExchangeOfferUseCase } from '../application/use-cases/exchange/cancel-exchange-offer.use-case';
+import { GetPendingExchangeOffersUseCase } from '../application/use-cases/exchange/get-pending-exchange-offers.use-case';
+import { GetUserExchangeOffersUseCase } from '../application/use-cases/exchange/get-user-exchange-offers.use-case';
 
 import { AddStickerUseCase } from '../application/use-cases/collection/add-sticker.use-case';
 import { IncrementDuplicateUseCase } from '../application/use-cases/collection/increment-duplicate.use-case';
@@ -37,6 +44,7 @@ import { SearchService } from '../application/services/search.service';
 import { StatisticsService } from '../application/services/statistics.service';
 import { ShareService } from '../application/services/share.service';
 import { AuthService } from '../application/services/auth.service';
+import { ExchangeService } from '../application/services/exchange.service';
 
 import { CollectionMapper } from '../application/mappers/collection.mapper';
 
@@ -100,6 +108,11 @@ class DIContainer {
   getAccountMemberRepository() {
     return this.getInstance('accountMemberRepo', () =>
       new SupabaseAccountMemberRepository(this.getSupabaseClient()));
+  }
+
+  getExchangeOfferRepository() {
+    return this.getInstance('exchangeOfferRepo', () =>
+      new SupabaseExchangeOfferRepository(this.getSupabaseClient()));
   }
 
   // Use Cases
@@ -248,6 +261,38 @@ class DIContainer {
       ));
   }
 
+  getCreateExchangeOfferUseCase() {
+    return this.getInstance('createExchangeOffer', () =>
+      new CreateExchangeOfferUseCase(
+        this.getExchangeOfferRepository(),
+        this.getStickerDuplicateRepository(),
+      ));
+  }
+
+  getAcceptExchangeOfferUseCase() {
+    return this.getInstance('acceptExchangeOffer', () =>
+      new AcceptExchangeOfferUseCase(
+        this.getExchangeOfferRepository(),
+        this.getStickerDuplicateRepository(),
+        this.getUserCollectionRepository(),
+      ));
+  }
+
+  getCancelExchangeOfferUseCase() {
+    return this.getInstance('cancelExchangeOffer', () =>
+      new CancelExchangeOfferUseCase(this.getExchangeOfferRepository()));
+  }
+
+  getGetPendingExchangeOffersUseCase() {
+    return this.getInstance('getPendingExchangeOffers', () =>
+      new GetPendingExchangeOffersUseCase(this.getExchangeOfferRepository()));
+  }
+
+  getGetUserExchangeOffersUseCase() {
+    return this.getInstance('getUserExchangeOffers', () =>
+      new GetUserExchangeOffersUseCase(this.getExchangeOfferRepository()));
+  }
+
   // Services
   getCollectionService() {
     return this.getInstance('collectionService', () =>
@@ -295,6 +340,17 @@ class DIContainer {
       new AuthService(
         this.getLoginWithGoogleUseCase(),
         this.getLogoutUseCase(),
+      ));
+  }
+
+  getExchangeService() {
+    return this.getInstance('exchangeService', () =>
+      new ExchangeService(
+        this.getCreateExchangeOfferUseCase(),
+        this.getAcceptExchangeOfferUseCase(),
+        this.getCancelExchangeOfferUseCase(),
+        this.getGetPendingExchangeOffersUseCase(),
+        this.getGetUserExchangeOffersUseCase(),
       ));
   }
 
