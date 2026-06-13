@@ -262,24 +262,31 @@ export default function ExchangePage() {
           ) : (
             <div className="space-y-3">
               {pendingOffers.map(offer => (
+                // <ExchangeCard
+                //   key={offer.id}
+                //   offerId={offer.id}
+                //   fromUserName={offer.fromUserId}
+                //   fromUserAvatar={null}
+                //   offeredCode={offer.offeredStickerId.slice(0, 8)}
+                //   offeredImage={null}
+                //   offeredTeam={null}
+                //   requestedCode={offer.requestedStickerId ? offer.requestedStickerId.slice(0, 8) : null}
+                //   requestedImage={null}
+                //   requestedTeam={null}
+                //   status={offer.status}
+                //   isOwn={offer.fromUserId === user?.id}
+                //   message={offer.message ?? null}
+                //   createdAt={offer.createdAt.toISOString()}
+                //   onAccept={handleAccept}
+                //   isPendingAction={acceptMutation.isPending}
+                // />
+
                 <ExchangeCard
-                  key={offer.id}
-                  offerId={offer.id}
-                  fromUserName={offer.fromUserId}
-                  fromUserAvatar={null}
-                  offeredCode={offer.offeredStickerId.slice(0, 8)}
-                  offeredImage={null}
-                  offeredTeam={null}
-                  requestedCode={offer.requestedStickerId ? offer.requestedStickerId.slice(0, 8) : null}
-                  requestedImage={null}
-                  requestedTeam={null}
-                  status={offer.status}
-                  isOwn={offer.fromUserId === user?.id}
-                  message={offer.message ?? null}
-                  createdAt={offer.createdAt.toISOString()}
-                  onAccept={handleAccept}
-                  isPendingAction={acceptMutation.isPending}
-                />
+                key={offer.id}
+                {...resolveOffer(offer)}
+                onCancel={handleCancel}
+                isPendingAction={cancelMutation.isPending}
+              />
               ))}
             </div>
           )

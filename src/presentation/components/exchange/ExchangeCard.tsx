@@ -58,7 +58,7 @@ export function ExchangeCard({
     }`}>
       <div className="flex items-start gap-3">
         {/* User avatar */}
-        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 overflow-hidden">
+        <div className="w-9 h-9 rounded-full bg-linear-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 overflow-hidden">
           {fromUserAvatar ? (
             <img src={fromUserAvatar} alt="" className="w-full h-full object-cover" />
           ) : (
@@ -75,7 +75,7 @@ export function ExchangeCard({
                 Tu oferta
               </span>
             )}
-            <span className="text-[10px] text-gray-400 ml-auto flex-shrink-0">{timeAgo}</span>
+            <span className="text-[10px] text-gray-400 ml-auto shrink-0">{timeAgo}</span>
           </div>
 
           {/* Message */}
