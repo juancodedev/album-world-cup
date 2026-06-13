@@ -16,7 +16,7 @@ export const GROUP_COLORS: Record<string, string> = {
 export const GROUP_ORDER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
 
 export const SPECIAL_SECTIONS = [
-  { code: 'FWC', name: 'Sección Especial / Introducción', count: 20, icon: '🌎' },
+  { code: 'FWC', name: 'Sección Especial / Introducción', count: 20, icon: '🌎', startPosition: 0 },
   { code: 'MUS', name: 'FIFA Museum', count: 11, icon: '🏆' },
   { code: 'COC', name: 'Coca-Cola Exclusivos', count: 14, icon: '🥤' },
 ] as const;

@@ -47,11 +47,13 @@ function getMissingGroupTeams(groups: GroupData[]) {
 function getMissingSpecials(specials: SpecialData[]) {
   return specials
     .map(s => {
+      const startingPos = s.startPosition ?? 1;
       const missing: { id: string; code: string }[] = [];
-      for (let pos = 1; pos <= s.count; pos++) {
-        const sticker = s.stickers.find((_, i) => i + 1 === pos);
+      for (let pos = startingPos; pos < startingPos + s.count; pos++) {
+        const sticker = s.stickers[pos - startingPos];
         if (sticker && sticker.state === 'missing') {
-          missing.push({ id: sticker.id, code: `${s.code}${pos}` });
+          const displayPos = pos === 0 ? '00' : String(pos);
+          missing.push({ id: sticker.id, code: `${s.code}${displayPos}` });
         }
       }
       return missing.length > 0 ? { ...s, missing } : null;

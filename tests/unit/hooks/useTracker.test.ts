@@ -50,6 +50,35 @@ function createSticker(id: string, state: 'missing' | 'obtained'): StickerDTO {
   };
 }
 
+function createSpecialSticker(
+  id: string,
+  number: number,
+  specialAttribute: string,
+  state: 'missing' | 'obtained',
+): StickerDTO {
+  return {
+    id,
+    albumId: '00000000-0000-0000-0000-000000000001',
+    number,
+    playerId: null,
+    playerName: null,
+    teamId: null,
+    teamName: null,
+    teamFlag: null,
+    stickerTypeId: 'f0000000-0000-0000-0000-000000000003',
+    stickerTypeName: 'Special',
+    rarity: 'common',
+    rarityLabel: 'Common',
+    imageUrl: '',
+    imageThumbnail: null,
+    isSpecial: true,
+    specialAttribute,
+    state,
+    duplicateCount: 0,
+    createdAt: '2026-01-01',
+  };
+}
+
 const MOCK_COLLECTION_RETURN = {
   collection: [] as StickerDTO[],
   isLoading: false,
@@ -108,5 +137,62 @@ describe('useTracker — immediate local toggle feedback (PR 1)', () => {
 
     // After toggle: ownedSet must NOT include it (toggleVersion forces re-compute)
     expect(result.current.ownedSet.has(stickerId)).toBe(false);
+  });
+});
+
+describe('useTracker — special section startPosition propagation', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('propagates startPosition=0 for FWC section', () => {
+    const fwcStickers: StickerDTO[] = [
+      createSpecialSticker('fwc-0', 961, 'FWC', 'missing'),
+      createSpecialSticker('fwc-1', 962, 'FWC', 'missing'),
+    ];
+
+    mockUseCollection.mockReturnValue({
+      ...MOCK_COLLECTION_RETURN,
+      collection: fwcStickers,
+    });
+
+    const { result } = renderHook(() => useTracker());
+
+    const fwcSection = result.current.data?.specials.find(s => s.code === 'FWC');
+    expect(fwcSection?.startPosition).toBe(0);
+  });
+
+  it('returns undefined for MUS section (no startPosition defined)', () => {
+    const musStickers: StickerDTO[] = [
+      createSpecialSticker('mus-1', 981, 'MUS', 'missing'),
+    ];
+
+    mockUseCollection.mockReturnValue({
+      ...MOCK_COLLECTION_RETURN,
+      collection: musStickers,
+    });
+
+    const { result } = renderHook(() => useTracker());
+
+    const musSection = result.current.data?.specials.find(s => s.code === 'MUS');
+    expect(musSection).toBeTruthy();
+    expect(musSection?.startPosition).toBeUndefined();
+  });
+
+  it('returns undefined for COC section (no startPosition defined)', () => {
+    const cocStickers: StickerDTO[] = [
+      createSpecialSticker('coc-1', 992, 'COC', 'missing'),
+    ];
+
+    mockUseCollection.mockReturnValue({
+      ...MOCK_COLLECTION_RETURN,
+      collection: cocStickers,
+    });
+
+    const { result } = renderHook(() => useTracker());
+
+    const cocSection = result.current.data?.specials.find(s => s.code === 'COC');
+    expect(cocSection).toBeTruthy();
+    expect(cocSection?.startPosition).toBeUndefined();
   });
 });
