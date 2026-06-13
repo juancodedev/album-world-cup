@@ -38,6 +38,7 @@ export interface SpecialData {
   name: string;
   icon: string;
   count: number;
+  startPosition?: number;
   stickers: StickerDTO[];
   ownedCount: number;
 }
@@ -115,6 +116,7 @@ function buildTrackerData(collection: StickerDTO[], teams: TeamInfo[], localTogg
       name: section.name,
       icon: section.icon,
       count: section.count,
+      startPosition: 'startPosition' in section ? section.startPosition : undefined,
       stickers: specialStickers,
       ownedCount,
     };

@@ -49,6 +49,7 @@ export function SpecialCard({ section, ownedSet, onToggle, onDuplicate }: Specia
               ownedSet={ownedSet}
               onToggle={onToggle}
               onDuplicate={onDuplicate}
+              startPosition={section.startPosition}
             />
           </div>
         </div>
