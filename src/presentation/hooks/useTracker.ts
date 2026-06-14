@@ -35,6 +35,7 @@ export interface GroupData {
 
 export interface SpecialData {
   code: string;
+  displayCode: string;
   name: string;
   icon: string;
   count: number;
@@ -110,8 +111,14 @@ function buildTrackerData(collection: StickerDTO[], teams: TeamInfo[], localTogg
     const ownedCount = specialStickers.filter(s => isOwned(s)).length;
     totalOwned += ownedCount;
 
+    const displayCode: string =
+      'displayCode' in section && typeof section.displayCode === 'string'
+        ? section.displayCode
+        : section.code;
+
     return {
       code: section.code,
+      displayCode,
       name: section.name,
       icon: section.icon,
       count: section.count,

@@ -18,7 +18,7 @@ export const GROUP_ORDER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K
 export const SPECIAL_SECTIONS = [
   { code: 'FWC', name: 'Sección Especial / Introducción', count: 20, icon: '🌎' },
   { code: 'MUS', name: 'FIFA Museum', count: 11, icon: '🏆' },
-  { code: 'COC', name: 'Coca-Cola Exclusivos', count: 14, icon: '🥤' },
+  { code: 'COC', displayCode: 'CC', name: 'Coca-Cola Exclusivos', count: 14, icon: '🥤' },
 ] as const;
 
 export const STICKERS_PER_TEAM = 20;

@@ -7,13 +7,21 @@ import { useAuth } from '../../../../presentation/providers/AuthProvider';
 import { useTracker } from '../../../../presentation/hooks/useTracker';
 import { DashboardLayout } from '../../../../presentation/layouts/DashboardLayout';
 import { ChevronLeft, Plus, Minus } from 'lucide-react';
-import { GROUP_COLORS, GROUP_ORDER, STICKERS_PER_TEAM } from '../../../../shared/constants/tracker.constants';
+import { GROUP_COLORS, GROUP_ORDER, SPECIAL_SECTIONS, STICKERS_PER_TEAM } from '../../../../shared/constants/tracker.constants';
 import { FLAG_EMOJI } from '../../../../shared/constants/flags.constants';
 
 interface DuplicateEntry {
   id: string;
   code: string;
   count: number;
+}
+
+interface SpecialSectionDuplicates {
+  code: string;
+  displayCode: string;
+  name: string;
+  icon: string;
+  duplicates: DuplicateEntry[];
 }
 
 interface TeamDuplicates {
@@ -90,6 +98,34 @@ export default function DuplicatesPage() {
     return result;
   }, [data, teamsById]);
 
+  const specialDuplicates = useMemo(() => {
+    if (!data) return [];
+
+    return data.specials
+      .map(section => {
+        const startPos = section.startPosition ?? 1;
+        const dups: DuplicateEntry[] = section.stickers
+          .filter(s => s.duplicateCount > 0)
+          .map((s, idx) => {
+            const pos = startPos + idx;
+            return {
+              id: s.id,
+              code: pos === 0 ? '00' : String(pos),
+              count: s.duplicateCount,
+            };
+          });
+
+        return {
+          code: section.code,
+          displayCode: section.displayCode,
+          name: section.name,
+          icon: section.icon,
+          duplicates: dups,
+        };
+      })
+      .filter(s => s.duplicates.length > 0);
+  }, [data]);
+
   const totalDuplicates = collection.reduce((sum, s) => sum + s.duplicateCount, 0);
 
   if (authLoading || !user) return null;
@@ -123,7 +159,7 @@ export default function DuplicatesPage() {
           </div>
         </div>
 
-        {teamDuplicates.length === 0 ? (
+        {teamDuplicates.length === 0 && specialDuplicates.length === 0 ? (
           <div className="min-h-[40vh] flex flex-col items-center justify-center text-center px-4">
             <span className="text-6xl mb-4">📭</span>
             <h2 className="text-xl font-bold text-gray-900 mb-1">Sin repetidas</h2>
@@ -201,6 +237,69 @@ export default function DuplicatesPage() {
                 </div>
               );
             })}
+
+            {/* Special sections card */}
+            {specialDuplicates.length > 0 && (
+              <div className="rounded-2xl border border-amber-200 bg-white overflow-hidden">
+                <div
+                  className="px-4 py-3 flex items-center gap-3"
+                  style={{ borderBottom: '2px solid #d97706' }}
+                >
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-sm bg-amber-500">
+                    ★
+                  </div>
+                  <span className="font-bold text-sm text-gray-700">Secciones especiales</span>
+                  <span className="ml-auto text-xs font-bold text-gray-400">
+                    {specialDuplicates.reduce((sum, s) => sum + s.duplicates.reduce((a, d) => a + d.count, 0), 0)} repetidos
+                  </span>
+                </div>
+                <div className="p-3 space-y-2">
+                  {specialDuplicates.map(section => (
+                    <div key={section.code} className="bg-gray-50 rounded-xl p-3">
+                      <div className="flex items-center gap-2.5 mb-3">
+                        <span className="text-xl">{section.icon}</span>
+                        <div>
+                          <div className="font-semibold text-sm text-gray-900">{section.name}</div>
+                          <div className="text-xs text-gray-400">{section.displayCode}</div>
+                        </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        {section.duplicates.map(d => (
+                          <div
+                            key={d.id}
+                            className="flex items-center gap-3 bg-white rounded-lg px-3 py-2 border border-gray-100"
+                          >
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                              {d.code}
+                            </div>
+                            <span className="font-mono font-bold text-sm text-gray-900 flex-1">
+                              {section.displayCode}{d.code}
+                            </span>
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => handleDecrement(d.id)}
+                                className="w-7 h-7 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors flex items-center justify-center"
+                              >
+                                <Minus className="w-3.5 h-3.5" />
+                              </button>
+                              <span className="w-7 text-center font-bold text-sm text-gray-900">
+                                {d.count}
+                              </span>
+                              <button
+                                onClick={() => handleIncrement(d.id)}
+                                className="w-7 h-7 rounded-lg bg-green-50 text-green-500 hover:bg-green-100 transition-colors flex items-center justify-center"
+                              >
+                                <Plus className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

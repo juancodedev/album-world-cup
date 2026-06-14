@@ -10,10 +10,12 @@ interface StickerGridProps {
   ownedSet: Set<string>;
   onToggle: (stickerId: string) => void;
   onDuplicate?: (stickerId: string) => void;
+  startPosition?: number;
+  slots?: number;
 }
 
-export function StickerGrid({ teamCode, stickers, ownedSet, onToggle, onDuplicate }: StickerGridProps) {
-  const allNumbers = Array.from({ length: STICKERS_PER_TEAM }, (_, i) => i + 1);
+export function StickerGrid({ teamCode, stickers, ownedSet, onToggle, onDuplicate, startPosition = 1, slots }: StickerGridProps) {
+  const allNumbers = Array.from({ length: slots ?? STICKERS_PER_TEAM }, (_, i) => i + startPosition);
   const clickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleClick = (stickerId: string) => {
@@ -36,10 +38,12 @@ export function StickerGrid({ teamCode, stickers, ownedSet, onToggle, onDuplicat
   return (
     <div className="grid grid-cols-5 sm:grid-cols-10 gap-1.5">
       {allNumbers.map(n => {
-        const sticker = stickers.find(s => s.number % STICKERS_PER_TEAM === n % STICKERS_PER_TEAM || s.number === n);
+        const stickerIndex = n - startPosition;
+        const sticker = stickerIndex >= 0 && stickerIndex < stickers.length ? stickers[stickerIndex] : undefined;
         const owned = sticker ? ownedSet.has(sticker.id) : false;
         const dupCount = sticker?.duplicateCount || 0;
-        const code = `${teamCode}${n}`;
+        const displayNum = n === 0 ? '00' : String(n);
+        const code = `${teamCode}${displayNum}`;
 
         return (
           <div
