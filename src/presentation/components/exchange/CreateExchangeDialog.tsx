@@ -12,7 +12,28 @@ import {
 import { Button } from '@/components/ui/button';
 import { StickerDTO } from '../../../application/dtos/sticker.dto';
 import { Plus, Search, X } from 'lucide-react';
-import { STICKERS_PER_TEAM } from '../../../shared/constants/tracker.constants';
+import { SPECIAL_SECTIONS, STICKERS_PER_TEAM } from '../../../shared/constants/tracker.constants';
+
+const TEAM_TOTAL = 48 * STICKERS_PER_TEAM;
+
+const specialRanges = (() => {
+  let offset = TEAM_TOTAL + 1;
+  return SPECIAL_SECTIONS.map(sec => ({
+    attribute: sec.code,
+    displayCode: ('displayCode' in sec ? (sec as { displayCode?: string }).displayCode : undefined) ?? sec.code,
+    startGlobal: offset,
+    count: sec.count,
+    startPosition: (sec as { startPosition?: number }).startPosition ?? 1,
+    _end: (offset += sec.count) - sec.count,
+  }));
+})();
+
+function formatSpecialCode(specialAttribute: string, globalNumber: number): string {
+  const r = specialRanges.find(s => s.attribute === specialAttribute);
+  if (!r) return `#${globalNumber}`;
+  const localPos = (globalNumber - r.startGlobal) + r.startPosition;
+  return `${r.displayCode}${localPos === 0 ? '00' : String(localPos)}`;
+}
 
 interface DuplicateEntry {
   stickerId: string;
@@ -69,10 +90,16 @@ export function CreateExchangeDialog({
   };
 
   // Build sticker code: e.g. "ARG5"
-  const buildStickerCode = (sticker: { teamId: string | null; number: number }) => {
+  const buildStickerCode = (sticker: { teamId: string | null; number: number; specialAttribute: string | null }): string => {
     const team = getTeamInfo(sticker.teamId);
-    const local = team ? localNumber(sticker.number) : sticker.number;
-    return team ? `${team.code}${local}` : `#${sticker.number}`;
+    if (team) {
+      const local = localNumber(sticker.number);
+      return `${team.code}${local}`;
+    }
+    if (sticker.specialAttribute) {
+      return formatSpecialCode(sticker.specialAttribute, sticker.number);
+    }
+    return `#${sticker.number}`;
   };
 
   // Group duplicates by team
@@ -105,7 +132,7 @@ export function CreateExchangeDialog({
       const team = getTeamInfo(s.teamId);
       return {
         ...s,
-        stickerCode: team ? `${team.code}${localNumber(s.number)}` : `#${s.number}`,
+        stickerCode: buildStickerCode(s),
         teamName: team?.name || s.teamName || '',
         teamFlag: team?.flag || null,
       };

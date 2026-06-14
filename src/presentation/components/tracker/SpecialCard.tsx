@@ -44,12 +44,13 @@ export function SpecialCard({ section, ownedSet, onToggle, onDuplicate }: Specia
         <div className="px-3 pb-3 border-t border-gray-100">
           <div className="pt-3">
             <StickerGrid
-              teamCode={section.code}
+              teamCode={section.displayCode}
               stickers={section.stickers}
               ownedSet={ownedSet}
               onToggle={onToggle}
               onDuplicate={onDuplicate}
               startPosition={section.startPosition}
+              slots={section.count}
             />
           </div>
         </div>

@@ -14,7 +14,7 @@ The FWC special section SHALL consist of 20 stickers spanning codes FWC00 throug
 | FWC00-FWC19 exist | FWC section configured | stickers loaded | 20 stickers: FWC00 (position 0) through FWC19 (position 19) |
 | FWC20 excluded | FWC section configured | stickers loaded | no sticker with code FWC20 exists |
 | MUS starts at 1 | MUS section configured | stickers loaded | first sticker code is MUS1 |
-| COC starts at 1 | COC section configured | stickers loaded | first sticker code is COC1 |
+| COC starts at 1 | COC section configured | stickers loaded | first sticker code is CC1 |
 
 ### Requirement: Grid Rendering with Position Zero
 The system MUST render special section stickers in a grid whose slot indices match section positions. FWC grid SHALL render 20 slots (positions 0-19). Other sections SHALL render from position 1.

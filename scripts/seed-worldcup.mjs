@@ -55,7 +55,7 @@ const GROUPS_DATA = [
 const SPECIAL_SECTIONS = [
   { code: 'FWC', name: 'Introduction', count: 20, startPosition: 0 },
   { code: 'MUS', name: 'FIFA Museum', count: 11 },
-  { code: 'COC', name: 'Coca-Cola Exclusivos', count: 14 },
+  { code: 'COC', displayCode: 'CC', name: 'Coca-Cola Exclusivos', count: 14 },
 ];
 
 async function fetchJson(url, options) {
@@ -117,6 +117,7 @@ function generateStickers(teamMap) {
 
   for (const section of SPECIAL_SECTIONS) {
     const startPos = section.startPosition ?? 1;
+    const displayPrefix = section.displayCode ?? section.code;
     for (let i = startPos; i < startPos + section.count; i++) {
       number++;
       const displayPos = i === 0 ? '00' : String(i);
@@ -124,7 +125,7 @@ function generateStickers(teamMap) {
         album_id: ALBUM_ID,
         number,
         team_id: null,
-        code: `${section.code}${displayPos}`,
+        code: `${displayPrefix}${displayPos}`,
         rarity: 'common',
         is_special: true,
         special_attribute: section.code,

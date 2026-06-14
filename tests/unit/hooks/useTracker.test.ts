@@ -196,3 +196,36 @@ describe('useTracker — special section startPosition propagation', () => {
     expect(cocSection?.startPosition).toBeUndefined();
   });
 });
+
+describe('useTracker — displayCode propagation from SPECIAL_SECTIONS', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('populates displayCode from section.displayCode ?? section.code', () => {
+    // COC has displayCode:'CC' in SPECIAL_SECTIONS, others fall back to code
+    const stickers: StickerDTO[] = [
+      createSpecialSticker('coc-1', 992, 'COC', 'missing'),
+      createSpecialSticker('mus-1', 981, 'MUS', 'missing'),
+      createSpecialSticker('fwc-0', 961, 'FWC', 'missing'),
+    ];
+
+    mockUseCollection.mockReturnValue({
+      ...MOCK_COLLECTION_RETURN,
+      collection: stickers,
+    });
+
+    const { result } = renderHook(() => useTracker());
+
+    const cocSection = result.current.data?.specials.find(s => s.code === 'COC');
+    const musSection = result.current.data?.specials.find(s => s.code === 'MUS');
+    const fwcSection = result.current.data?.specials.find(s => s.code === 'FWC');
+
+    // COC should have displayCode 'CC' (explicit in constant)
+    expect(cocSection?.displayCode).toBe('CC');
+
+    // MUS and FWC fall back to their code since they have no displayCode
+    expect(musSection?.displayCode).toBe('MUS');
+    expect(fwcSection?.displayCode).toBe('FWC');
+  });
+});

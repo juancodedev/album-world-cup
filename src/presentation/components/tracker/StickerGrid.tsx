@@ -11,10 +11,11 @@ interface StickerGridProps {
   onToggle: (stickerId: string) => void;
   onDuplicate?: (stickerId: string) => void;
   startPosition?: number;
+  slots?: number;
 }
 
-export function StickerGrid({ teamCode, stickers, ownedSet, onToggle, onDuplicate, startPosition = 1 }: StickerGridProps) {
-  const allNumbers = Array.from({ length: STICKERS_PER_TEAM }, (_, i) => i + startPosition);
+export function StickerGrid({ teamCode, stickers, ownedSet, onToggle, onDuplicate, startPosition = 1, slots }: StickerGridProps) {
+  const allNumbers = Array.from({ length: slots ?? STICKERS_PER_TEAM }, (_, i) => i + startPosition);
   const clickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleClick = (stickerId: string) => {

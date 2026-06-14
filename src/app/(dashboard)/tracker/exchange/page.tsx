@@ -20,7 +20,28 @@ import { CreateExchangeDialog } from '../../../../presentation/components/exchan
 import { ChevronLeft, RefreshCw, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { FLAG_EMOJI } from '../../../../shared/constants/flags.constants';
-import { STICKERS_PER_TEAM } from '../../../../shared/constants/tracker.constants';
+import { SPECIAL_SECTIONS, STICKERS_PER_TEAM } from '../../../../shared/constants/tracker.constants';
+
+const TEAM_TOTAL = 48 * STICKERS_PER_TEAM;
+
+const specialRanges = (() => {
+  let offset = TEAM_TOTAL + 1;
+  return SPECIAL_SECTIONS.map(sec => ({
+    attribute: sec.code,
+    displayCode: ('displayCode' in sec ? (sec as { displayCode?: string }).displayCode : undefined) ?? sec.code,
+    startGlobal: offset,
+    count: sec.count,
+    startPosition: (sec as { startPosition?: number }).startPosition ?? 1,
+    _end: (offset += sec.count) - sec.count,
+  }));
+})();
+
+function formatSpecialCode(specialAttribute: string, globalNumber: number): string {
+  const r = specialRanges.find(s => s.attribute === specialAttribute);
+  if (!r) return `#${globalNumber}`;
+  const localPos = (globalNumber - r.startGlobal) + r.startPosition;
+  return `${r.displayCode}${localPos === 0 ? '00' : String(localPos)}`;
+}
 
 export default function ExchangePage() {
   const router = useRouter();
@@ -88,7 +109,9 @@ export default function ExchangePage() {
         const local = teamInfo ? localNumber(s.number) : s.number;
         const code = teamInfo
           ? `${teamInfo.code}${local}`
-          : `#${s.number}`;
+          : s.specialAttribute
+            ? formatSpecialCode(s.specialAttribute, s.number)
+            : `#${s.number}`;
         return {
           stickerId: s.id,
           teamId: s.teamId || '',
@@ -161,12 +184,20 @@ export default function ExchangePage() {
     const offeredSticker = collection?.find(s => s.id === offer.offeredStickerId);
     const offeredTeam = offeredSticker?.teamId ? teamInfoMap.get(offeredSticker.teamId) : null;
     const offeredLocal = offeredTeam ? localNumber(offeredSticker!.number) : offeredSticker?.number;
-    const offeredCode = offeredTeam ? `${offeredTeam.code}${offeredLocal}` : `#${offeredSticker?.number ?? '?'}`;
+    const offeredCode = offeredTeam
+      ? `${offeredTeam.code}${offeredLocal}`
+      : offeredSticker?.specialAttribute
+        ? formatSpecialCode(offeredSticker.specialAttribute, offeredSticker.number)
+        : `#${offeredSticker?.number ?? '?'}`;
 
     const requestedSticker = offer.requestedStickerId ? collection?.find(s => s.id === offer.requestedStickerId) : null;
     const requestedTeam = requestedSticker?.teamId ? teamInfoMap.get(requestedSticker.teamId) : null;
     const requestedLocal = requestedTeam ? localNumber(requestedSticker!.number) : requestedSticker?.number;
-    const requestedCode = requestedTeam ? `${requestedTeam.code}${requestedLocal}` : null;
+    const requestedCode = requestedTeam
+      ? `${requestedTeam.code}${requestedLocal}`
+      : requestedSticker?.specialAttribute
+        ? formatSpecialCode(requestedSticker.specialAttribute, requestedSticker.number)
+        : null;
 
     return {
       offerId: offer.id,
