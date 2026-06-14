@@ -1,0 +1,67 @@
+schema: spec-driven
+
+context: |
+  Stack: Next.js 15.5 (App Router), React 19, TypeScript 5 strict
+  Backend: Supabase (Auth, Database, Storage, RLS)
+  UI: Tailwind v4 + shadcn/ui + TanStack Query v5
+  Deploy: Cloudflare Workers via OpenNext
+  Architecture: Clean Architecture (Domain → Application → Infrastructure → Presentation)
+  DI: Singleton container (src/di/container.ts)
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+    - Proposal MUST include affected files/paths
+  specs:
+    - Use Given/When/Then for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+    - Respect Clean Architecture layer boundaries
+  tasks:
+    - Group by phase, use hierarchical numbering
+    - Keep tasks completable in one session
+    - Tests MUST be written before implementation
+  apply:
+    - Follow existing Clean Architecture patterns
+    - API routes do NOT use DI container; instantiate repos directly
+    - Server-side auth: use supabase.auth.getUser() NEVER getSession()
+    tdd: true
+    test_command: "pnpm test"
+  verify:
+    test_command: "pnpm test"
+    build_command: "pnpm build"
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas
+
+testing:
+  strict_tdd: true
+  detected: 2026-06-13
+  runner:
+    command: "pnpm test"
+    framework: "Jest v30"
+  layers:
+    unit:
+      available: true
+      tool: "Jest"
+    integration:
+      available: true
+      tool: "Jest + Testing Library"
+    e2e:
+      available: false
+      tool: "—"
+  coverage:
+    available: false
+    command: "—"
+  quality:
+    linter:
+      available: true
+      command: "pnpm lint"
+    type_checker:
+      available: true
+      command: "npx tsc --noEmit"
+    formatter:
+      available: true
+      command: "npx prettier --check ."

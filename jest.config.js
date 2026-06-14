@@ -7,8 +7,8 @@ const config = {
   testEnvironment: 'node',
   roots: ['<rootDir>'],
   testMatch: [
-    '<rootDir>/src/**/__tests__/**/*.test.ts',
-    '<rootDir>/tests/**/*.test.ts',
+    '<rootDir>/src/**/__tests__/**/*.test.{ts,tsx}',
+    '<rootDir>/tests/**/*.test.{ts,tsx}',
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',

@@ -16,7 +16,7 @@ Aplicación web para coleccionar y dar seguimiento a las láminas del Álbum Pan
 ### ✅ Fase 1 — Datos del Mundial 2026 (Completada)
 - 48 selecciones en 12 grupos (A–L), 6 confederaciones
 - 1005 stickers: 960 de selecciones (20 por equipo) + 45 especiales (Introducción, FIFA Museum, Coca-Cola)
-- Códigos: `MEX1`–`MEX20`, `ARG1`–`ARG20`, especiales `FWC1`–`FWC20`, `MUS1`–`MUS11`, `COC1`–`COC14`
+- Códigos: `MEX1`–`MEX20`, `ARG1`–`ARG20`, especiales `FWC00`–`FWC19`, `MUS1`–`MUS11`, `COC1`–`COC14`
 - Migración SQL + seed script en `scripts/seed-worldcup.mjs`
 
 ### ✅ Fase 2 — Parrilla de stickers (Completada)
@@ -75,6 +75,15 @@ Aplicación web para coleccionar y dar seguimiento a las láminas del Álbum Pan
 - **Gradiente mejorado**: Header card con gradiente `from-indigo-500 to-violet-800` para mayor contraste visual
 - **Paleta unificada**: Reemplazados todos los `bg-gray-50`/`text-gray-*` restantes por tokens CSS (`bg-background`, `text-muted-foreground`, etc.)
 
+### ✅ Fase 9 — FWC00 (special sticker) (Completada)
+- FWC20 reemplazado por FWC00 (posición 0): sección mantiene 20 stickers, `TOTAL_STICKERS` = 1005
+- `startPosition` opcional en `SPECIAL_SECTIONS` para secciones que no empiezan en 1
+- `StickerGrid` acepta `startPosition` prop; formatea posición 0 como `'00'` (FWC00)
+- `MissingListScreen` itera desde `startPosition` en secciones especiales
+- `SpecialData` y `buildTrackerData` propagan `startPosition`
+- Migración: `supabase/migrations/20260613000000_fwc00.sql` (DELETE FWC20, INSERT FWC00)
+- Seed script actualizado con `startPosition` y formato `'00'`
+
 ## Getting Started
 
 ```bash
@@ -90,12 +99,12 @@ Open [http://localhost:3000](http://localhost:3000).
 | `pnpm dev` | Dev server |
 | `pnpm build` | Build Next.js |
 | `pnpm lint` | ESLint |
-| `pnpm test` | Jest (126 tests) |
+| `pnpm test` | Jest (155 tests) |
 | `pnpm seed:worldcup` | Seed stickers via Supabase REST API |
 
 ## Tests
 
-126 tests en 20 suites, todas con datos mock:
+155 tests en 25 suites, todas con datos mock:
 
 | Categoría | Archivos | Tests |
 |-----------|----------|-------|
@@ -103,9 +112,12 @@ Open [http://localhost:3000](http://localhost:3000).
 | Domain Entities | `user-collection.entity`, `team.entity`, `sticker.entity`, `user.entity`, `album.entity`, `account.entity`, `account-member.entity` | 7 suites |
 | Use Cases | `add-sticker.use-case`, `get-shared-collection.use-case` | 3 suites (unit + integration) |
 | Services | `statistics.service` | 1 suite |
+| Components | `StickerGrid`, `MissingListScreen` | 2 suites |
+| Hooks | `useTracker`, `collection-mutations` | 2 suites |
+| UI | `ToasterProvider` | 1 suite |
 
 ```
-pnpm test        # 20 suites, 126 tests
+pnpm test        # 25 suites, 155 tests
 ```
 
 ## Plan detallado
