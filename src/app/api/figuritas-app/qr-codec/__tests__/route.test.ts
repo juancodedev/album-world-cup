@@ -73,17 +73,17 @@ function installDefaultFallback(mockFrom: jest.Mock) {
     gte: jest.fn().mockReturnThis(),
     lte: jest.fn().mockResolvedValue({ data: [], error: null }),
     limit: jest.fn().mockReturnThis(),
-    single: jest.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
+    maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }),
   });
 }
 
 function mockAccountQuery(mockFrom: jest.Mock, accountId: string | null) {
-  const singleMock = jest.fn().mockResolvedValue(
+  const maybeSingleMock = jest.fn().mockResolvedValue(
     accountId
       ? { data: { account_id: accountId }, error: null }
-      : { data: null, error: { code: 'PGRST116', message: 'No rows' } },
+      : { data: null, error: null },
   );
-  const limitMock = jest.fn().mockReturnValue({ single: singleMock });
+  const limitMock = jest.fn().mockReturnValue({ maybeSingle: maybeSingleMock });
   const eqMock = jest.fn().mockReturnValue({ limit: limitMock });
   mockFrom
     .mockReturnValueOnce({ select: jest.fn().mockReturnValue({ eq: eqMock }) });

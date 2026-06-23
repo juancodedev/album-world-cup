@@ -20,11 +20,11 @@ export async function GET(request: NextRequest) {
   try {
     // Get the user's default account
     const { data: account } = await supabase
-      .from('user_accounts')
+      .from('account_members')
       .select('account_id')
       .eq('user_id', authUser.id)
       .limit(1)
-      .single();
+      .maybeSingle();
 
     if (!account) {
       return NextResponse.json({ error: 'No account found' }, { status: 400 });
