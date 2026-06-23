@@ -9,6 +9,11 @@ import { QRCodecModal } from '../qr-codec-modal';
 
 // ── Mocks ─────────────────────────────────────────────────────────────────
 
+// Mock qrcode to return a fake data URL synchronously
+jest.mock('qrcode', () => ({
+  toDataURL: jest.fn(() => Promise.resolve('data:image/png;base64,fake-qr-image')),
+}));
+
 const mockWriteText = jest.fn();
 Object.defineProperty(navigator, 'clipboard', {
   value: { writeText: mockWriteText },
@@ -24,10 +29,12 @@ beforeEach(() => {
 });
 
 describe('QRCodecModal', () => {
-  it('renders the QR string in a code block', () => {
+  it('renders a QR code image', async () => {
     render(<QRCodecModal qrString={QR_STRING} onClose={jest.fn()} />);
 
-    expect(screen.getByText(QR_STRING)).toBeInTheDocument();
+    const qrImage = await screen.findByAltText('QR Code para Figuritas App');
+    expect(qrImage).toBeInTheDocument();
+    expect(qrImage).toHaveAttribute('src', 'data:image/png;base64,fake-qr-image');
   });
 
   it('shows a "Copiar" button', () => {
@@ -51,7 +58,6 @@ describe('QRCodecModal', () => {
 
     render(<QRCodecModal qrString={QR_STRING} onClose={onClose} />);
 
-    // The close button rendered by the Dialog has the text "Close" in an sr-only span
     const closeButton = screen.getByRole('button', { name: /close/i });
     fireEvent.click(closeButton);
 
@@ -61,7 +67,7 @@ describe('QRCodecModal', () => {
   it('shows the title with Figuritas App heading', () => {
     render(<QRCodecModal qrString={QR_STRING} onClose={jest.fn()} />);
 
-    expect(screen.getByText(/código qr/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /código qr/i })).toBeInTheDocument();
   });
 
   it('renders a dialog overlay/backdrop', () => {

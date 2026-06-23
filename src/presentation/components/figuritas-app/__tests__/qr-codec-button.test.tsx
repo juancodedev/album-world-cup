@@ -13,6 +13,11 @@ jest.mock('sonner', () => ({
   toast: { error: jest.fn() },
 }));
 
+// Mock qrcode
+jest.mock('qrcode', () => ({
+  toDataURL: jest.fn(() => Promise.resolve('data:image/png;base64,fake-qr')),
+}));
+
 // Mock the config module
 let featureEnabled = true;
 jest.mock('../../../../config/figuritas-app', () => ({
@@ -77,7 +82,7 @@ describe('QRCodecButton', () => {
       expect(mockFetch).toHaveBeenCalledWith('/api/figuritas-app/qr-codec');
     });
 
-    it('shows modal with QR string on success', async () => {
+    it('shows modal with QR image on success', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({ qrString: '图救abc123;def456' }),
@@ -88,8 +93,8 @@ describe('QRCodecButton', () => {
       const button = screen.getByRole('button');
       fireEvent.click(button);
 
-      const qrCode = await screen.findByText('图救abc123;def456');
-      expect(qrCode).toBeInTheDocument();
+      const qrImage = await screen.findByAltText('QR Code para Figuritas App');
+      expect(qrImage).toBeInTheDocument();
     });
 
     it('shows toast with error on API failure', async () => {
