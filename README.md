@@ -19,6 +19,13 @@ Aplicación web para coleccionar y dar seguimiento a las láminas del Álbum Pan
 - Códigos: `MEX1`–`MEX20`, `ARG1`–`ARG20`, especiales `FWC00`–`FWC19`, `MUS1`–`MUS11`, `COC1`–`COC14`
 - Migración SQL + seed script en `scripts/seed-worldcup.mjs`
 
+### 🔄 Fase 2 (QR) — Figuritas App QR Codec (En desarrollo — PR 2)
+- Feature flag `NEXT_PUBLIC_FIGURITAS_APP_ENABLED` para activación progresiva
+- Domain service `QRCodecService.encodeV2()` con bitmap MSB-first (984 bits), gzip compression, base64
+- API Route `GET /api/figuritas-app/qr-codec` con autenticación y feature gating
+- Componente `QRCodecButton` en tracker con modal para mostrar/copiar el código QR
+- Pendiente: deploy preview para validar compatibilidad con `nodejs_compat`
+
 ### ✅ Fase 2 — Parrilla de stickers (Completada)
 - Tracker visual con grupo → equipo → sticker
 - `StickerGrid`: grid compacto de stickers por equipo
@@ -99,25 +106,26 @@ Open [http://localhost:3000](http://localhost:3000).
 | `pnpm dev` | Dev server |
 | `pnpm build` | Build Next.js |
 | `pnpm lint` | ESLint |
-| `pnpm test` | Jest (155 tests) |
+| `pnpm test` | Jest (206 tests) |
 | `pnpm seed:worldcup` | Seed stickers via Supabase REST API |
 
 ## Tests
 
-155 tests en 25 suites, todas con datos mock:
+206 tests en 32 suites, todas con datos mock:
 
 | Categoría | Archivos | Tests |
 |-----------|----------|-------|
 | Value Objects | `rarity.vo`, `progress.vo`, `sticker-state.vo`, `sticker-type.vo` | 4 suites |
 | Domain Entities | `user-collection.entity`, `team.entity`, `sticker.entity`, `user.entity`, `album.entity`, `account.entity`, `account-member.entity` | 7 suites |
 | Use Cases | `add-sticker.use-case`, `get-shared-collection.use-case` | 3 suites (unit + integration) |
-| Services | `statistics.service` | 1 suite |
-| Components | `StickerGrid`, `MissingListScreen` | 2 suites |
+| Services | `statistics.service`, `qr-codec.service` | 2 suites |
+| API Routes | `figuritas-app/qr-codec` | 1 suite |
+| Components | `StickerGrid`, `MissingListScreen`, `QRCodecButton`, `QRCodecModal` | 4 suites |
 | Hooks | `useTracker`, `collection-mutations` | 2 suites |
 | UI | `ToasterProvider` | 1 suite |
 
 ```
-pnpm test        # 25 suites, 155 tests
+pnpm test        # 32 suites, 206 tests
 ```
 
 ## Plan detallado
