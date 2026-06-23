@@ -32,22 +32,22 @@ Chain strategy: stacked-to-main
 
 ## Phase 2: API Route
 
-- [ ] 2.1 Create `src/app/api/figuritas-app/qr-codec/route.ts` — GET handler with `createServerSideClient()` auth check (401), flag check (404), parallel repo queries, `QRCodecService.encodeV2()` call, JSON response
+- [x] 2.1 Create `src/app/api/figuritas-app/qr-codec/route.ts` — GET handler with `createServerSideClient()` auth check (401), flag check (404), sequential repo queries, `QRCodecService.encodeV2()` call, JSON response
 
 ## Phase 3: Presentation
 
-- [ ] 3.1 Create `src/presentation/components/figuritas-app/qr-codec-button.tsx` — button "Intercambiar vía Figuritas App" that calls GET /api/figuritas-app/qr-codec on click, gated by `isFiguritasAppEnabled()`
-- [ ] 3.2 Create `src/presentation/components/figuritas-app/qr-codec-modal.tsx` — modal showing raw QR string + "Copiar" button
-- [ ] 3.3 Create `src/presentation/components/figuritas-app/index.ts` — barrel export for both components
-- [ ] 3.4 Modify `src/app/(dashboard)/tracker/page.tsx` — import and render `QRCodecButton` below the header
+- [x] 3.1 Create `src/presentation/components/figuritas-app/qr-codec-button.tsx` — button "Intercambiar vía Figuritas App" that calls GET /api/figuritas-app/qr-codec on click, gated by `isFiguritasAppEnabled()`
+- [x] 3.2 Create `src/presentation/components/figuritas-app/qr-codec-modal.tsx` — modal showing raw QR string + "Copiar" button
+- [x] 3.3 Create `src/presentation/components/figuritas-app/index.ts` — barrel export for both components
+- [x] 3.4 Modify `src/app/(dashboard)/tracker/page.tsx` — import and render `QRCodecButton` below FeatureAnnouncement
 
 ## Phase 4: Environment & Config
 
-- [ ] 4.1 Add `NEXT_PUBLIC_FIGURITAS_APP_ENABLED=false` to `.env.example`
-- [ ] 4.2 Add `NEXT_PUBLIC_FIGURITAS_APP_ENABLED` to `wrangler.jsonc` vars (with `false` default)
+- [x] 4.1 Add `NEXT_PUBLIC_FIGURITAS_APP_ENABLED=false` to `.env.example`
+- [x] 4.2 Add `NEXT_PUBLIC_FIGURITAS_APP_ENABLED` to `wrangler.jsonc` vars (with `false` default)
 
 ## Phase 5: Verification
 
-- [ ] 5.1 Run full test suite — confirm QR codec unit tests pass
-- [ ] 5.2 Manual smoke test: toggle flag on/off, verify 404 vs 200 behavior
+- [x] 5.1 Run full test suite — 206 tests pass (188 original + 18 new)
+- [ ] 5.2 Manual smoke test: toggle flag on/off, verify 404 vs 200 behavior (requires deploy)
 - [ ] 5.3 Verify `zlib.gzipSync()` works in Cloudflare Workers via `nodejs_compat` (deploy preview check)

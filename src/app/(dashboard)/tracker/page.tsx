@@ -12,6 +12,7 @@ import { Progress } from '../../../components/ui/progress';
 import { GROUP_ORDER } from '../../../shared/constants/tracker.constants';
 import { GROUP_COLORS } from '../../../shared/constants/tracker.constants';
 import { FeatureAnnouncement } from '../../../presentation/components/common/FeatureAnnouncement';
+import { QRCodecButton } from '../../../presentation/components/figuritas-app';
 
 export default function TrackerPage() {
   const router = useRouter();
@@ -102,6 +103,7 @@ export default function TrackerPage() {
         ]}
         ctaLabel="¡Empieza a intercambiar!"
       />
+      <QRCodecButton />
       <div className="space-y-4">
         {/* Header card with progress */}
         <div className="bg-gradient-to-br from-indigo-500 to-violet-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-white shadow-md">
