@@ -22,6 +22,7 @@
   "vars": {
     "NEXT_PUBLIC_SUPABASE_URL": "https://qwlopuygvhkopgsatdcl.supabase.co",
     "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3bG9wdXlndmhrb3Bnc2F0ZGNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjYxNzEsImV4cCI6MjA5NTA0MjE3MX0.3Cfy5Xas6tf8QNWr_O3xEkPEcrH-r4wrF8OGJucm7f8",
-    "NEXT_PUBLIC_APP_URL": "https://album.juancode.dev"
+    "NEXT_PUBLIC_APP_URL": "https://album.juancode.dev",
+    "NEXT_PUBLIC_FIGURITAS_APP_ENABLED": "false"
   }
 }
