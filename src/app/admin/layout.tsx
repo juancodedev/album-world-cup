@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createServerSideClient } from '../../infrastructure/database/supabase.server';
+import { isFiguritasAppEnabled } from '../../config/figuritas-app';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,6 +20,8 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     redirect('/tracker');
   }
 
+  const figuritasEnabled = isFiguritasAppEnabled();
+
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white border-b sticky top-0 z-50">
@@ -32,9 +35,25 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           <Link href="/admin/seed" className="text-sm text-gray-600 hover:text-gray-900">
             Láminas
           </Link>
-          <Link href="/tracker" className="text-sm text-gray-400 hover:text-gray-600 ml-auto">
-            ← Volver al tracker
-          </Link>
+          <div className="flex items-center gap-2 ml-auto">
+            <span
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                figuritasEnabled
+                  ? 'bg-green-100 text-green-700'
+                  : 'bg-gray-100 text-gray-500'
+              }`}
+            >
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  figuritasEnabled ? 'bg-green-500' : 'bg-gray-400'
+                }`}
+              />
+              Figuritas App: {figuritasEnabled ? 'ACTIVO' : 'INACTIVO'}
+            </span>
+            <Link href="/tracker" className="text-sm text-gray-400 hover:text-gray-600">
+              ← Volver
+            </Link>
+          </div>
         </div>
       </nav>
       <main className="max-w-5xl mx-auto px-4 py-8">{children}</main>
